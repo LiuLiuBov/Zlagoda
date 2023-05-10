@@ -25,6 +25,9 @@
                         <a class="nav-link" href="#products">Товари</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#productsinmarket">Товари в магазині</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#sales">Продажі</a>
                     </li>
                     <li class="nav-item">
@@ -33,92 +36,140 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#customers">Клієнти</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Категорії товарів</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#summary">Створити звіт</a>
+                    </li>
                 </ul>
             </div>
         </nav>
     </header>
     <main class="container-fluid">
         <section id="products">
-            <h2 class="mt-5">Товари</h2>
+            <h2 class="mt-5">Товари в магазині</h2>
             <table class="table">
                 <thead>
                     <tr>
+                        <th>UPC товару</th>
                         <th>Назва товару</th>
-                        <th>Кількість на складі</th>
-                        <th>Ціна за одиницю</th>
-                        <th>Історія продажу</th>
+                        <th>Кількість одиниць</th>
+                        <th>Ціна продажу</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td>049000000285</td>
                         <td>Продукт 1</td>
                         <td>100</td>
                         <td>10 грн.</td>
-                        <td>Історія продажу продукту 1</td>
                     </tr>
                     <tr>
+                        <td>190199724256</td>
                         <td>Продукт 2</td>
                         <td>50</td>
                         <td>20 грн.</td>
-                        <td>Історія продажу продукту 2</td>
                     </tr>
                     <tr>
+                        <td>193152119348</td>
                         <td>Продукт 3</td>
                         <td>200</td>
                         <td>5 грн.</td>
-                        <td>Історія продажу продукту 3</td>
                     </tr>
                 </tbody>
             </table>
+            <h6 id="moreproducts" style = "color: blue;"> Більше товарів</h6>
         </section>
         <section id="sales">
             <h2 class="mt-5">Продажі</h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Номер продажу</th>
-                        <th>Дата продажу</th>
-                        <th>Кількість товарів</th>
-                        <th>Сума</th>
+                        <th>Номер чеку</th>
+                        <th>Дата чеку</th>
+                        <th>Загальна сума</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>1</td>
                         <td>01.01.2023</td>
-                        <td>3</td>
                         <td>30 грн.</td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>02.01.2023</td>
-                        <td>5</td>
                         <td>100 грн.</td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>03.01.2023</td>
-                        <td>2</td>
                         <td>10 грн.</td>
                     </tr>
                 </tbody>
             </table>
+            <h6 id="moresales" style = "color: blue;"> Більше продажів</h6>
         </section>
         <section id="employees">
             <h2 class="mt-5">Працівники</h2>
-            <ul>
-                <li>Іванов Іван Іванович</li>
-                <li>Петров Петро Петрович</li>
-                <li>Сидорова Олена Петрівна</li>
-            </ul>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Прізвище</th>
+                        <th>Ім'я</th>
+                        <th>Посада</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Іванов</td>
+                        <td>Іван</td>
+                        <td>касир</td>
+                    </tr>
+                    <tr>
+                        <td>Петров</td>
+                        <td>Петро</td>
+                        <td>менеджер</td>
+                    </tr>
+                    <tr>
+                        <td>Сидорова</td>
+                        <td>Олена</td>
+                        <td>менеджер</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h6 id="moreemployees" style = "color: blue;"> Більше працівників</h6>
         </section>
         <section id="customers">
             <h2 class="mt-5">Клієнти</h2>
-            <ul>
-                <li>Петренко Олександр Олександрович</li>
-                <li>Ковальчук Марія Іванівна</li>
-                <li>Бойко Ігор Володимирович</li>
-            </ul>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Прізвище</th>
+                        <th>Ім'я</th>
+                        <th>Відсоток</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Петренко</td>
+                        <td>Олександр</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td>Ковальчук</td>
+                        <td>Марія</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>Бойко</td>
+                        <td>Ігор</td>
+                        <td>15</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h6 id="morecustomers" style = "color: blue;"> Більше клієнтів</h6>
         </section>
     </main>
 
