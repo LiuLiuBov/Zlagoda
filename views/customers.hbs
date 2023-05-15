@@ -1,0 +1,148 @@
+<head>
+
+    <style>
+        #search-lastname,
+        #search-firstname,
+        #search-discount {
+            margin-bottom: 10px;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+        }
+
+        .table th {
+            text-align: center;
+        }
+
+        #client-table td:nth-child(8),
+        #client-table th:nth-child(8) {
+            text-align: right;
+        }
+
+        .btn-primary{
+            margin-bottom: 20px;
+        }
+
+        .form-control{
+            margin-right: 15px;
+        }
+
+        .home-link {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 2em;
+  color: #007bff;
+  text-decoration: none;
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="my-5">Клієнти</h1>
+        <a href="/customers/add" class="btn btn-primary">Додати нового клієнта</a>
+        <div class="row mb-3">
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="text" id="search-lastname" class="form-control" placeholder="Пошук за прізвищем">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="text" id="search-firstname" class="form-control" placeholder="Пошук за ім'ям">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="text" id="search-discount" class="form-control" placeholder="Пошук за відсотком знижки">
+                <button class="btn btn-outline-secondary" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Номер карти</th>
+                  <th>Ім'я</th>
+                  <th>Прізвище</th>
+                  <th>По-батькові</th>
+                  <th>Номер телефону</th>
+                  <th>Місто</th>
+                  <th>Вулиця</th>
+                  <th>Зіп-код</th>
+                  <th>Відсоток знижки</th>
+                  <th>Дії</th>
+                </tr>
+              </thead>
+              <tbody id="client-table">
+                <tr>
+                  <td>001</td>
+                  <td>Анна</td>
+                  <td>Іванова</td>
+                  <td>Вікторівна</td>
+                  <td>+380987654321</td>
+                  <td>Київ</td>
+                  <td>Володимирська</td>
+                  <td>01001</td>
+                  <td>5%</td>
+                  <td>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>002</td>
+                  <td>Олександр</td>
+                  <td>Петров</td>
+                  <td>Олегович</td>
+                  <td>+380987654322</td>
+                  <td>Львів</td>
+                  <td>Січових Стрільців</td>
+                  <td>79000</td>
+                  <td>10%</td>
+                  <td>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>003</td>
+                  <td>Марія</td>
+                  <td>Сидоренко</td>
+                  <td>Михайлівна</td>
+                  <td>+380987654323</td>
+                  <td>Одеса</td>
+                  <td>Дерибасівська</td>
+                  <td>65000</td>
+                  <td>15%</td>
+                  <td>
+                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Підключаємо власний JavaScript -->
+    <script src="customers.js"></script>
+
+</body>
