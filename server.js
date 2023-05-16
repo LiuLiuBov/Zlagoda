@@ -24,6 +24,17 @@ app.get('/customers/add', (req, res,) => {
     res.render('create-customer')
 })
 
+app.get('/employees', (req, res,) => {
+    res.render('employees')
+})
+
+app.get('/categories', (req, res,) => {
+    res.render('categories')
+})
+
+app.get('/employees/add', (req, res,) => {
+    res.render('create-employee')
+})
 
 const PORT = process.env.PORT || 8000
 

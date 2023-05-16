@@ -1,0 +1,182 @@
+<head>
+
+    <style>
+      .row{
+        margin-top: 5px;
+        margin-bottom: 15px;
+        margin-left: 10px;
+      }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            margin-left: 10px;
+        }
+        .btn-primary {
+           background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 80%;
+            margin: 10px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Стилі для кнопок дій з категоріями */
+        .action-buttons button {
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #666;
+        }
+
+        #select-position{
+            margin-top: 5px;
+            margin-bottom: 15px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="my-5">Працівники</h1>
+    <div class="row">
+        <a href="/employees/add" class="btn btn-primary">Додати нового працівника</a>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" id="search-discount" class="form-control" placeholder="Пошук за прізвищем">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+    <div id="select-position">
+        <label for="occupation">Пошук за посадою:</label>
+        <select id="occupation" name="occupation">
+            <option value="none"></option>
+            <option value="manager">Менеджер</option>
+            <option value="cashier">Касир</option>
+        </select>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Номер працівника</th>
+                    <th>Ім'я</th>
+                    <th>Прізвище</th>
+                    <th>По-батькові</th>
+                    <th>Номер телефону</th>
+                    <th>Місто</th>
+                    <th>Вулиця</th>
+                    <th>Зіп-код</th>
+                    <th>Посада</th>
+                    <th>Дата народження</th>
+                    <th>Дата початку роботи</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="client-table">
+                <tr>
+                    <td>1</td>
+                    <td>Олександр</td>
+                    <td>Іванов</td>
+                    <td>Вікторович</td>
+                    <td>(099) 123-45-67</td>
+                    <td>Київ</td>
+                    <td>вул. Шевченка, 10</td>
+                    <td>01001</td>
+                    <td>Менеджер</td>
+                    <td>01.01.1990</td>
+                    <td>01.01.2015</td>
+                    <td>
+                        <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Марія</td>
+                    <td>Петренко</td>
+                    <td>Ігорівна</td>
+                    <td>(067) 234-56-78</td>
+                    <td>Львів</td>
+                    <td>вул. Куліша, 5</td>
+                    <td>79008</td>
+                    <td>Касир</td>
+                    <td>15.03.1985</td>
+                    <td>01.06.2012</td>
+                    <td>
+                        <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Андрій</td>
+                    <td>Сидоров</td>
+                    <td>Іванович</td>
+                    <td>(093) 345-67-89</td>
+                    <td>Харків</td>
+                    <td>вул. Сумська, 20</td>
+                    <td>61000</td>
+                    <td>Касир</td>
+                    <td>10.07.1982</td>
+                    <td>01.09.2010</td>
+                    <td>
+                        <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

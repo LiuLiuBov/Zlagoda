@@ -95,39 +95,47 @@
 
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Додати нового клієнта</h2>
+    <h2 class="mt-5">Додати нового працівника</h2>
     <form id="add-client-form">
         <div class="form-group">
-            <label for="add-client-firstname">Ім'я:</label>
-            <input type="text" id="add-client-firstname" class="form-control" required>
+            <label for="add-empl-firstname">Ім'я:</label>
+            <input type="text" id="add-empl-firstname" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-lastname">Прізвище:</label>
-            <input type="text" id="add-client-lastname" class="form-control" required>
+            <label for="add-empl-lastname">Прізвище:</label>
+            <input type="text" id="add-empl-lastname" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-patronymic">По-батькові:</label>
-            <input type="text" id="add-client-patronymic" class="form-control">
+            <label for="add-empl-patronymic">По-батькові:</label>
+            <input type="text" id="add-empl-patronymic" class="form-control">
         </div>
         <div class="form-group">
-            <label for="add-client-phone">Номер телефону:</label>
-            <input type="tel" id="add-client-phone" class="form-control" required>
+            <label for="add-empl-phone">Номер телефону:</label>
+            <input type="tel" id="add-empl-phone" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-city">Місто:</label>
-            <input type="text" id="add-client-city" class="form-control" required>
+            <label for="add-empl-city">Місто:</label>
+            <input type="text" id="add-empl-city" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-street">Вулиця:</label>
-            <input type="text" id="add-client-street" class="form-control" required>
+            <label for="add-empl-street">Вулиця:</label>
+            <input type="text" id="add-empl-street" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-zipcode">Зіп-код:</label>
-            <input type="text" id="add-client-zipcode" class="form-control" required>
+            <label for="add-empl-zipcode">Зіп-код:</label>
+            <input type="text" id="add-empl-zipcode" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-discount">Відсоток знижки:</label>
-            <input type="number" id="add-client-discount" class="form-control" min="0" max="100" required>
+            <label for="add-empl-position">Посада:</label>
+            <input type="number" id="add-empl-position" class="form-control" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+            <label for="add-empl-date_of_birth">Дата народження:</label>
+            <input type="number" id="add-empl-date_of_birth" class="form-control" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+            <label for="add-empl-date_of_start">Дата початку роботи:</label>
+            <input type="number" id="add-empl-date_of_start" class="form-control" min="0" max="100" required>
         </div>
         <button type="submit" class="btn btn-primary">Додати</button>
     </form>
