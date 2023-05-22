@@ -6,6 +6,7 @@ const indexRoutes = require('./routes/index')
 const categoriesRoutes = require('./routes/categories')
 const customersRoutes = require('./routes/customers')
 const employeesRoutes = require('./routes/employees')
+const mysql = require('./utils/database')
 
 const hbs = exphbs.create({
     defaultLayout: 'main',

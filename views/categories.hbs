@@ -1,13 +1,10 @@
 <head>
-<link rel="stylesheet" href="/categories.css">
+    <link rel="stylesheet" href="/categories.css">
 </head>
 
 <body>
     <h1 class="my-5">Категорії</h1>
     <form action="categories/add" method="POST">
-        <label for="catnumber">Номер категорії:</label>
-        <input type="text" id="catnumber" name="catnumber" required>
-
         <label for="catname">Назва категорії:</label>
         <input type="text" id="catname" name="catname" required>
         <button type="submit">Додати категорію</button>
@@ -22,22 +19,16 @@
                 </tr>
             </thead>
             <tbody id="categories-table">
+                {{#each categories}}
                 <tr>
-                    <td>1</td>
-                    <td>Овочі</td>
+                    <td>{{this.category_number}}</td>
+                    <td>{{this.category_name}}</td>
                     <td>
                         <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
                         <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Фрукти</td>
-                    <td>
-                        <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
-                    </td>
-                </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>
