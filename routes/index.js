@@ -1,7 +1,8 @@
 const {Router} = require('express')
 const router = Router()
+const auth = require('../middleware/auth')
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
     res.render('index')
 })
 

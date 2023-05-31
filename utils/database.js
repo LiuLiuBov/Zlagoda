@@ -1,7 +1,7 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
 
 var connection = mysql.createConnection({
-  host: "DESKTOP-BTL29QK",
+  host: "127.0.0.1",
   user: "liubov",
   password: "12345678",
   database: "Zlagoda"
@@ -31,4 +31,4 @@ connection.connect(function(err) {
     });
   });*/
 
-  module.exports = connection
+  module.exports = connection;

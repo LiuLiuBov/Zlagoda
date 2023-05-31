@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="auth.css">
+  <title>Login Page</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="card bg-dark text-white mt-5">
+          <div class="card-header text-center">
+            <h2>Welcome</h2>
+          </div>
+          <div class="card-body">
+            <form action="/login" method = "POST">
+              <div class="form-group">
+                <label for="login_empl_id">Employee ID</label>
+                <input type="text" class="form-control" name="login_empl_id" id="login_empl_id" placeholder="Enter your employee ID" required>
+              </div>
+              <div class="form-group">
+                <label for="login_password">Password</label>
+                <input type="password" class="form-control" name="login_password" id="login_password" placeholder="Enter your password" required>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

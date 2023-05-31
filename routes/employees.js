@@ -1,11 +1,12 @@
 const {Router} = require('express')
 const router = Router()
+const auth = require('../middleware/auth')
 
-router.get('/employees', (req, res,) => {
+router.get('/employees', auth, (req, res,) => {
     res.render('employees')
 })
 
-router.get('/employees/add', (req, res,) => {
+router.get('/employees/add', auth, (req, res,) => {
     res.render('create-employee')
 })
 

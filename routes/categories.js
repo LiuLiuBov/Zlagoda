@@ -1,8 +1,9 @@
 const {Router} = require('express')
 const router = Router()
 const connection = require('../utils/database')
+const auth = require('../middleware/auth')
 
-router.get('/categories', (req, res,) => {
+router.get('/categories', auth, (req, res,) => {
     const getAllCategories = "SELECT * FROM category";
     connection.query(getAllCategories, (err, result) => {
         if(err) throw err;
@@ -13,7 +14,7 @@ router.get('/categories', (req, res,) => {
     
 })
 
-router.post('/categories/add', async (req, res) => {
+router.post('/categories/add', auth, async (req, res) => {
     const { catname } = req.body;
   
     const sql = "INSERT INTO category (category_name) VALUES (?)";
