@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
       if (err) throw err;
 
       for (let i = 0; i < data.length; i++) {
-        if (data[i].password === user_password) {
+        if (bcrypt.compare(data[i].password, user_password)) {
           req.session.user_id = data[i].id_employee;
           req.session.isAuthenticated = true;
           return res.redirect('/');

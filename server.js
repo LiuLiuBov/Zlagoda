@@ -14,7 +14,14 @@ const sessionStore = require('./utils/session_db')
 const hbs = exphbs.create({
     defaultLayout: 'main',
     extname: 'hbs',
-    noLayout: 'noLayout' // Layout to be used for pages without layout
+    noLayout: 'noLayout', // Layout to be used for pages without layout
+    helpers: {
+        // Custom helper to format dates without time
+        formatDate: function(date) {
+          const options = { year: 'numeric', month: 'long', day: 'numeric' };
+          return date.toLocaleDateString(undefined, options);
+        }
+      }
 })
 
 app.use(express.static('public'))//для css

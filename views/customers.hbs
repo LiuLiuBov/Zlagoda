@@ -10,10 +10,13 @@
 
             <div class="col-md-4">
               <div class="input-group">
-                <input type="text" id="search-discount" class="form-control" placeholder="Пошук за відсотком знижки">
-                <button class="btn btn-outline-secondary" type="button">
-                  <i class="fas fa-search"></i>
-                </button>
+                <form action="/customers" method="POST">
+                    <input type="text" id="searchpercent" name="searchpercent" class="form-control"
+                        placeholder="Пошук за відсотком знижки">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
               </div>
             </div>
           </div>
@@ -34,53 +37,25 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody id="client-table">
+              <tbody id="customers-table">
+                {{#each customers}}
                 <tr>
-                  <td>1</td>
-                  <td>Анна</td>
-                  <td>Іванова</td>
-                  <td>Вікторівна</td>
-                  <td>+380987654321</td>
-                  <td>Київ</td>
-                  <td>Володимирська</td>
-                  <td>01001</td>
-                  <td>5%</td>
-                  <td>
-                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
-                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
-                  </td>
+                    <td>{{this.card_number}}</td>
+                    <td>{{this.cust_name}}</td>
+                    <td>{{this.cust_surname}}</td>
+                    <td>{{this.cust_patronymic}}</td>
+                    <td>{{this.phone_number}}</td>
+                    <td>{{this.city}}</td>
+                    <td>{{this.street}}</td>
+                    <td>{{this.zip_code}}</td>
+                    <td>{{this.percent}}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                    </td>
                 </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Олександр</td>
-                  <td>Петров</td>
-                  <td>Олегович</td>
-                  <td>+380987654322</td>
-                  <td>Львів</td>
-                  <td>Січових Стрільців</td>
-                  <td>79000</td>
-                  <td>10%</td>
-                  <td>
-                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
-                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Марія</td>
-                  <td>Сидоренко</td>
-                  <td>Михайлівна</td>
-                  <td>+380987654323</td>
-                  <td>Одеса</td>
-                  <td>Дерибасівська</td>
-                  <td>65000</td>
-                  <td>15%</td>
-                  <td>
-                    <button class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></button>
-                    <button class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
-                  </td>
-                </tr>
-              </tbody>
+                {{/each}}
+            </tbody>
             </table>
           </div>
     </div>
