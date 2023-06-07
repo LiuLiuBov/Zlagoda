@@ -1,0 +1,45 @@
+<head>
+    <link rel="stylesheet" href="/employees.css">
+</head>
+
+<div>
+    <h1 class="my-5">Товари</h1>
+    <div class="container"></div>
+    <a href="/products/add" class="btn btn-primary">Додати товар</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Номер товару</th>
+                    <th>Номер категорії</th>
+                    <th>Назва категорії</th>
+                    <th>Назва товару</th>
+                    <th>Характеристики</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="categories-table">
+                {{#each products}}
+                <tr>
+                    <td>{{this.id_product}}</td>
+                    <td>{{this.category_number}}</td>
+                    <td>{{this.category_name}}</td>
+                    <td>{{this.product_name}}</td>
+                    <td>{{this.caracteristics}}</td>
+                    <td>
+                        <a href="products/edit/{{this.id_product}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="products/delete/{{this.id_product}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

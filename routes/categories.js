@@ -4,7 +4,7 @@ const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 
 router.get('/categories', auth, (req, res,) => {
-  const getAllCategories = "SELECT * FROM category";
+  const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   connection.query(getAllCategories, (err, result) => {
     if (err) throw err;
     //res.send(result)

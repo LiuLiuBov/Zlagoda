@@ -1,0 +1,76 @@
+<head>
+    <link rel="stylesheet" href="/create.css">
+</head>
+
+<body>
+    <!-- Форма для додавання нового клієнта -->
+    <h2 class="mt-5">Редагувати працівника {{idemployee}}</h2>
+    <form action="/employees/edit/{{idemployee}}/editing" method="POST">
+        <div class="form-group">
+            <label for="editemplfirstname">Ім'я:</label>
+            <input type="text" id="editemplfirstname" name="editemplfirstname" value="{{employee.empl_name}}"
+                class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editempllastname">Прізвище:</label>
+            <input type="text" id="editempllastname" name="editempllastname" value="{{employee.empl_surname}}"
+                class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editemplpatronymic">По-батькові:</label>
+            <input type="text" id="editemplpatronymic" name="editemplpatronymic" value="{{employee.empl_patronymic}}"
+                class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="editemplposition">Посада:</label>
+            <select id="editemplposition" name="editemplposition" class="form-control" required>
+                <option value="manager" {{selectedOption 'manager' employee.empl_role}}>Manager</option>
+                <option value="cashier" {{selectedOption 'cashier' employee.empl_role}}>Cashier</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="editemplsalary">Заробітня плата:</label>
+            <input type="number" id="editemplsalary" min="0" name="editemplsalary" value="{{employee.salary}}"
+                class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editempldateofbirth">Дата народження:</label>
+            <input type="date" id="editempldateofbirth" name="editempldateofbirth"
+                value="{{defaultDate employee.date_of_birth 'YYYY-MM-DD'}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editempldateofstart">Дата початку роботи:</label>
+            <input type="date" id="editempldateofstart" name="editempldateofstart"
+                value="{{defaultDate employee.date_of_start 'YYYY-MM-DD'}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editemplphone">Номер телефону:</label>
+            <input type="text" id="editemplphone" name="editemplphone" value="{{employee.phone_number}}"
+                class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editemplcity">Місто:</label>
+            <input type="text" id="editemplcity" name="editemplcity" value="{{employee.city}}" class="form-control"
+                required>
+        </div>
+        <div class="form-group">
+            <label for="editemplstreet">Вулиця:</label>
+            <input type="text" id="editemplstreet" name="editemplstreet" value="{{employee.street}}" class="form-control"
+                required>
+        </div>
+        <div class="form-group">
+            <label for="editemplzipcode">Зіп-код:</label>
+            <input type="text" id="editemplzipcode" name="editemplzipcode" value="{{employee.zip_code}}"
+                class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+    </form>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Підключаємо власний JavaScript -->
+    <script src="customers.js"></script>
+
+</body>

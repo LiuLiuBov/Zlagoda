@@ -1,0 +1,48 @@
+<head>
+<link rel="stylesheet" href="/create.css">
+</head>
+<body>
+    <!-- Форма для додавання нового клієнта -->
+    <h2 class="mt-5">Редагувати клієнта {{cardnumber}}</h2>
+    <form action="/customers/edit/{{cardnumber}}/editing" method="POST">
+        <div class="form-group">
+            <label for="editclientfirstname">Ім'я:</label>
+            <input type="text" id="editclientfirstname" name="editclientfirstname" value="{{custname}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientlastname">Прізвище:</label>
+            <input type="text" id="editclientlastname" name="editclientlastname"value="{{custsurname}}"  class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientpatronymic">По-батькові:</label>
+            <input type="text" id="editclientpatronymic" name="editclientpatronymic" value="{{custpatronymic}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="editclientphone">Номер телефону:</label>
+            <input type="tel" id="editclientphone" name="editclientphone" value="{{phonenumber}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientcity">Місто:</label>
+            <input type="text" id="editclientcity" name="editclientcity" value="{{city}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientstreet">Вулиця:</label>
+            <input type="text" id="editclientstreet" name="editclientstreet" value="{{street}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientzipcode">Зіп-код:</label>
+            <input type="text" id="editclientzipcode" name="editclientzipcode" value="{{zipcode}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editclientdiscount">Відсоток знижки:</label>
+            <input type="number" id="editclientdiscount" name="editclientdiscount" value="{{percent}}" class="form-control" min="0" max="100" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+    </form>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

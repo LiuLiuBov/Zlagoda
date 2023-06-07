@@ -7,9 +7,11 @@ const categoriesRoutes = require('./routes/categories')
 const session = require('express-session')
 const customersRoutes = require('./routes/customers')
 const employeesRoutes = require('./routes/employees')
+const productsRoutes = require('./routes/products')
 const authRoutes = require('./routes/auth')
 const mysql = require('./utils/database')
 const sessionStore = require('./utils/session_db')
+const moment = require('moment');
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
@@ -20,6 +22,12 @@ const hbs = exphbs.create({
         formatDate: function(date) {
           const options = { year: 'numeric', month: 'long', day: 'numeric' };
           return date.toLocaleDateString(undefined, options);
+        },
+        defaultDate: function (value, defaultValue) {
+          return value || moment().format(defaultValue);
+        },
+        selectedOption: function(value, selectedValue) {
+          return value === selectedValue ? 'selected' : '';
         }
       }
 })
@@ -39,6 +47,7 @@ app.use(customersRoutes)
 app.use(indexRoutes)
 app.use(employeesRoutes)
 app.use(authRoutes)
+app.use(productsRoutes)
 //--------------------------------------------------------
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')//реєструємо двіжок хендлбарс
