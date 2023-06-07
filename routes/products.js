@@ -66,50 +66,35 @@ router.get('/products/edit/:id_product', (req, res) => {
         connection.query(getProduct, [idProduct], (err, result) => {
             if (err) throw err;
             //console.log(result);
-            res.render('editproduct', { "product": result[0], 'categories': categories });
+            res.render('editproduct', { "product": result[0], "idproduct": idProduct, 'categories': categories });
         })
     });
 });
 
-router.post('/products/edit/:cardnumber/editing', (req, res) => {
-    const cardnumber = req.params.cardnumber;
+router.post('/products/edit/:idproduct/editing', (req, res) => {
+    const idProduct = req.params.idproduct;
     const {
-        editclientfirstname,
-        editclientlastname,
-        editclientpatronymic,
-        editclientphone,
-        editclientcity,
-        editclientstreet,
-        editclientzipcode,
-        editclientdiscount
+        editcategory,
+        editproductname,
+        editproductcharacteristics
     } = req.body;
 
-    const updateQuery = `UPDATE customer_card SET
-      cust_name = ?,
-      cust_surname = ?,
-      cust_patronymic = ?,
-      phone_number = ?,
-      city = ?,
-      street = ?,
-      zip_code = ?,
-      percent = ?
-      WHERE card_number = '${cardnumber}'`;
+    const updateQuery = `UPDATE product SET
+      category_number = ?,
+      product_name = ?,
+      caracteristics = ?
+      WHERE id_product = ${idProduct}`;
 
     const updateValues = [
-        editclientfirstname,
-        editclientlastname,
-        editclientpatronymic,
-        editclientphone,
-        editclientcity,
-        editclientstreet,
-        editclientzipcode,
-        editclientdiscount
+        editcategory,
+        editproductname,
+        editproductcharacteristics
     ];
 
     connection.query(updateQuery, updateValues, (err, result) => {
         if (err) throw err;
-        console.log('Customer updated successfully');
-        res.redirect('/customers');
+        console.log('Product updated successfully');
+        res.redirect('/products');
     });
 });
 

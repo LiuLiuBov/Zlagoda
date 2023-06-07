@@ -4,8 +4,8 @@
 
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Редагувати товар</h2>
-    <form action="/products/edit/{{product.id_product}}/editing" method="POST">
+    <h2 class="mt-5">Редагувати товар {{idproduct}}</h2>
+    <form action="/products/edit/{{idproduct}}/editing" method="POST">
         <div class="form-group">
             <select id="editcategory" name="editcategory" class="form-control" required>
                 {{#each categories}}
