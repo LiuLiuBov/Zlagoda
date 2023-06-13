@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars')
 const app = express()
 const indexRoutes = require('./routes/index')
 const categoriesRoutes = require('./routes/categories')
+const productsinmarketRoutes = require('./routes/productsinmarket')
 const session = require('express-session')
 const customersRoutes = require('./routes/customers')
 const employeesRoutes = require('./routes/employees')
@@ -41,7 +42,7 @@ app.use(session({
     saveUninitialized: false,
     store: sessionStore
 }))
-
+app.use(productsinmarketRoutes)
 app.use(categoriesRoutes)
 app.use(customersRoutes)
 app.use(indexRoutes)

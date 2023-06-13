@@ -1,0 +1,54 @@
+<head>
+    <link rel="stylesheet" href="/produtsinmarket.css">
+</head>
+
+<body>
+    <h1 class="my-5">Продукти в магазині</h1>
+    <div class="checkbox-container">
+        <label for="sort-name">Сортувати за назвою:</label>
+        <input type="checkbox" id="sort-name" name="sort-name">
+        <label for="sort-quantity">Сортувати за кількістю:</label>
+        <input type="checkbox" id="sort-quantity" name="sort-quantity">
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>UPC</th>
+                    <th>UPC_prom</th>
+                    <th>Товар</th>
+                    <th>Вартість</th>
+                    <th>Кількість</th>
+                    <th>Характеристика</th>
+                    <th>Акційний товар</th>
+                    <th>Редагувати</th>
+                    <th>Видалити</th>
+                </tr>
+            </thead>
+            <tbody id="productsinmarket-table">
+                {{#each productsinmarket}}
+                <tr>
+                    <td>{{this.UPC}}</td>
+                    <td>{{this.UPC_prom}}</td>
+                    <td>{{this.id_product}}</td>
+                    <td>{{this.selling_price}}</td>
+                    <td>{{this.producrs_number}}</td>
+                    <td>{{this.promotional_product}}</td>
+                    <td>
+                        <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="productsinmarket/delete/{{this.UPC}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <button id="add-product-btn">Додати товар</button>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Your custom script for interacting with the table -->
+<script src="/products.js"></script>
+</body>
