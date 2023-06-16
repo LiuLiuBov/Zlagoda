@@ -2,8 +2,6 @@ const {Router} = require('express')
 const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
-const bcrypt = require('bcryptjs')
-const { v4: uuidv4 } = require('uuid');
 
 router.get('/productsinmarket', auth, (req, res) => {
   const sortCriteria = req.query.sortCriteria || 'product_name'; 
@@ -42,6 +40,7 @@ router.get('/productsinmarket', auth, (req, res) => {
         addproductinmarketnumber,
         addpromotional
     } = req.body;
+    console.log(addpromotional)
 
     const promotionalProduct = addpromotional ? 1 : 0;
     const query = "INSERT INTO store_product (UPC, id_product, selling_price, products_number, promotional_product) VALUES (?, ?, ?, ?, ?)";
