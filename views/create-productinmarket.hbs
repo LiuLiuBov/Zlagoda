@@ -1,0 +1,41 @@
+<head>
+    <link rel="stylesheet" href="/create.css">
+</head>
+
+<body>
+    <!-- Форма для додавання нового продукту в магазині -->
+    <h2 class="mt-5">Додати товар</h2>
+    <form action="/productsinmarket/adding" method="POST">
+        <div class="form-group">
+            <label for="addUPC">UPC:</label>
+            <input type="text" id="addUPC" name="addUPC" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="addproduct">Назва продукту:</label>
+            <select id="addproduct" name="addproduct" class="form-control" required>
+                {{#each products}}
+                <option value="{{this.id_product}}">{{this.id_product}} {{this.product_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="addproductinmarketsellingprice">Ціна продукту:</label>
+            <input type="text" id="addproductinmarketsellingprice" name="addproductinmarketsellingprice" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="addproductinmarketnumber">Кількість:</label>
+            <input type="text" id="addproductinmarketnumber" name="addproductinmarketnumber" class="form-control">
+        </div>
+         <div class="form-group">
+            <label for="addpromotional">Акційний товар:</label>
+            <input type="checkbox" id="addpromotional" name="addpromotional" value="1" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Додати</button>
+    </form>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

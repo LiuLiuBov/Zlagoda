@@ -1,0 +1,42 @@
+<head>
+    <link rel="stylesheet" href="/create.css">
+</head>
+
+<body>
+    <!-- Форма для додавання нового клієнта -->
+    <h2 class="mt-5">Редагувати товар в магазині. UPC: {{upc}}</h2>
+    <form action="/productsinmarket/edit/{{upc}}/editing" method="POST">
+        <div class="form-group">
+            <label for="editUPC">UPC товару:</label>
+            <input type="text" id="editUPC" name="editUPC" value="{{store_product.UPC}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <select id="editproduct" name="editproduct" class="form-control" required>
+                {{#each products}}
+                <option value="{{this.id_product}}">{{this.id_product}} {{this.this.product_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="editproductinmarketsellingprice">Ціна продукту:</label>
+            <input type="text" id="editproductinmarketsellingprice" name="editproductinmarketsellingprice" value="{{store_product.selling_price}}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="editproductinmarketnumber">Кількість:</label>
+            <input type="text" id="editproductinmarketnumber" name="editproductinmarketnumber" value="{{store_product.products_number}}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="editpromotional">Акційний товар:</label>
+          
+            <input type="checkbox" id="editpromotional" name="editpromotional" value="{{store_product.promotional_product}}" class="form-control">
+
+        </div>
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+    </form>
+    </div>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

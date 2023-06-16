@@ -13,6 +13,8 @@ const authRoutes = require('./routes/auth')
 const mysql = require('./utils/database')
 const sessionStore = require('./utils/session_db')
 const moment = require('moment');
+const flash = require('connect-flash');
+
 
 const hbs = exphbs.create({
     defaultLayout: 'main',
@@ -32,6 +34,8 @@ const hbs = exphbs.create({
         }
       }
 })
+
+app.use(flash());
 
 app.use(express.static('public'))//для css
 app.use(express.urlencoded({extended: false}))
@@ -53,6 +57,8 @@ app.use(productsRoutes)
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')//реєструємо двіжок хендлбарс
 app.set('views', 'views')
+//app.set('view engine', 'ejs');
+
 //--------------------------------------------------------
 
 const PORT = process.env.PORT || 8000

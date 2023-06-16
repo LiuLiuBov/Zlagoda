@@ -2,6 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
+var notifier = require('node-notifier')
 
 router.get('/categories', auth, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
@@ -25,14 +26,39 @@ router.post('/categories/add', auth, async (req, res) => {
   });
 });
 
+router.get('/categories/error', (req, res) => {
+  const errorMessage = 'Помилка. Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!';
+  res.render('error', { errorMessage });
+});
+
 router.get('/categories/delete/:category_number', (req, res) => {
   const categoryNumber = req.params.category_number;
-  console.log(categoryNumber);
-  const sql = `DELETE FROM category WHERE category_number = ${categoryNumber}`;
-  connection.query(sql, [categoryNumber], (err) => {
+
+  const checkProducts = `SELECT * FROM product WHERE category_number = ${categoryNumber}`;
+  connection.query(checkProducts, (err, result) => {
     if (err) throw err;
-    console.log("1 record deleted");
-    res.redirect('/categories');
+    
+    if (result.length > 0) {
+    
+    // якщо є зв'язані товари, то вивести помилку
+   //  res.redirect('/categories/error');
+    notifier.notify({
+      title: 'Помилка!',
+      message: 'Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!',
+     // icon: path.join(__dirname, 'coulson.jpg'), // Absolute path (doesn't work on balloons)
+      sound: false, // Only Notification Center or Windows Toasters
+      wait: true,
+      appID  : 'ZLAGODA'
+    })
+    } else {
+      // якщо немає зв'язаних товарів, то видалити категорію
+      const deleteCategory = `DELETE FROM category WHERE category_number = ${categoryNumber}`;
+      connection.query(deleteCategory, (err) => {
+        if (err) throw err;
+        console.log("1 record deleted");
+        res.redirect('/categories');
+      });
+    }
   });
 });
 

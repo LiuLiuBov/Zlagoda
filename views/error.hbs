@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ошибка</title>
+  <link rel="stylesheet" href="/error.css">
+</head>
+<body>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var popupContainer = document.getElementById('popup-container');
+      popupContainer.style.display = 'flex';
+    });
+
+    function closePopup() {
+      var popupContainer = document.getElementById('popup-container');
+      popupContainer.style.display = 'none';
+      window.location.href = '/categories';
+    }
+  </script>
+
+  <div id="popup-container">
+    <div id="popup">
+      <h2>Ошибка</h2>
+      <p>{{errorMessage}}</p>
+      <button onclick="closePopup()">Ок</button>
+    </div>
+  </div>
+</body>
+</html>
