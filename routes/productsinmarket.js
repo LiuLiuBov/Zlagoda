@@ -2,6 +2,8 @@ const {Router} = require('express')
 const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
+var notifier = require('node-notifier')
+const path = require('path');
 
 router.get('/productsinmarket', auth, (req, res) => {
   const sortCriteria = req.query.sortCriteria || 'product_name'; 
@@ -40,24 +42,46 @@ router.get('/productsinmarket', auth, (req, res) => {
         addproductinmarketnumber,
         addpromotional
     } = req.body;
-    console.log(addpromotional)
 
     const promotionalProduct = addpromotional ? 1 : 0;
-    const query = "INSERT INTO store_product (UPC, id_product, selling_price, products_number, promotional_product) VALUES (?, ?, ?, ?, ?)";
+    const queryCheckUPC = "SELECT UPC FROM store_product WHERE UPC = ?";
+    const queryCheckIdProduct = "SELECT id_product FROM store_product WHERE id_product = ? AND promotional_product = ?";
+    const queryInsert = "INSERT INTO store_product (UPC, id_product, selling_price, products_number, promotional_product) VALUES (?, ?, ?, ?, ?)";
 
     connection.query(
-        query,
-        [addUPC,
-          addproduct,
-          addproductinmarketsellingprice,
-          addproductinmarketnumber,
-          promotionalProduct],
-        (err) => {
+        queryCheckUPC,
+        [addUPC],
+        (err, upcResults) => {
             if (err) throw err;
-            console.log("1 record inserted");
-            res.redirect('/productsinmarket');
-        });
-  });
+
+            if (upcResults.length > 0) {
+                errorNotification('Товар з таким UPC вже існує!');
+            } else {
+                connection.query(
+                    queryCheckIdProduct,
+                    [addproduct, promotionalProduct],
+                    (err, idProductResults) => {
+                        if (err) throw err;
+
+                        if (idProductResults.length > 0) {
+                            errorNotification('Інформація про даний товар вже існує в базі!');
+                        } else {
+                            connection.query(
+                                queryInsert,
+                                [addUPC, addproduct, addproductinmarketsellingprice, addproductinmarketnumber, promotionalProduct],
+                                (err) => {
+                                    if (err) throw err;
+                                    console.log("1 record inserted");
+                                    res.redirect('/productsinmarket');
+                                }
+                            );
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
 
   router.get('/productsinmarket/delete/:UPC', (req, res) => {
     const upc = req.params.UPC;
@@ -94,30 +118,66 @@ router.post('/productsinmarket/edit/:upc/editing', (req, res) => {
       editpromotional
   } = req.body;
 
-  const promotionalProduct = editpromotional === '1' ? 1 : 0;
+  const promotionalProduct = editpromotional ? 1 : 0;
   console.log(promotionalProduct);
 
-  const updateQuery = `UPDATE store_product SET
-    UPC = ?,
-    id_product = ?,
-    selling_price = ?,
-    products_number = ?,
-    promotional_product = ?
-    WHERE UPC = ${upc_red}`;
+  const queryCheckUPC = "SELECT UPC FROM store_product WHERE UPC = ?";
+  const queryCheckIdProduct = "SELECT id_product FROM store_product WHERE id_product = ? AND promotional_product = ?";
+  const queryUpdate = `UPDATE store_product SET
+      UPC = ?,
+      id_product = ?,
+      selling_price = ?,
+      products_number = ?,
+      promotional_product = ?
+      WHERE UPC = ?`;
 
-  const updateValues = [
-    editUPC,
-    editproduct,
-    editproductinmarketsellingprice,
-    editproductinmarketnumber,
-    promotionalProduct
-  ];
+  connection.query(
+      queryCheckUPC,
+      [editUPC],
+      (err, upcResults) => {
+          if (err) throw err;
 
-  connection.query(updateQuery, updateValues, (err, result) => {
-      if (err) throw err;
-      console.log('Product updated successfully');
-      res.redirect('/productsinmarket');
-  });
+          if (upcResults.length > 0 && upcResults[0].UPC !== upc_red) {
+            errorNotification("Товар з таким UPC вже існує!")
+          } else {
+              connection.query(
+                  queryCheckIdProduct,
+                  [editproduct, promotionalProduct],
+                  (err, idProductResults) => {
+                      if (err) throw err;
+
+                      if (idProductResults.length > 0) {
+                        errorNotification('Інформація про даний товар вже містить в базі!');   
+                      } else {
+                          connection.query(
+                              queryUpdate,
+                              [editUPC, editproduct, editproductinmarketsellingprice, editproductinmarketnumber, promotionalProduct, upc_red],
+                              (err) => {
+                                  if (err) throw err;
+                                  console.log("1 record updated");
+                                  res.redirect('/productsinmarket');
+                              }
+                          );
+                      }
+                  }
+              );
+          }
+      }
+  );
 });
+
+
+
+function errorNotification(str) {
+
+  notifier.notify({
+    title: 'Помилка!',
+    message: str,
+    icon: path.join('./routes/images/error.png'),
+    wait: true,
+    sound: true,
+    appID : 'ZLAGODA'
+  })
+}
 
 module.exports = router
