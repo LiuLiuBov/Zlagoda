@@ -3,6 +3,7 @@ const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 var notifier = require('node-notifier')
+const path = require('path');
 
 router.get('/categories', auth, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
@@ -45,10 +46,10 @@ router.get('/categories/delete/:category_number', (req, res) => {
     notifier.notify({
       title: 'Помилка!',
       message: 'Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!',
-     // icon: path.join(__dirname, 'coulson.jpg'), // Absolute path (doesn't work on balloons)
+      icon: path.join('./routes/images/error.png'), // Absolute path (doesn't work on balloons)
       sound: false, // Only Notification Center or Windows Toasters
       wait: true,
-      appID  : 'ZLAGODA'
+      appID : 'ZLAGODA'
     })
     } else {
       // якщо немає зв'язаних товарів, то видалити категорію
