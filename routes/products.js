@@ -2,6 +2,8 @@ const { Router } = require('express')
 const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
+var notifier = require('node-notifier')
+const path = require('path');
 
 router.get('/products', auth, (req, res,) => {
     const getAllProducts = "SELECT p.id_product, p.category_number, c.category_name, p.product_name, p.caracteristics FROM product p JOIN category c ON p.category_number = c.category_number ORDER BY p.product_name";
@@ -49,12 +51,25 @@ router.post('/products/adding', auth, async (req, res) => {
 router.get('/products/delete/:id_product', (req, res) => {
     const idProduct = req.params.id_product;
     console.log(idProduct);
-    const sql = `DELETE FROM product WHERE id_product = ${idProduct}`;
-    connection.query(sql, [idProduct], (err) => {
+
+    const checkProductsInStore = `SELECT * FROM store_product WHERE id_product = ${idProduct}`;
+
+    connection.query(checkProductsInStore, (err, result) => {
         if (err) throw err;
-        console.log("1 record deleted");
-        res.redirect('/products');
-    });
+        if (result.length > 0) {
+            console.log("hello");
+        // якщо є зв'язані товари в магазині, то вивести помилку
+       errorNotification('Перед тим як видалити товар, необхідно спочатку видалити відповідний товар у розділі "Товари в магазині".');
+        } else {
+          // якщо немає зв'язаних товарів в магазині, то видалити товар
+          const deleteProduct = `DELETE FROM product WHERE id_product = ${idProduct}`;
+          connection.query(deleteProduct, (err) => {
+            if (err) throw err;
+            console.log("1 record deleted");
+            res.redirect('/products');
+          });
+        }
+      });
 });
 
 router.get('/products/edit/:id_product', (req, res) => {
@@ -97,5 +112,17 @@ router.post('/products/edit/:idproduct/editing', (req, res) => {
         res.redirect('/products');
     });
 });
+
+function errorNotification(str) {
+
+    notifier.notify({
+      title: 'Помилка!',
+      message: str,
+      icon: path.join('./routes/images/error.png'),
+      wait: true,
+      sound: true,
+      appID : 'ZLAGODA'
+    })
+  }
 
 module.exports = router
