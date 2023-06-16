@@ -1,28 +1,53 @@
 <head>
-    <link rel="stylesheet" href="/produtsinmarket.css">
+    <link rel="stylesheet" href="/productsinmarket.css">
 </head>
 
 <body>
     <h1 class="my-5">Продукти в магазині</h1>
-    <div class="checkbox-container">
-        <label for="sort-name">Сортувати за назвою:</label>
+<form action="/productsinmarket" method="get">
+  <label for="sortCriteria">Сортувати за:</label>
+  <select name="sortCriteria" id="sortCriteria">
+    <option value="product_name">Назвою товарів</option>
+    <option value="products_number">Кількістю товарів</option>
+  </select>
+</form>
+
+     <div class="checkbox-container">
+        <label for="sort-name">за зростанням</label>
         <input type="checkbox" id="sort-name" name="sort-name">
-        <label for="sort-quantity">Сортувати за кількістю:</label>
+        <label for="sort-quantity">за спаданням</label>
         <input type="checkbox" id="sort-quantity" name="sort-quantity">
     </div>
+    <script>
+    const sortNameCheckbox = document.getElementById('sort-name');
+    const sortQuantityCheckbox = document.getElementById('sort-quantity');
+
+    sortNameCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            sortQuantityCheckbox.checked = false;
+        }
+    });
+
+    sortQuantityCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            sortNameCheckbox.checked = false;
+        }
+    });
+</script>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>UPC</th>
                     <th>UPC_prom</th>
+                    <th>Категорія</th>
                     <th>Товар</th>
                     <th>Вартість</th>
                     <th>Кількість</th>
                     <th>Характеристика</th>
                     <th>Акційний товар</th>
-                    <th>Редагувати</th>
-                    <th>Видалити</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="productsinmarket-table">
@@ -30,9 +55,11 @@
                 <tr>
                     <td>{{this.UPC}}</td>
                     <td>{{this.UPC_prom}}</td>
-                    <td>{{this.id_product}}</td>
+                    <td>{{this.category_name}}</td>
+                    <td>{{this.product_name}}</td>
                     <td>{{this.selling_price}}</td>
-                    <td>{{this.producrs_number}}</td>
+                    <td>{{this.products_number}}</td>
+                    <td>{{this.caracteristics}}</td>
                     <td>{{this.promotional_product}}</td>
                     <td>
                         <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
@@ -43,12 +70,10 @@
             </tbody>
         </table>
     </div>
-    <button id="add-product-btn">Додати товар</button>
+    
+    <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
     <!-- Підключаємо jQuery та Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Your custom script for interacting with the table -->
-<script src="/products.js"></script>
 </body>
