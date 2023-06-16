@@ -102,7 +102,7 @@ router.get('/productsinmarket/edit/:UPC', (req, res) => {
       if (err) throw err;
       connection.query(getProductInStore, [upc_red], (err, result) => {
           if (err) throw err;
-          //console.log(result);
+          //console.log(result[0].promotional_product);
           res.render('editproductinmarket', { "store_product": result[0], "upc": upc_red, 'products': products});
       })
   });
