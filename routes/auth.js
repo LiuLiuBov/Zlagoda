@@ -3,14 +3,6 @@ const router = Router();
 const connection = require('../utils/database');
 const bcrypt = require('bcryptjs')
 
-/*const isAuthenticated = (req, res, next) => {
-  if (req.session.isAuthenticated) {
-    next(); // User is authenticated, proceed to the next middleware/route handler
-  } else {
-    res.redirect('/login'); // User is not authenticated, redirect to login page
-  }
-};*/
-
 router.get('/login', (req, res) => {
   res.render('auth/login', { layout: 'noLayout'/*, session: req.session*/ });
 });
@@ -40,6 +32,24 @@ router.post('/login', (req, res) => {
     });
   }
 });
+
+function isAuthenticated(req, res, next) {
+  if (req.session.isAuthenticated) {
+    res.locals.user_id = req.session.user_id;
+    next();
+  } else {
+    res.redirect('/login');
+  }
+}
+
+router.use((req, res, next) => {
+  if (req.path !== '/login' && req.path !== '/logout') {
+    isAuthenticated(req, res, next);
+  } else {
+    next();
+  }
+});
+
 
 router.get('/logout', (req, res) => {
   req.session.destroy();

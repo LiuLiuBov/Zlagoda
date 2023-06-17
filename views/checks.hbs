@@ -1,0 +1,73 @@
+<head>
+    <link rel="stylesheet" href="/employees.css">
+</head>
+
+<body>
+    <h1 class="my-5">Чеки</h1>
+    <div class="container">
+        <a href="/checks/add" class="btn btn-primary">Додати новий чек</a>
+        <div class="col-md-4">
+            <div class="input-group">
+                <form action="/checks" method="POST">
+                    <input type="text" id="searchchecknmb" name="searchchecknmb" class="form-control"
+                        placeholder="Пошук за номером чеку">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="select-position">
+            <form action="/checks" method="POST">
+                <label for="occupation">Пошук за прізвищем:</label>
+                <select id="occupation" name="occupation">
+                    <option value="none"></option>
+                    <option value="manager">Менеджер</option>
+                    <option value="cashier">Касир</option>
+                </select>
+                <label for="startDate">За період:</label>
+                <input type="date" id="startDate" name="startDate">
+                <input type="date" id="endDate" name="endDate">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Номер чеку</th>
+                    <th>Прізвище працівника</th>
+                    <th>Дата створення</th>
+                    <th>Сума покупки</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="checks-table">
+                {{#each checks}}
+                <tr>
+                    <td>{{this.check_number}}</td>
+                    <td>{{this.empl_surname}}</td>
+                    <td>{{formatDate this.print_date}}</td>
+                    <td>{{this.sum_total}}</td>
+                    <td>
+                        <a href="/checks/details/{{this.check_number}}" class="btn btn-primary btn-sm">Детальніше...</a>
+                        <a href="checks/delete/{{this.check_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="mt-3">Всього: {{totalAmount}}</p>
+
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>

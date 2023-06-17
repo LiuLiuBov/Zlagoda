@@ -1,0 +1,206 @@
+<head>
+<link rel="stylesheet" href="/create.css">
+</head>
+<body>
+
+<div id="current_date_time_block"></div>
+
+<script type="text/javascript">
+var totalCost = 0;
+var vat = 0;
+
+    function zero_first_format(value) {
+        if (value < 10) {
+            value = '0' + value;
+        }
+        return value;
+    }
+    function date_time() {
+        var current_datetime = new Date();
+        var day = zero_first_format(current_datetime.getDate());
+        var month = zero_first_format(current_datetime.getMonth() + 1);
+        var year = current_datetime.getFullYear();
+        var hours = zero_first_format(current_datetime.getHours());
+        var minutes = zero_first_format(current_datetime.getMinutes());
+        var seconds = zero_first_format(current_datetime.getSeconds());
+
+        return day + "." + month + "." + year + " " + hours + ":" + minutes + ":" + seconds;
+    }
+
+    document.getElementById('current_date_time_block').innerHTML = date_time();
+</script>
+
+<div id="output"></div>
+<p>Идентификатор пользователя: {{user_id}}</p>
+<p>Чек: {{checkNumber}}</p>
+
+
+<form action="/checks/adding" method="POST">
+    <input type="hidden" name="checkNumber" value="{{checkNumber}}">
+    <input type="hidden" name="user_id" value="{{user_id}}">
+    <input type="hidden" name="totalCost" id="total_cost_input">
+    <input type="hidden" name="vat" id="vat_input">
+<form id="submitForm" >
+    <button type="submit" class="btn btn-primary" id="submitButton">Зберегти чек</button>
+    </form>
+</form>
+
+<form id="deleteForm" action="/checks/delete/{{checkNumber}}" method="POST">
+    <button type="button" class="btn btn-secondary" id="cancelButton">Скасувати</button>
+</form>
+
+<script>
+    document.getElementById('cancelButton').addEventListener('click', function() {
+    var confirmation = confirm("Ви дійсно бажаєте скасувати цей чек?");
+    if (confirmation) {
+        document.getElementById('deleteForm').submit();
+    }
+});
+
+document.getElementById('submitButton').addEventListener('click', function() {
+    if (totalCost === 0) {
+    event.preventDefault();
+    var confirmation = confirm("Будь ласка, додайте товар до чеку");
+    if (confirmation) {
+      document.getElementById('formElement').reset();
+    }
+  }
+});
+</script>
+<form id="productForm" action="/checks/prod" method="POST">
+    <div class="form-group">
+        <label for="UPC">UPC:</label>
+        <select id="upc" name="upc" class="upc" required>
+                {{#each products}}
+                <option value="{{this.UPC}}" data-productname="{{this.product_name}}" data-nmb="{{this.selling_price}}">{{this.UPC}}</option>
+                {{/each}}
+            </select>
+    </div>
+    <div class="form-group">
+        <select id="product_name" name="product_name" class="product_name" required>
+                {{#each products}}
+                <option value="{{this.UPC}}" data-upc="{{this.UPC}}" data-nmb="{{this.selling_price}}">{{this.product_name}}</option>
+                {{/each}}
+            </select>
+    </div>
+    <div class="form-group">
+        <label for="nmb">Количество</label>
+        <input type="number" class="form-control" id="nmb"  name="nmb" class="nmb" required>
+    </div>
+    <div class="form-group">
+        <label for="sell">Цена товара</label>
+        <input type="number" class="form-control" id="sell" name="sell" class="sell" readonly>
+    </div>
+    <input type="hidden" name="upc" id="hidden_upc">
+    <input type="hidden" name="quantity" id="hidden_quantity">
+    <input type="hidden" name="price" id="hidden_price">
+
+    <input type="hidden" name="check_number" value="{{checkNumber}}">
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Додати товар</button>
+    </div>
+   <script>
+    // Обработка формы при отправке
+    function submitForm(event) {
+        event.preventDefault();
+
+        // Получаем значения полей формы
+        var upc = document.getElementById('upc').value;
+        var productName = document.getElementById('product_name').value;
+        var quantity = parseInt(document.getElementById('nmb').value);
+        var price = parseFloat(document.getElementById('sell').value);
+
+        var cost = quantity * price;
+        var tableRow = "<tr><td>" + upc + "</td><td>" + productName + "</td><td>" + quantity + "</td><td>" + price + "</td><td>" + cost + "</td></tr>";
+
+        // Вставляем строку в таблицу
+        $('#table_body').append(tableRow);
+
+        // Очищаем поля формы
+        document.getElementById('upc').value = "";
+        document.getElementById('product_name').value = "";
+        document.getElementById('nmb').value = "";
+        document.getElementById('sell').value = "";
+        updateTotalCost();
+
+        document.getElementById('hidden_upc').value = upc;
+        document.getElementById('hidden_quantity').value = quantity;
+        document.getElementById('hidden_price').value = price;
+
+
+        if (totalCost === 0) {
+        var confirmation = confirm("Будь ласка, додайте товар до чеку");
+        if (confirmation) {
+            document.getElementById('productForm').reset();
+        }
+        return;
+    }
+    document.getElementById('productForm').submit();
+    }
+
+    function updateTotalCost() {
+        totalCost = 0;
+
+        $('#table_body tr').each(function () {
+            var cost = parseFloat($(this).find('td:last').text());
+            totalCost += cost;
+        });
+        vat = totalCost * 0.2;
+
+        $('#total_cost').text(totalCost);
+        $('#total_cost_input').val(totalCost);
+        $('#vat').text(vat);
+        $('#vat_input').val(vat);
+
+    }
+document.getElementById('productForm').addEventListener('submit', submitForm);
+
+</script>
+</form>
+
+
+<script type="text/javascript">
+$('#upc').change(function() {
+    var selectedOption = $(this).find('option:selected');
+    var productName = selectedOption.data('productname');
+    var numb = selectedOption.data('nmb');
+    $('#product_name').val(selectedOption.val()); // Set product_name to selected UPC value
+    $('#sell').val(numb);
+});
+
+$('#product_name').change(function() {
+    var selectedOption = $(this).find('option:selected');
+    var productName = selectedOption.data('upc');
+    var numb = selectedOption.data('nmb');
+    $('#upc').val(productName);
+    $('#sell').val(numb);
+});
+
+ 
+</script>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>UPC</th>
+            <th>Название товара</th>
+            <th>Количество</th>
+            <th>Цена</th>
+            <th>Вартість</th>
+        </tr>
+    </thead>
+    <tbody id="table_body">
+        <!-- Здесь будут добавляться строки товаров -->
+    </tbody>
+</table>
+
+<p>Всього: <span id="total_cost">0</span></p>
+<p>ПДВ: <span id="vat">0</span></p>
+
+
+<!-- Підключаємо jQuery та Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
