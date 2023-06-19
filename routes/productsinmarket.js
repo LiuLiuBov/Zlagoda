@@ -83,7 +83,7 @@ router.get('/productsinmarket', auth, (req, res) => {
     );
 });
 
-  router.get('/productsinmarket/delete/:UPC', (req, res) => {
+  router.get('/productsinmarket/delete/:UPC', auth,  (req, res) => {
     const upc = req.params.UPC;
     console.log(upc);
     const sql = `DELETE FROM store_product WHERE UPC = ${upc}`;
@@ -94,7 +94,7 @@ router.get('/productsinmarket', auth, (req, res) => {
     });
 });
 
-router.get('/productsinmarket/edit/:UPC', (req, res) => {
+router.get('/productsinmarket/edit/:UPC', auth, (req, res) => {
   const upc_red = req.params.UPC;
   const getAllProducts = "SELECT * FROM product";
   const getProductInStore = `SELECT * FROM store_product WHERE UPC = '${upc_red}'`;
@@ -108,7 +108,7 @@ router.get('/productsinmarket/edit/:UPC', (req, res) => {
   });
 });
 
-router.post('/productsinmarket/edit/:upc/editing', (req, res) => {
+router.post('/productsinmarket/edit/:upc/editing', auth, (req, res) => {
   const upc_red = req.params.upc;
   const {
       editUPC,

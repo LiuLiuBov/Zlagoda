@@ -3,6 +3,7 @@ const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const { v4: uuidv4 } = require('uuid');
+const checkmanager = require('../middleware/ismanager')
 
 router.get('/customers', auth, (req, res,) => {
   const getAllCustomers = "SELECT * FROM customer_card ORDER BY cust_surname";
@@ -65,7 +66,7 @@ router.post('/customers/adding', auth, async (req, res) => {
         });
 });
 
-router.get('/customers/delete/:card_number', (req, res) => {
+router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
     const cardNumber = req.params.card_number;
     console.log(cardNumber);
     const sql = `DELETE FROM customer_card WHERE card_number = '${cardNumber}'`;
@@ -76,7 +77,7 @@ router.get('/customers/delete/:card_number', (req, res) => {
     });
   });
   
-  router.get('/customers/edit/:card_number', (req, res) => {
+  router.get('/customers/edit/:card_number', auth, (req, res) => {
     const cardNumber = req.params.card_number;
     const getCustomer = `SELECT * FROM customer_card WHERE card_number = '${cardNumber}'`;
     connection.query(getCustomer,  [cardNumber], (err, result) => {
@@ -105,7 +106,7 @@ router.get('/customers/delete/:card_number', (req, res) => {
     })
   });
   
-  router.post('/customers/edit/:cardnumber/editing', (req, res) => {
+  router.post('/customers/edit/:cardnumber/editing', auth, (req, res) => {
     const cardnumber = req.params.cardnumber;
     const {
       editclientfirstname,

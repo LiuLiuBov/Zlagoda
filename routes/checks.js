@@ -149,7 +149,7 @@ router.post('/checks/adding', auth, async (req, res) => {
     })
   }
   
-  router.post('/checks/delete/:check_number', (req, res) => {
+  router.post('/checks/delete/:check_number', auth, (req, res) => {
     const checkNumber = req.params.check_number;
     const sql = `DELETE FROM \`check\` WHERE check_number = '${checkNumber}'`;
     connection.query(sql, (err) => {
@@ -159,7 +159,7 @@ router.post('/checks/adding', auth, async (req, res) => {
     });
 });
 
-router.get('/checks/delete/:check_number', (req, res) => {
+router.get('/checks/delete/:check_number', auth, (req, res) => {
     const checkNumber = req.params.check_number;
     const sql = `DELETE FROM \`check\` WHERE check_number = '${checkNumber}'`;
     connection.query(sql, (err) => {
