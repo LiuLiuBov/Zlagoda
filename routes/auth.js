@@ -8,13 +8,13 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  const user_id = req.body.login_empl_id;
+  const user_id = req.body.login_login;
   const user_password = req.body.login_password;
 
   if (user_id && user_password) {
     const query = `
       SELECT * FROM employee
-      WHERE id_employee = "${user_id}"
+      WHERE login = "${user_id}"
     `;
 
     connection.query(query, (err, data) => {
@@ -22,12 +22,11 @@ router.post('/login', (req, res) => {
 
       for (let i = 0; i < data.length; i++) {
         if (bcrypt.compare(data[i].password, user_password)) {
-          req.session.user_id = data[i].id_employee;
+          req.session.user_id = data[i].login;
           req.session.isAuthenticated = true;
           return res.redirect('/');
         }
       }
-
       res.send('Incorrect password');
     });
   }

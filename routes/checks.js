@@ -8,7 +8,11 @@ const path = require('path');
 router.get('/checks', auth, (req, res) => {
     const deleteZeroTotalChecks = "DELETE FROM `check` WHERE sum_total = 0";
     const getAllChecks = "SELECT ch.*, e.empl_surname FROM `check` AS ch INNER JOIN employee AS e ON ch.id_employee = e.id_employee";
-    
+    const user_empl_id = res.locals.user_empl_id;
+    const user_name = res.locals.user_name;
+    const user_id = res.locals.user_id;
+    console.log(user_id);
+
     connection.query(deleteZeroTotalChecks, (err) => {
       if (err) throw err;
       
@@ -26,18 +30,19 @@ router.get('/checks', auth, (req, res) => {
 router.get('/checks/add', auth, (req, res) => {
     const user_name = res.locals.user_name;
     const user_id = res.locals.user_id;
+    const user_empl_id = res.locals.user_empl_id;
     const getAllProducts = "SELECT * FROM store_product AS st INNER JOIN product AS p ON st.id_product = p.id_product";
     const insertQuery = "INSERT INTO `check` (check_number, id_employee, print_date, sum_total, vat) VALUES (?, ?, ?, 0, 0)";
     
     generateCheckNumber((checkNumber) => {
     const current_datetime = new Date();
-    const values = [checkNumber, user_id, current_datetime];
+    const values = [checkNumber, user_empl_id, current_datetime];
     connection.query(insertQuery, values, (err, result) => {
     if (err) throw err;
     connection.query(getAllProducts, (err, products) => {
     if (err) throw err;
     // Действия после выполнения запроса, например, рендеринг шаблона
-    res.render('create-check', { user_name, user_id, checkNumber, products });
+    res.render('create-check', { user_name, user_id, user_empl_id, checkNumber, products });
     });
     });
     });
@@ -61,7 +66,7 @@ router.get('/checks/add', auth, (req, res) => {
 
 router.post('/checks/adding', auth, async (req, res) => {
     const checkNumber = req.body.checkNumber;
-    const user_id = req.body.user_id;
+    const user_empl_id = req.body.user_empl_id;
     const current_datetime = new Date();
     const totalCost = req.body.totalCost;
     const vat = req.body.vat;
@@ -70,7 +75,7 @@ router.post('/checks/adding', auth, async (req, res) => {
   
     connection.query(
       query,
-      [user_id, current_datetime, totalCost, vat, checkNumber],
+      [user_empl_id, current_datetime, totalCost, vat, checkNumber],
       (err) => {
         if (err) throw err;
         console.log("1 record updated");

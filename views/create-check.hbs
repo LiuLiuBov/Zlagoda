@@ -31,13 +31,13 @@ var vat = 0;
 </script>
 
 <div id="output"></div>
-<p>Идентификатор пользователя: {{user_id}}</p>
+<p>Касир: {{user_name}}</p>
 <p>Чек: {{checkNumber}}</p>
 
 
 <form action="/checks/adding" method="POST">
     <input type="hidden" name="checkNumber" value="{{checkNumber}}">
-    <input type="hidden" name="user_id" value="{{user_id}}">
+    <input type="hidden" name="user_empl_id" value="{{user_empl_id}}">
     <input type="hidden" name="totalCost" id="total_cost_input">
     <input type="hidden" name="vat" id="vat_input">
 <form id="submitForm" >

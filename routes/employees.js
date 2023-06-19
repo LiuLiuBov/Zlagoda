@@ -54,13 +54,14 @@ router.post('/employees/adding', auth, async (req, res) => {
         addemplcity,
         addemplstreet,
         addemplzipcode,
+        addempllogin,
         addemplpassword
     } = req.body;
 
     const hashPassword = await bcrypt.hash(addemplpassword, 5)
     const addemplid = uuidv4().slice(0, 10);
 
-    const query = "INSERT INTO employee (id_employee, empl_name, empl_surname, empl_patronymic, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const query = "INSERT INTO employee (id_employee, empl_name, empl_surname, empl_patronymic, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code, login, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     connection.query(
         query, 
@@ -76,6 +77,7 @@ router.post('/employees/adding', auth, async (req, res) => {
         addemplcity,
         addemplstreet,
         addemplzipcode,
+        addempllogin,
         hashPassword], 
         (err) => {
             if (err) throw err;
