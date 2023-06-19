@@ -27,19 +27,31 @@
                 </tr>
             </thead>
             <tbody id="categories-table">
-                {{#each categories}}
-                <tr>
-                    <td>{{this.category_number}}</td>
-                    <td>{{this.category_name}}</td>
-                    <td>{{isManager}}</td>
-                    {{#if isManager}}
-                    <td>
-                        <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
-                        <a href="categories/delete/{{this.category_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
-                    </td>
-                    {{/if}}
-                </tr>
-                {{/each}}
+
+{{#each categories}}
+  <tr>
+    <td>{{this.category_number}}</td>
+    <td>{{this.category_name}}</td>
+    <td>
+      {{#if ../isManager}}
+        <!-- Выводите что-то, отличное от true -->
+      {{else}}
+        <!-- Выводите true, если isManager равно true -->
+        {{this.isManager}}
+      {{/if}}
+    </td>
+    <td>
+      {{#if ../isManager}}
+        <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
+        <a href="categories/delete/{{this.category_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+      {{else}}
+        <!-- Колонка остается пустой -->
+      {{/if}}
+    </td>
+  </tr>
+{{/each}}
+
+
             </tbody>
         </table>
     </div>
