@@ -1,64 +1,37 @@
 <head>
-    <link rel="stylesheet" href="/profile.css">
+    <link rel="stylesheet" href="/categories.css">
 </head>
 
 <body>
-    <h1 class="my-5">Чек</h1>
+    <h1 class="my-5">Магазин "ZLAGODA"</h1>
+    <h2>№{{checknumber}}</h2>
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <div class="profile">
-                    <div class="record">
-                        <span class="label">Логін:</span>
-                        
-                    </div>
-                    <div class="record">
-                        <span class="label">Ім'я:</span>
-                        <span class="value">{{this.empl_name}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Прізвище:</span>
-                        <span class="value">{{this.empl_surname}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">По батькові:</span>
-                        <span class="value">{{this.empl_patronymic}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Дата народження:</span>
-                        <span class="value">{{this.date_of_birth}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Посада:</span>
-                        <span class="value">{{this.empl_role}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Зарплатня:</span>
-                        <span class="value">{{this.salary}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Початок роботи в магазині:</span>
-                        <span class="value">{{this.date_of_start}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Тел:</span>
-                        <span class="value">{{this.phone_number}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Місто:</span>
-                        <span class="value">{{this.city}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Вулиця:</span>
-                        <span class="value">{{this.street}}</span>
-                    </div>
-                    <div class="record">
-                        <span class="label">Поштовий індекс:</span>
-                        <span class="value">{{this.zip_code}}</span>
-                    </div>
-                </div>
-                <a href="/profile/change-password" class="btn btn-primary">Змінити пароль</a>
-            </div>
+                <div class="check">
+                    <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>UPC</th>
+                    <th>Назва товару</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                    <th>Вартість</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="categories-table">
+                {{#each products}}
+                <tr>
+                    <td>{{store_product.UPC}}</td>
+                    <td>{{product.product_name}}</td>
+                    <td>{{sale.product_number}}</td>
+                    <td>{{sale.seling_price}}</td>
+                    <td>{{sale.seling_price}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
         </div>
     </div>
 

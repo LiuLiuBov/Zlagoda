@@ -159,18 +159,25 @@ router.post('/checks/adding', auth, async (req, res) => {
     });
 });
 
-router.get('/checks/delete/:check_number', (req, res) => {
+router.get('/checks/details/:check_number', (req, res) => {
     const checkNumber = req.params.check_number;
-    const sql = `SELECT * FROM \`check\` WHERE check_number = '${checkNumber}'`;
-    connection.query(sql, (err) => {
-        if (err) throw err;
-        console.log("1 record deleted");
-        res.redirect('/checks');
-    });
+    const sql = `
+    SELECT * 
+    FROM (\`sale\`  AS sa
+    INNER JOIN store_product AS st ON sa.UPC = st.UPC)
+    INNER JOIN product AS p ON st.id_product = p.id_product
+    WHERE check_number = '${checkNumber}'
+    `;
     connection.query(sql,  [checkNumber], (err, result) => {
         if (err) throw err;  
-       res.render('check-details', {"check": result[0], "checknumber": checkNumber}
-       );
+        console.log(result[0]);
+        res.render('check-details', {
+            "sale": result[0],
+            "product": result[0],
+            "store_product": result[0], 
+            "checknumber": checkNumber
+          });
       })
+
   });
 module.exports = router
