@@ -12,8 +12,7 @@ function isAuthenticated(req, res, next) {
     const user_id = req.session.user_id;
     
     const query = `
-      SELECT empl_name, empl_surname FROM employee
-      WHERE id_employee = ${user_id}
+    SELECT empl_name, empl_surname FROM employee WHERE id_employee = '${user_id}'
     `;
 
     connection.query(query, (err, data) => {

@@ -83,53 +83,53 @@ router.post('/checks/adding', auth, async (req, res) => {
     const { upc, check_number, quantity, price } = req.body;
     const saleQuery = `INSERT INTO sale (UPC, check_number, product_number, seling_price) VALUES (?, ?, ?, ?)`;
     const updateQuantityQuery = `UPDATE store_product SET products_number = products_number - ? WHERE UPC = ?`;
-  
+
     connection.beginTransaction((err) => {
-      if (err) throw err;
-  
-      connection.query(saleQuery, [upc, check_number, quantity, price], (err, result) => {
+    if (err) throw err;
+
+    connection.query(saleQuery, [upc, check_number, quantity, price], (err, result) => {
         if (err) {
-          connection.rollback(() => {
+        connection.rollback(() => {
             throw err;
-          });
+        });
         }
-  
+
         connection.query(updateQuantityQuery, [quantity, upc], (err, result) => { 
-          if (err) {
+        if (err) {
             connection.rollback(() => {
-              throw err;
+            throw err;
             });
-          }
-  
-          connection.query('SELECT products_number FROM store_product WHERE UPC = ?', [upc], (err, result) => {
+        }
+
+        connection.query('SELECT products_number FROM store_product WHERE UPC = ?', [upc], (err, result) => {
             if (err) {
-              connection.rollback(() => {
+            connection.rollback(() => {
                 throw err;
-              });
+            });
             }
-  
+
             const updatedQuantity = result[0].products_number;
-  
+
             if (updatedQuantity < 0) {
-              connection.rollback(() => {
+            connection.rollback(() => {
                 const errorMessage = 'На складі міститься менше товарів!';
                 errorNotification(errorMessage);
-              });
+            });
             } else {
-              connection.commit((err) => {
+            connection.commit((err) => {
                 if (err) {
-                  connection.rollback(() => {
+                connection.rollback(() => {
                     throw err;
-                  });
+                });
                 }
-              });
-              
+            });
+            
             }
-          });
         });
-      });
+        });
     });
-  });
+    });
+});
   
   
   function errorNotification(str) {
