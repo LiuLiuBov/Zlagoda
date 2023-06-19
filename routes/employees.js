@@ -3,9 +3,10 @@ const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const bcrypt = require('bcryptjs')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid')
+const checkmanager = require('../middleware/ismanager')
 
-router.get('/employees', auth, (req, res,) => {
+router.get('/employees', auth, checkmanager, (req, res,) => {
     const getAllEmployees = "SELECT * FROM employee ORDER BY empl_surname";
     connection.query(getAllEmployees, (err, result) => {
         if(err) throw err;
@@ -15,7 +16,7 @@ router.get('/employees', auth, (req, res,) => {
     })
 })
 
-router.post('/employees', auth, (req, res) => {
+router.post('/employees', auth, checkmanager, (req, res) => {
     const { searchsurname, occupation } = req.body;
     console.log(searchsurname);
     console.log(occupation);
@@ -37,11 +38,11 @@ router.post('/employees', auth, (req, res) => {
     });
 });
 
-router.get('/employees/add', auth, (req, res,) => {
+router.get('/employees/add', auth, checkmanager, (req, res,) => {
     res.render('create-employee')
 })
 
-router.post('/employees/adding', auth, async (req, res) => {
+router.post('/employees/adding', auth, checkmanager, async (req, res) => {
     const {
         addemplfirstname,
         addempllastname,
@@ -86,7 +87,7 @@ router.post('/employees/adding', auth, async (req, res) => {
         });
 });
 
-router.get('/employees/delete/:id_employee', (req, res) => {
+router.get('/employees/delete/:id_employee', auth, checkmanager, (req, res) => {
     const idEmployee = req.params.id_employee;
     console.log(idEmployee);
     const sql = `DELETE FROM employee WHERE id_employee = '${idEmployee}'`;
@@ -97,7 +98,7 @@ router.get('/employees/delete/:id_employee', (req, res) => {
     });
   });
   
-  router.get('/employees/edit/:id_employee', (req, res) => {
+  router.get('/employees/edit/:id_employee', auth, checkmanager, (req, res) => {
     const idEmployee = req.params.id_employee;
     const getEmployee = `SELECT * FROM employee WHERE id_employee = '${idEmployee}'`;
     connection.query(getEmployee,  [idEmployee], (err, result) => {
@@ -134,7 +135,7 @@ router.get('/employees/delete/:id_employee', (req, res) => {
     })
   });
   
-  router.post('/employees/edit/:idemployee/editing', (req, res) => {
+  router.post('/employees/edit/:idemployee/editing', auth, checkmanager, (req, res) => {
     const idemployee = req.params.idemployee;
     const {
       editemplfirstname,

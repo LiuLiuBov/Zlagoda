@@ -2,6 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
+const checkmanager = require('../middleware/ismanager')
 var notifier = require('node-notifier')
 const path = require('path');
 const pdf = require('html-pdf'); // Добавьте зависимость для генерации PDF
@@ -19,7 +20,7 @@ router.get('/categories', auth, (req, res,) => {
 
 })
 
-router.post('/categories/add', auth, async (req, res) => {
+router.post('/categories/add', auth, checkmanager, async (req, res) => {
   const { catname } = req.body;
 
   const sql = "INSERT INTO category (category_name) VALUES (?)";
@@ -30,12 +31,12 @@ router.post('/categories/add', auth, async (req, res) => {
   });
 });
 
-router.get('/categories/error', (req, res) => {
+router.get('/categories/error', auth, checkmanager, (req, res) => {
   const errorMessage = 'Помилка. Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!';
   res.render('error', { errorMessage });
 });
 
-router.get('/categories/delete/:category_number', (req, res) => {
+router.get('/categories/delete/:category_number', auth, checkmanager, (req, res) => {
   const categoryNumber = req.params.category_number;
 
   const checkProducts = `SELECT * FROM product WHERE category_number = ${categoryNumber}`;
@@ -58,7 +59,7 @@ router.get('/categories/delete/:category_number', (req, res) => {
   });
 });
 
-router.get('/categories/edit/:category_number', (req, res) => {
+router.get('/categories/edit/:category_number', auth, checkmanager, (req, res) => {
   const categoryNumber = req.params.category_number;
   const getCategory = `SELECT * FROM category WHERE category_number = ${categoryNumber}`;
   connection.query(getCategory,  [categoryNumber], (err, result) => {
@@ -68,7 +69,7 @@ router.get('/categories/edit/:category_number', (req, res) => {
   })
 });
 
-router.post('/categories/edit/:categoryNumber/editing', (req, res) => {
+router.post('/categories/edit/:categoryNumber/editing', auth, checkmanager, (req, res) => {
   const categoryNumber = req.params.categoryNumber;
   const { editcategoryname } = req.body;
 

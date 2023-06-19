@@ -48,7 +48,7 @@ router.post('/products/adding', auth, async (req, res) => {
         });
 });
 
-router.get('/products/delete/:id_product', (req, res) => {
+router.get('/products/delete/:id_product', auth, (req, res) => {
     const idProduct = req.params.id_product;
     console.log(idProduct);
 
@@ -72,7 +72,7 @@ router.get('/products/delete/:id_product', (req, res) => {
       });
 });
 
-router.get('/products/edit/:id_product', (req, res) => {
+router.get('/products/edit/:id_product', auth, (req, res) => {
     const idProduct = req.params.id_product;
     const getAllCategories = "SELECT * FROM category";
     const getProduct = `SELECT * FROM product WHERE id_product = '${idProduct}'`;
@@ -86,7 +86,7 @@ router.get('/products/edit/:id_product', (req, res) => {
     });
 });
 
-router.post('/products/edit/:idproduct/editing', (req, res) => {
+router.post('/products/edit/:idproduct/editing', auth,  (req, res) => {
     const idProduct = req.params.idproduct;
     const {
         editcategory,

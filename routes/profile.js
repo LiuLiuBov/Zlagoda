@@ -14,7 +14,7 @@ router.get('/profile', auth, (req, res,) => {
         if(err) throw err;
         //res.send(result)
         console.log(result);
-        res.render('profile', { 'profile': result });
+        res.render('profile', { 'profile': result[0] });
     })
 })
 
