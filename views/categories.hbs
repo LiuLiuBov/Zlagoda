@@ -5,6 +5,8 @@
 
 <body>
     <h1 class="my-5">Категорії</h1>
+    <h1 class="my-5">{{isManager}}</h1>
+    <h1 class="my-5">{{isCashier}}</h1>
 <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
 {{#if isManager}}
     <form action="categories/add" method="POST">
@@ -29,7 +31,8 @@
                 <tr>
                     <td>{{this.category_number}}</td>
                     <td>{{this.category_name}}</td>
-                    {{#if (eq isManager true)}}
+                    <td>{{isManager}}</td>
+                    {{#if isManager}}
                     <td>
                         <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
                         <a href="categories/delete/{{this.category_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
