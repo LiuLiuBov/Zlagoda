@@ -8,6 +8,11 @@ const path = require('path');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const checkcashier = require('../middleware/iscashier')
+var Handlebars = require('handlebars');
+var helpers = require('handlebars-helpers')();
+
+Handlebars.registerHelper('eq', helpers.eq);
+
 
 
 router.get('/categories', auth, checkcashier, (req, res,) => {
