@@ -3,6 +3,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const app = express()
 const indexRoutes = require('./routes/index')
+const profileRoutes = require('./routes/profile')
 const categoriesRoutes = require('./routes/categories')
 const productsinmarketRoutes = require('./routes/productsinmarket')
 const checksRoutes = require('./routes/checks')
@@ -47,6 +48,7 @@ app.use(session({
     saveUninitialized: false,
     store: sessionStore
 }))
+app.use(profileRoutes)
 app.use(productsinmarketRoutes)
 app.use(checksRoutes)
 app.use(categoriesRoutes)
