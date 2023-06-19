@@ -94,34 +94,44 @@ router.post('/checks/adding', auth, async (req, res) => {
           });
         }
   
-        connection.query(updateQuantityQuery, [quantity, upc], (err, result) => {
+        connection.query(updateQuantityQuery, [quantity, upc], (err, result) => { 
           if (err) {
             connection.rollback(() => {
               throw err;
             });
           }
   
-          if (result.affectedRows === 0) {
-            connection.rollback(() => {
-              const errorMessage = 'На складі міститься менше товарів!';
-              errorNotification(errorMessage);
-              res.status(400).send(errorMessage);
-            });
-          } else {
-            connection.commit((err) => {
-              if (err) {
-                connection.rollback(() => {
-                  throw err;
-                });
-              }
+          connection.query('SELECT products_number FROM store_product WHERE UPC = ?', [upc], (err, result) => {
+            if (err) {
+              connection.rollback(() => {
+                throw err;
+              });
+            }
   
-              console.log('Product added and quantity updated');
-            });
-          }
+            const updatedQuantity = result[0].products_number;
+  
+            if (updatedQuantity < 0) {
+              connection.rollback(() => {
+                const errorMessage = 'На складі міститься менше товарів!';
+                errorNotification(errorMessage);
+              });
+            } else {
+              connection.commit((err) => {
+                if (err) {
+                  connection.rollback(() => {
+                    throw err;
+                  });
+                }
+              });
+              
+            }
+          });
         });
       });
     });
   });
+  
+  
   function errorNotification(str) {
 
     notifier.notify({

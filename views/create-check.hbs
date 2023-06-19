@@ -84,11 +84,11 @@ document.getElementById('submitButton').addEventListener('click', function() {
             </select>
     </div>
     <div class="form-group">
-        <label for="nmb">Количество</label>
+        <label for="nmb">Кількість:</label>
         <input type="number" class="form-control" id="nmb"  name="nmb" class="nmb" required>
     </div>
     <div class="form-group">
-        <label for="sell">Цена товара</label>
+        <label for="sell">Ціна:</label>
         <input type="number" class="form-control" id="sell" name="sell" class="sell" readonly>
     </div>
     <input type="hidden" name="upc" id="hidden_upc">
@@ -100,11 +100,11 @@ document.getElementById('submitButton').addEventListener('click', function() {
         <button type="submit" class="btn btn-primary">Додати товар</button>
     </div>
    <script>
-    // Обработка формы при отправке
+
+
     function submitForm(event) {
         event.preventDefault();
 
-        // Получаем значения полей формы
         var upc = document.getElementById('upc').value;
         var productName = document.getElementById('product_name').value;
         var quantity = parseInt(document.getElementById('nmb').value);
@@ -113,10 +113,9 @@ document.getElementById('submitButton').addEventListener('click', function() {
         var cost = quantity * price;
         var tableRow = "<tr><td>" + upc + "</td><td>" + productName + "</td><td>" + quantity + "</td><td>" + price + "</td><td>" + cost + "</td></tr>";
 
-        // Вставляем строку в таблицу
+
         $('#table_body').append(tableRow);
 
-        // Очищаем поля формы
         document.getElementById('upc').value = "";
         document.getElementById('product_name').value = "";
         document.getElementById('nmb').value = "";
@@ -135,6 +134,8 @@ document.getElementById('submitButton').addEventListener('click', function() {
         }
         return;
     }
+document.getElementById('productForm').submit();
+
     document.getElementById('productForm').submit();
     }
 
@@ -164,7 +165,7 @@ $('#upc').change(function() {
     var selectedOption = $(this).find('option:selected');
     var productName = selectedOption.data('productname');
     var numb = selectedOption.data('nmb');
-    $('#product_name').val(selectedOption.val()); // Set product_name to selected UPC value
+    $('#product_name').val(selectedOption.val());
     $('#sell').val(numb);
 });
 
@@ -183,15 +184,14 @@ $('#product_name').change(function() {
     <thead>
         <tr>
             <th>UPC</th>
-            <th>Название товара</th>
-            <th>Количество</th>
-            <th>Цена</th>
+            <th>Назва товару</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
             <th>Вартість</th>
         </tr>
     </thead>
-    <tbody id="table_body">
-        <!-- Здесь будут добавляться строки товаров -->
-    </tbody>
+<tbody id="table_body">
+</tbody>
 </table>
 
 <p>Всього: <span id="total_cost">0</span></p>
