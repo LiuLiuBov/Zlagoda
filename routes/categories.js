@@ -5,6 +5,9 @@ const auth = require('../middleware/auth')
 const checkmanager = require('../middleware/ismanager')
 var notifier = require('node-notifier')
 const path = require('path');
+const pdf = require('html-pdf'); // Добавьте зависимость для генерации PDF
+const fs = require('fs'); // Добавьте зависимость для работы с файловой системой
+
 
 router.get('/categories', auth, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
@@ -92,5 +95,96 @@ function errorNotification(str) {
     appID : 'ZLAGODA'
   })
 }
+
+router.get('/categories/report', auth, (req, res) => {
+  const getAllCategories = "SELECT * FROM category ORDER BY category_name";
+  connection.query(getAllCategories, (err, result) => {
+    if (err) throw err;
+
+    const categories = result;
+    const templatePath = path.join(__dirname, 'report-template.html');
+    const template = fs.readFileSync(templatePath, 'utf-8');
+    let pageNumber = 1;
+    const reportHTML = `
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Звіт по категоріям</title>
+    <style>
+        body {
+            font-family: Times New Roman, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <p style="font-size: 10px; margin: 0; text-align: left;">${new Date().toLocaleString()}</p>
+        <h1>Супермаркет "ZLAGODA"</h1>
+    </header>
+    <table>
+        <thead>
+            <tr>
+                <th>Номер категорії</th>
+                <th>Назва категорії</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${categories
+                .map(category => `
+                    <tr>
+                        <td>${category.category_number}</td>
+                        <td>${category.category_name}</td>
+                    </tr>
+                `)
+                .join('')}
+        </tbody>
+    </table>
+    <footer>
+    <p style="font-size: 10px; margin: 0; text-align: right;">${pageNumber}</p>
+</footer>
+</body>
+</html>
+
+    
+    `;
+
+    const options = { format: 'Letter' }; 
+    const tempHTMLPath = path.join(__dirname, 'temp-report.html');
+    fs.writeFileSync(tempHTMLPath, reportHTML, 'utf-8');
+
+    pdf.create(fs.readFileSync(tempHTMLPath, 'utf-8'), options).toBuffer((err, buffer) => {
+      if (err) throw err;
+
+      fs.unlinkSync(tempHTMLPath);
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'inline; filename=report.pdf'
+      });
+      res.send(buffer);
+      pageNumber++;
+    });
+  });
+});
+
 
 module.exports = router

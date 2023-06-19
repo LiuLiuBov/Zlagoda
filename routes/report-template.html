@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Звіт по категоріям</title>
+    <style>
+        body {
+            font-family: Times New Roman, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Супермаркет "ZLAGODA"</h1>
+        <div id="datetime">
+            <script>
+                const today = new Date();
+                const date = today.toLocaleDateString();
+                const time = today.toLocaleTimeString();
+                document.getElementById('datetime').innerHTML = `Дата: ${date} Время: ${time}`;
+            </script>
+        </div>
+    </header>
+    <table>
+        <thead>
+            <tr>
+                <th>Номер категорії</th>
+                <th>Назва категорії</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${categories
+                .map(category => `
+                    <tr>
+                        <td>${category.category_number}</td>
+                        <td>${category.category_name}</td>
+                    </tr>
+                `)
+                .join('')}
+        </tbody>
+    </table>
+    <footer>
+        <div id="page-number">
+            Страница: <script>document.getElementById('page-number').innerHTML = String(document.location.href).match(/page=(\d+)/)[1];</script>
+        </div>
+    </footer>
+</body>
+</html>
