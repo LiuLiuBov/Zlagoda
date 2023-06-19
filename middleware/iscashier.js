@@ -10,9 +10,11 @@ function checkCashierAccess(req, res, next) {
     connection.query(getEmployees, (err, result) => {
         if (result[0].empl_role == "cashier"){
             res.locals.iscashier = true;
+            res.locals.ismanager = false;
            next();
         } else {
-            res.locals.iscashier = false;
+            res.locals.ismanager = true;
+            res.locals.iscashier= false;
            next();
     }
     })
