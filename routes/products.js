@@ -11,7 +11,9 @@ router.get('/products', auth, (req, res,) => {
         if (err) throw err;
         //res.send(result)
         console.log(result);
-        res.render('products', { 'products': result });
+        res.render('products', { 'products': result, 
+        "iscashier": res.locals.iscashier,
+        "ismanager": res.locals.ismanager  });
     })
 
 })
