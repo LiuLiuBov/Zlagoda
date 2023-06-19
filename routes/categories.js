@@ -22,7 +22,8 @@ router.get('/categories', auth, checkcashier, (req, res,) => {
     //res.send(result)
     //console.log(result);
     var isCashier = res.locals.iscashier
-    var isManager = res.locals.ismanager
+    let isManager = res.locals.ismanager
+
     console.log(isManager);
     res.render('categories', { 'categories': result, 
     'isCashier': isCashier,
