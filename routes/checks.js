@@ -159,13 +159,18 @@ router.post('/checks/adding', auth, async (req, res) => {
     });
 });
 
-router.get('/checks/delete/:check_number', (req, res) => {
+  router.get('/checks/details/:check_number', (req, res) => {
     const checkNumber = req.params.check_number;
-    const sql = `DELETE FROM \`check\` WHERE check_number = '${checkNumber}'`;
+    const sql = `SELECT * FROM \`check\` WHERE check_number = '${checkNumber}'`;
     connection.query(sql, (err) => {
         if (err) throw err;
         console.log("1 record deleted");
         res.redirect('/checks');
     });
+    connection.query(sql,  [checkNumber], (err, result) => {
+        if (err) throw err;  
+       res.render('check-details', {"check": result[0], "checknumber": checkNumber}
+       );
+      })
   });
 module.exports = router
