@@ -6,8 +6,8 @@ const checkcashier = require('../middleware/iscashier')
 
 
 router.get('/', auth, checkcashier, (req, res) => {
-    console.log(res.locals.iscashier)
-    console.log(res.locals.ismanager)
+    console.log("2" + res.locals.iscashier)
+    console.log("1" + res.locals.ismanager)
     res.render('index', {
         "iscashier": res.locals.iscashier,
         "ismanager": res.locals.ismanager

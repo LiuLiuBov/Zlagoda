@@ -18,6 +18,9 @@
         <label for="sort-quantity">за спаданням</label>
         <input type="checkbox" id="sort-quantity" name="sort-quantity">
     </div>
+    {{#if ismanager}}
+    <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
+    {{/if}}
     <script>
         const sortNameCheckbox = document.getElementById('sort-name');
         const sortQuantityCheckbox = document.getElementById('sort-quantity');
@@ -47,7 +50,9 @@
                     <th>Кількість</th>
                     <th>Характеристика</th>
                     <th>Акційний товар</th>
+                    {{#if ismanager}}
                     <th></th>
+                    {{/if}}
                 </tr>
             </thead>
             <tbody id="productsinmarket-table">
@@ -65,19 +70,21 @@
                         {{else}}
                         ні
                         {{/if}}</td>
+                        {{#if ismanager}}
                     <td>
                         <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i
                                 class="fas fa-pencil-alt"></i></a>
                         <a href="productsinmarket/delete/{{this.UPC}}" class="btn btn-danger btn-sm"><i
                                 class="fa fa-times"></i></a>
                     </td>
+                    {{/if}}
                 </tr>
                 {{/each}}
             </tbody>
         </table>
     </div>
 
-    <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
+  
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

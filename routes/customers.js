@@ -11,7 +11,9 @@ router.get('/customers', auth, (req, res,) => {
         if(err) throw err;
         //res.send(result)
         console.log(result);
-        res.render('customers', { 'customers': result });
+        res.render('customers', { 'customers': result, 
+        "iscashier": res.locals.iscashier,
+        "ismanager": res.locals.ismanager });
     })
 })
 

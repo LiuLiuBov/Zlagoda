@@ -5,17 +5,23 @@ const auth = require('../middleware/auth')
 const checkmanager = require('../middleware/ismanager')
 var notifier = require('node-notifier')
 const path = require('path');
-const pdf = require('html-pdf'); // Добавьте зависимость для генерации PDF
-const fs = require('fs'); // Добавьте зависимость для работы с файловой системой
+const pdf = require('html-pdf');
+const fs = require('fs');
+const checkcashier = require('../middleware/iscashier')
 
 
-router.get('/categories', auth, (req, res,) => {
+router.get('/categories', auth, checkcashier, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   connection.query(getAllCategories, (err, result) => {
     if (err) throw err;
     //res.send(result)
     //console.log(result);
-    res.render('categories', { 'categories': result });
+    var isCashier = res.locals.iscashier
+    var isManager = res.locals.ismanager
+    console.log(isManager);
+    res.render('categories', { 'categories': result, 
+    'isCashier': isCashier,
+    'isManager': isManager });
   })
 
 })

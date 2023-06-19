@@ -14,7 +14,7 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light" >
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="/">ZLAGODA</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,11 +31,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/checks">Чеки</a>
                     </li>
-                {{#if ismanager}}
-                <li class="nav-item">
-                    <a class="nav-link" href="/employees">Працівники</a>
-                </li>
-                {{/if}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employees">Працівники</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/customers">Клієнти</a>
                     </li>
@@ -52,8 +50,9 @@
             </div>
         </nav>
     </header>
-    
-{{{ body }}}
+
+    {{{ body }}}
 
 </body>
+
 </html>

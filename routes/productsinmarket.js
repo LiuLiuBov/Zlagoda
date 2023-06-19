@@ -19,7 +19,10 @@ router.get('/productsinmarket', auth, (req, res) => {
   connection.query(getAllProducts, (err, result) => {
     if (err) throw err;
     console.log(result);
-    res.render('productsinmarket', { 'productsinmarket': result });
+    res.render('productsinmarket', { 'productsinmarket': result,
+    "iscashier": res.locals.iscashier,
+    "ismanager": res.locals.ismanager 
+ });
   });
 });
 
