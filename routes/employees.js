@@ -20,6 +20,23 @@ router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
   })
 })
 
+router.get('/get_data', function(request, response, next){
+
+  var search_query = request.query.search_query;
+
+  var query = `
+  SELECT empl_surname FROM employee
+  WHERE empl_surname '%${search_query}%' 
+  LIMIT 10
+  `;
+
+  database.query(query, function(error, data){
+
+      response.json(data);
+
+  });
+
+});
 router.post('/employees', auth, checkmanager, (req, res) => {
   const { searchsurname, occupation } = req.body;
   console.log(searchsurname);

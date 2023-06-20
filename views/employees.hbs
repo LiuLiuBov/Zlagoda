@@ -10,11 +10,13 @@
         <div class="col-md-4">
             <div class="input-group">
                 <form action="/employees" method="POST">
+                <div class="input-group">
+                 <div class="container">
                     <input type="text" id="searchsurname" name="searchsurname" class="form-control"
-                        placeholder="Пошук за прізвищем">
-                    <button class="btn btn-outline-secondary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
+                        placeholder="Введіть прізвище працівника...">
+                        <span id="search_result"></span>
+                        </div>
+                        </div>
                 </form>
             </div>
         </div>
@@ -34,6 +36,53 @@
         </div>
     </div>
 
+
+<script>
+            function load_data(query = '') {
+                fetch('/get_data?search_query=' + query + '').then(function (res) {
+                    return res.json();
+                }).then(function (responseData) {
+                    var html = '<ul class="list-group">';
+
+                    if (responseData.length > 0) {
+                        for (var count = 0; count < responseData.length; count++) {
+                            var regular_expression = new RegExp('(' + query + ')', 'gi');
+                            html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].empl_surname.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
+                        }
+                    } else {
+                        html += '<a href="#" class="list-group-item list-group-item-action disabled">Працівників не знайдено</a>';
+                    }
+
+                    html += '</ul>';
+                    document.getElementById('search_result').innerHTML = html;
+                    if (query === '') {
+                        document.getElementById('search_result').style.display = 'none';
+                    } else {
+                        document.getElementById('search_result').style.display = 'block';
+                    }
+                });
+            }
+
+            var search_element = document.getElementById("searchsurname");
+
+            search_element.onkeyup = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            search_element.onfocus = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            function get_text(event) {
+                var product_name = event.textContent;
+                console.log(product_name);
+                document.getElementById('searchsurname').value = empl_surname;
+                document.getElementById('search_result').innerHTML = '';
+                document.getElementById('search_result').style.display = 'none';
+            }
+        </script>
 
 
     <div class="table-responsive">
