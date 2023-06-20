@@ -107,7 +107,6 @@ function errorNotification(str) {
     appID : 'ZLAGODA'
   })
 }
-
 router.get('/categories/report', auth, (req, res) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   connection.query(getAllCategories, (err, result) => {
@@ -116,67 +115,56 @@ router.get('/categories/report', auth, (req, res) => {
     const categories = result;
     const templatePath = path.join(__dirname, 'report-template.html');
     const template = fs.readFileSync(templatePath, 'utf-8');
-    let pageNumber = 1;
+
     const reportHTML = `
-    <!DOCTYPE html>
-<html>
-<head>
-    <title>Звіт по категоріям</title>
-    <style>
-        body {
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <style>
+          body {
             font-family: Times New Roman, sans-serif;
             margin: 0;
             padding: 0;
-        }
-        header {
+          }
+          h1 {
             text-align: center;
-            padding: 10px;
         }
-        footer {
-            text-align: center;
-            padding: 10px;
-        }
-        table {
+        
+          table {
             width: 100%;
             border-collapse: collapse;
-        }
-        th, td {
+          }
+          
+          th, td {
             border: 1px solid black;
             padding: 8px;
             text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <p style="font-size: 10px; margin: 0; text-align: left;">${new Date().toLocaleString()}</p>
-        <h1>Супермаркет "ZLAGODA"</h1>
-    </header>
-    <table>
-        <thead>
-            <tr>
-                <th>Номер категорії</th>
-                <th>Назва категорії</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${categories
-                .map(category => `
-                    <tr>
-                        <td>${category.category_number}</td>
-                        <td>${category.category_name}</td>
-                    </tr>
-                `)
-                .join('')}
-        </tbody>
-    </table>
-    <footer>
-    <p style="font-size: 10px; margin: 0; text-align: right;">${pageNumber}</p>
-</footer>
-</body>
-</html>
+          }
+          
+          .header-row {
+            font-weight: bold;
+          }
+          
+          .page-break {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 50px;
 
-    
+          }
+          
+          </style>
+      </head>
+      <body>
+          <header>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+          
+              <h1>Звіт "Категорії"</h1>
+          </header>
+          ${generateTable(categories)}
+          
+      </body>
+      </html>
     `;
 
     const options = { format: 'Letter' }; 
@@ -193,10 +181,81 @@ router.get('/categories/report', auth, (req, res) => {
         'Content-Disposition': 'inline; filename=report.pdf'
       });
       res.send(buffer);
-      pageNumber++;
     });
+
   });
 });
+
+function generateTable(categories) {
+  let pageNumber = 1;
+  let tableHTML = '';
+  let currentPageHeight = 1050; 
+
+  for (let i = 0; i < categories.length; i++) {
+    const category = categories[i];
+    const categoryRow = `
+    <tr>
+      <td style="width: min-content;">${category.category_number}</td>
+      <td>${category.category_name}</td>
+    </tr>
+    `;
+
+    if (currentPageHeight <= 200) { 
+      tableHTML += `
+        </tbody></table><div class="page-break">
+        <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 15px;">${pageNumber}</p>
+        </div><table>
+        <tbody>   
+      `;
+      tableHTML += `
+        <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+        <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+        <p style="margin-top: 90px; margin-bottom: 30px;"></p>
+        <tr class="header-row">
+          <th>Номер категорії</th>
+          <th>Назва категорії</th>
+        </tr>
+      `;
+      currentPageHeight = 1050; 
+      pageNumber++; 
+    }
+
+    currentPageHeight -= 40;
+    tableHTML += categoryRow;
+    if (i === categories.length - 1 ) { 
+      
+      let lastPageNumber = pageNumber;
+      tableHTML += `
+        </tbody></table><div class="page-break">
+        
+      `;
+
+      while (currentPageHeight > 199) {
+        tableHTML += '<p style= "color: #fff;">a</p>';
+        currentPageHeight -= 41;
+      }
+      tableHTML += `
+      <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 5px;">${lastPageNumber}</p>
+      </div>
+    `;
+    }
+  }
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Номер категорії</th>
+          <th>Назва категорії</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableHTML}
+      </tbody>
+    </table>
+  `;
+}
+
 
 
 module.exports = router

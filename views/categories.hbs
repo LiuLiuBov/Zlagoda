@@ -5,8 +5,6 @@
 
 <body>
     <h1 class="my-5">Категорії</h1>
-    <h1 class="my-5">{{isManager}}</h1>
-    <h1 class="my-5">{{isCashier}}</h1>
 <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
 {{#if isManager}}
     <form action="categories/add" method="POST">
@@ -21,9 +19,6 @@
                 <tr>
                     <th>Номер категорії</th>
                     <th>Назва категорії</th>
-                    {{#if isManager}}
-                    <th></th>
-                    {{/if}}
                 </tr>
             </thead>
             <tbody id="categories-table">
@@ -32,14 +27,7 @@
   <tr>
     <td>{{this.category_number}}</td>
     <td>{{this.category_name}}</td>
-    <td>
-      {{#if ../isManager}}
-        <!-- Выводите что-то, отличное от true -->
-      {{else}}
-        <!-- Выводите true, если isManager равно true -->
-        {{this.isManager}}
-      {{/if}}
-    </td>
+
     <td>
       {{#if ../isManager}}
         <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
@@ -59,7 +47,6 @@
 <script>
   $(document).ready(function() {
     $('#reportBtn').on('click', function() {
-      // При клике на кнопку "Звіт" отправляем GET-запрос на генерацию и предварительный просмотр PDF-файла
       window.open('/categories/report', '_blank');
     });
   });
