@@ -8,17 +8,22 @@
         {{#if iscashier}}
         <a href="/checks/add" class="btn btn-primary">Додати новий чек</a>
         {{/if}}
-        <div class="col-md-4">
-            <div class="input-group">
-                <form action="/checks" method="POST">
-                    <input type="text" id="searchchecknmb" name="searchchecknmb" class="form-control"
-                        placeholder="Пошук за номером чеку">
-                    <button class="btn btn-outline-secondary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-            </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <form action="/checks" method="POST">
+                <div class="input-group">
+                    <div class="container">
+                        <input type="text" id="searchnumber" name="searchnumber" class="form-control"
+                            placeholder="Введіть номер чеку">
+                        <span id="search_result"></span>
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
+    </div>
 
         <div id="select-position">
             <form action="/checks" method="POST">

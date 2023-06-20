@@ -7,34 +7,71 @@ const checkmanager = require('../middleware/ismanager')
 const checkcashier = require('../middleware/iscashier')
 
 router.get('/customers', auth, checkcashier, (req, res,) => {
+  const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   const getAllCustomers = "SELECT * FROM customer_card ORDER BY cust_surname";
+  connection.query(getAllCategories, (err, categories) => {
     connection.query(getAllCustomers, (err, result) => {
         if(err) throw err;
         //res.send(result)
-        console.log(result);
+        //console.log(result);
         res.render('customers', { 'customers': result, 
         "iscashier": res.locals.iscashier,
-        "ismanager": res.locals.ismanager });
+        "ismanager": res.locals.ismanager,
+        "categories": categories
+       });
     })
+  })
 })
 
 router.post('/customers', auth, checkcashier, (req, res) => {
-    const { searchpercent } = req.body;
-    console.log(searchpercent);
+    const { searchpercent, searchbycategorybought } = req.body;
+    console.log(searchbycategorybought);
 
-    let getCustomers = `SELECT * FROM customer_card WHERE percent = '${searchpercent}'`;
+    let getCustomers = "SELECT * FROM customer_card WHERE 1=1 ";
 
+    if (searchpercent) {
+      getCustomers += ` AND percent = '${searchpercent}'`;
+    }
+  
+    if (searchbycategorybought && searchbycategorybought !== "none") {
+      getCustomers += ` AND NOT EXISTS (
+        SELECT *
+        FROM product pr1
+        WHERE pr1.category_number IN (
+          SELECT category_number
+          FROM category
+          WHERE category_name = '${searchbycategorybought}'
+        )
+        AND pr1.id_product NOT IN (
+          SELECT id_product
+          FROM \`check\`
+          INNER JOIN sale ON \`check\`.check_number = sale.check_number
+          INNER JOIN store_product ON store_product.UPC = sale.UPC
+          WHERE customer_card.card_number = \`check\`.card_number
+            AND pr1.id_product = store_product.id_product
+        )
+      )`;
+    }
+
+    const getAllCategories = "SELECT * FROM category ORDER BY category_name";
+    //let getCustomers = `SELECT * FROM customer_card WHERE percent = '${searchpercent}'`;
+
+    connection.query(getAllCategories, (err, categories) => {
     connection.query(getCustomers, (err, result) => {
         if (err) throw err;
         console.log(result);
-        res.render('customers', { 'customers': result,         'iscashier': res.locals.iscashier,
-        'ismanager': res.locals.ismanager, });
-    });
+        res.render('customers', { 'customers': result, 'iscashier': res.locals.iscashier,
+        'ismanager': res.locals.ismanager, 
+        'categories': categories
+      });
+    })
+  })
 });
 
 router.get('/customers/add', auth, checkcashier, (req, res,) => {
-    res.render('create-customer', {         'iscashier': res.locals.iscashier,
-    'ismanager': res.locals.ismanager,})
+    res.render('create-customer', {         
+    'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager})
 })
 
 router.post('/customers/adding', auth, async (req, res) => {

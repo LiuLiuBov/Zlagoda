@@ -27,6 +27,25 @@ router.get('/checks', auth, checkcashier, (req, res) => {
   });
 });
 
+router.post('/checks', auth, checkcashier, (req, res) => {
+  const { searchnumber} = req.body;
+  console.log(searchnumber);
+
+  let getChecks = "SELECT * FROM `check` WHERE 1=1 ";
+
+  if (searchnumber) {
+    getChecks += ` AND check_number = '${searchnumber}'`;
+  }
+
+  connection.query(getChecks, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.render('checks', { 'checks': result,
+    'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager });
+  });
+});
+
 
 
 router.get('/checks/add', auth, checkcashier, (req, res) => {
