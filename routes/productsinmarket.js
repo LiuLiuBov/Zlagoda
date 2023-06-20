@@ -7,33 +7,48 @@ const path = require('path');
 const checkcashier = require('../middleware/iscashier')
 
 router.get('/productsinmarket', auth, checkcashier, (req, res) => {
-    const sortCriteria = req.query.sortCriteria || 'product_name';
+  const sortCriteria = req.query.sortCriteria || 'product_name';
+  const sortOrder = req.query.sortOrder || 'asc'; // Default to ascending order
+  const categoryNumber = req.query.categoryNumber || null;
+  const priceRange = req.query.priceRange || null;
 
-    let sortByClause = '';
-    if (sortCriteria === 'products_number') {
-        sortByClause = 'ORDER BY products_number ASC';
-    } else {
-        sortByClause = 'ORDER BY product_name ASC';
-    }
+  let sortByClause = '';
+  if (sortCriteria === 'products_number') {
+      sortByClause = `ORDER BY products_number ${sortOrder.toUpperCase()}`;
+  } else {
+      sortByClause = `ORDER BY product_name ${sortOrder.toUpperCase()}`;
+  }
 
-    const getAllProducts = `
-    SELECT sp.*, p.product_name, p.caracteristics, c.category_name
-    FROM (store_product AS sp
-    INNER JOIN product AS p ON sp.id_product = p.id_product)
-    INNER JOIN category AS c ON p.category_number = c.category_number
-    ${sortByClause}
-    `;
+  let filterClause = '';
+  if (categoryNumber && priceRange) {
+      filterClause = `WHERE p.category_number = ${categoryNumber} AND p.price >= ${priceRange}`;
+  } else if (categoryNumber) {
+      filterClause = `WHERE p.category_number = ${categoryNumber}`;
+  } else if (priceRange) {
+      filterClause = `WHERE p.price >= ${priceRange}`;
+  }
 
-    connection.query(getAllProducts, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.render('productsinmarket', {
-            productsinmarket: result,
-            iscashier: res.locals.iscashier,
-            ismanager: res.locals.ismanager,
-        });
-    });
+  const getAllProducts = `
+  SELECT sp.*, p.product_name, p.caracteristics, c.category_name
+  FROM (store_product AS sp
+  INNER JOIN product AS p ON sp.id_product = p.id_product)
+  INNER JOIN category AS c ON p.category_number = c.category_number
+  ${filterClause}
+  ${sortByClause}
+  `;
+
+  connection.query(getAllProducts, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.render('productsinmarket', {
+          productsinmarket: result,
+          iscashier: res.locals.iscashier,
+          ismanager: res.locals.ismanager,
+      });
+  });
 });
+
+
 
   router.get('/productsinmarket/add', auth, (req, res,) => {
     const getAllProducts = "SELECT * FROM product";

@@ -4,6 +4,24 @@
 
 <body>
     <h1 class="my-5">Продукти в магазині </h1>
+    <div class="col-md-4">
+        <div class="input-group">
+            <form action="/productsinmarket" method="POST">
+                <div class="input-group">
+                    <div class="container">
+                        <input type="text" id="searchupc" name="searchupc" class="form-control"
+                            placeholder="Введіть UPC товару">
+                        <span id="search_result"></span>
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <form id="sortForm" action="/productsinmarket" method="get">
         <label for="sortCriteria">Сортувати за:</label>
         <select name="sortCriteria" id="sortCriteria" onchange="updateSortCriteria()">
@@ -18,123 +36,109 @@
             <option value="notonsale" {{#if (eq sortsale "notonsale" )}}selected{{/if}}>Не акційні</option>
         </select>
     </form>
-        </div>
-        {{#if ismanager}}
-        <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
-        {{/if}}
-    
-        <script>
-            const sortCriteriaSelect = document.getElementById('sortCriteria');
-            const urlParams = new URLSearchParams(window.location.search);
-            const savedSortCriteria = urlParams.get('sortCriteria');
+    </div>
+    {{#if ismanager}}
+    <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
+    {{/if}}
 
-            sortCriteriaSelect.value = savedSortCriteria;
+    <script>
+        const sortCriteme        tById('sortCriteria');
+        const urlParams = new URLSearchPar        ocation.search);
+        const savedSortCriteria = urlParams        iteria');
 
-            function updateSortCriteria() {
-                const selectedSortCriteria = document.getElementById('sortCriteria').value;
+        sortCriteriaSelect.value = savedSortC                  function updateSortCriteria() {
+               st selectedSortCriteria = documen('sortCriteria').value;
 
-                let sortDirection = '';
-                if (document.getElementById('sort-name').checked) {
-                    sortDirection = 'asc';
-                } else if (document.getElementById('sort-quantity').checked) {
+            let sortDirection = '';
+            etElementById('sort-name'                             sortDirection = 'asc';
+            nt.getElementById('sort-            ed) {
                     sortDirection = 'desc';
-                }
-
-                const urlParams = new URLSearchParams(window.location.search);
-                urlParams.set('sortCriteria', selectedSortCriteria);
-                const selectedSortSale = document.getElementById('sortsale').value;
-                urlParams.set('sortsale', selectedSortSale);
+            const urlParams = new UR            ndow.;
+            urlParams.set('sortCriteria', selectedSortCrit                   const selectedSortSale = document.getElementByI            lue;
+            urlParams.set('sortsale', selectedSortSale);
 
 
 
-                history.replaceState(null, null, '?' + urlParams.toString());
-
-                document.getElementById('selectedSortCriteria').textContent = selectedSortCriteria;
-            }
+            history.replaceState(null, null, '?' + urlParams.toS                       document.getElementById('selectedSortCriteria').textCo            SortCriteria;
+        }
 
 
-            sortCriteriaSelect.addEventListener('change', function () {
-                document.getElementById('sortForm').submit();
+        sortCriteriaSelect.addEventListener('change        () {
+            document.getElementById('sortForm').submit();
             });
-        </script>
+    </script>
 
-        <script>
-            function updateFiltCriteria() {
-                const selectedSortSale = document.getElementById('sortsale').value;
-                const urlParams = new URLSearchParams(window.location.search);
-                urlParams.set('sortsale', selectedSortSale);
-                history.replaceState(null, null, '?' + urlParams.toString());
+    <script>
+        function updateFiltCriteria() {
+            nst = tElementById('sortsale').value;
+             onst urlParams = new URLSearchParams(window.location.search);
+            ms.set('sortsale', selectedSortSale);
+            history.re             null, '?' + urlParams.toString());
 
-                const productsTable = document.getElementById('productsinmarket-table');
-                for (let i = 0; i < productsTable.rows.length; i++) {
-                    const row = productsTable.rows[i];
-                    const promotionalProductCell = row.cells[7];
-                    if (selectedSortSale === 'onsale' && promotionalProductCell.textContent.trim() !== 'так') {
-                        row.style.display = 'none';
-                    } else if (selectedSortSale === 'notonsale' && promotionalProductCell.textContent.trim() !== 'ні') {
-                        row.style.display = 'none';
-                    } else {
-                        row.style.display = '';
-                    }
-                }
-            }
-
-            document.getElementById('sortCriteria').addEventListener('change', function () {
-                document.getElementById('sortForm').submit();
+            ductsTable = document.getElementById('productsinmarket-table');
+            or(let i = 0; i < productsTable.rows.length; i++) {
+                    c            ctsTable.rows[i];
+                const promotional                lls[7];
+                if (sele                sale' && promotionalProductCell.textContent.tr                                      row.style.display = 'none';
+            } else if (selectedSort                    promotionalProductCell.textCo                ') {
+            row.style.display = 'none';
+        } else {
+            y = '';
+        }                                              .getElementById('sortCrit                ner            ion                     t.getElementById('sortForm').submit();
             });
-        </script>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>UPC</th>
-                        <th>UPC_prom</th>
-                        <th>Категорія</th>
-                        <th>Товар</th>
-                        <th>Вартість</th>
-                        <th>Кількість</th>
-                        <th>Характеристика</th>
-                        <th>Акційний товар</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="productsinmarket-table">
-                    {{#each productsinmarket}}
-                    <tr>
-                        <td>{{this.UPC}}</td>
-                        <td>{{this.UPC_prom}}</td>
-                        <td>{{this.category_name}}</td>
-                        <td>{{this.product_name}}</td>
-                        <td>{{this.selling_price}}</td>
-                        <td>{{this.products_number}}</td>
-                        <td>{{this.caracteristics}}</td>
-                        <td>
-                            {{#if this.promotional_product}}
-                            так
-                            {{else}}
-                            ні
-                            {{/if}}
-                        </td>
+    </script>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>UPC</th>
+                    <th>UPC_prom</th>
+                    <th>Категорія</th>
+                    <th>Товар</th>
+                    <th>Вартість</th>
+                    <th>Кількість</th>
+                    <th>Характеристика</th>
+                    <th>Акційний товар</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="productsinmarket-table">
+                {{#each productsinmarket}}
+                <tr>
+                    <td>{{this.UPC}}</td>
+                    <td>{{this.UPC_prom}}</td>
+                    <td>{{this.category_name}}</td>
+                    <td>{{this.product_name}}</td>
+                    <td>{{this.selling_price}}</td>
+                    <td>{{this.products_number}}</td>
+                    <td>{{this.caracteristics}}</td>
+                    <td>
+                        {{#if this.promotional_product}}
+                        так
+                        {{else}}
+                        ні
+                        {{/if}}
+                    </td>
 
-                        <td>
-                            {{#if ../ismanager}}
-                            <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i
-                                    class="fas fa-pencil-alt"></i></a>
-                            <a href="productsinmarket/delete/{{this.UPC}}" class="btn btn-danger btn-sm"><i
-                                    class="fa fa-times"></i></a>
-                            {{else}}
-                            {{/if}}
-                        </td>
+                    <td>
+                        {{#if ../ismanager}}
+                        <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i
+                                class="fas fa-pencil-alt"></i></a>
+                        <a href="productsinmarket/delete/{{this.UPC}}" class="btn btn-danger btn-sm"><i
+                                class="fa fa-times"></i></a>
+                        {{else}}
+                        {{/if}}
+                    </td>
 
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
 
 
-        <!-- Підключаємо jQuery та Bootstrap JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Підключаємо jQuery та Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
