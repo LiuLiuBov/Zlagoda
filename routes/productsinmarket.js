@@ -96,7 +96,7 @@ router.post('/productsinmarket', auth, checkmanager, (req, res) => {
 });
 
 
-router.get('/productsinmarket/add', auth, (req, res,) => {
+router.get('/productsinmarket/add', auth, checkcashier,  (req, res,) => {
     const getAllProducts = "SELECT p.* FROM product AS p";
     const getAllProductsInStore = "SELECT * FROM store_product AS st INNER JOIN product AS p ON st.id_product = p.id_product ";
 

@@ -35,7 +35,7 @@ router.get('/employees/get_data', auth, function(req, res, next){
   });
 
 });
-router.post('/employees', auth, checkmanager, (req, res) => {
+router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
   const { searchsurname, occupation } = req.body;
   console.log(searchsurname);
   console.log(occupation);
@@ -53,12 +53,14 @@ router.post('/employees', auth, checkmanager, (req, res) => {
   connection.query(getEmployees, (err, result) => {
     if (err) throw err;
     console.log(result);
-    res.render('employees', { 'employees': result });
+    res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager });
   });
 });
 
-router.get('/employees/add', auth, checkmanager, (req, res,) => {
-  res.render('create-employee')
+router.get('/employees/add', auth, checkmanager, checkcashier, (req, res,) => {
+  res.render('create-employee', {         'iscashier': res.locals.iscashier,
+  'ismanager': res.locals.ismanager,})
 })
 
 router.post('/employees/adding', auth, checkmanager, async (req, res) => {

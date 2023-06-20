@@ -18,7 +18,7 @@ router.get('/customers', auth, checkcashier, (req, res,) => {
     })
 })
 
-router.post('/customers', auth, (req, res) => {
+router.post('/customers', auth, checkcashier, (req, res) => {
     const { searchpercent } = req.body;
     console.log(searchpercent);
 
@@ -27,12 +27,14 @@ router.post('/customers', auth, (req, res) => {
     connection.query(getCustomers, (err, result) => {
         if (err) throw err;
         console.log(result);
-        res.render('customers', { 'customers': result });
+        res.render('customers', { 'customers': result,         'iscashier': res.locals.iscashier,
+        'ismanager': res.locals.ismanager, });
     });
 });
 
-router.get('/customers/add', auth, (req, res,) => {
-    res.render('create-customer')
+router.get('/customers/add', auth, checkcashier, (req, res,) => {
+    res.render('create-customer', {         'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager,})
 })
 
 router.post('/customers/adding', auth, async (req, res) => {
