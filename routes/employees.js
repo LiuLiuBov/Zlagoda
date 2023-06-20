@@ -20,19 +20,17 @@ router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
   })
 })
 
-router.get('/get_data', function(request, response, next){
+router.get('/employees/get_data', auth, function(req, res, next){
 
-  var search_query = request.query.search_query;
-
+  var search_query = req.query.search_query;
   var query = `
   SELECT empl_surname FROM employee
-  WHERE empl_surname '%${search_query}%' 
+  WHERE empl_surname LIKE '%${search_query}%' 
   LIMIT 10
   `;
 
-  database.query(query, function(error, data){
-
-      response.json(data);
+  connection.query(query, function(error, data){
+      res.json(data);
 
   });
 

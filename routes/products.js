@@ -52,17 +52,17 @@ router.post('/products', auth, checkcashier,  (req, res) => {
 
 router.get('/get_data', auth, function(req, res, next){
 
-    var search_query = req.query.search_query;
-    var query = `
-    SELECT product_name FROM product
-    WHERE product_name LIKE '%${search_query}%' 
-    LIMIT 10
-    `;
+  var search_query = req.query.search_query;
+  var query = `
+  SELECT product_name FROM product
+  WHERE product_name LIKE '%${search_query}%' 
+  LIMIT 10
+  `;
 
-    connection.query(query, function(error, data){
-        res.json(data);
+  connection.query(query, function(error, data){
+      res.json(data);
 
-    });
+  });
 
 });
 
@@ -78,23 +78,6 @@ router.post('/suggestions', auth, checkcashier, (req, res) => {
             res.json(result);
         }
     });
-});
-router.get('/get_data', function(request, response, next){
-
-    var search_query = request.query.search_query;
-
-    var query = `
-    SELECT product_name FROM product
-    WHERE product_name '%${search_query}%' 
-    LIMIT 10
-    `;
-
-    database.query(query, function(error, data){
-
-        response.json(data);
-
-    });
-
 });
 
 router.get('/products/add', auth, (req, res,) => {
@@ -292,7 +275,7 @@ function errorNotification(str) {
       const category = products[i];
       const categoryRow = `
       <tr>
-        <td style="width: min-content;">${category.id_product}</td>
+        <td style="width: min-content;">${category.product}</td>
         <td>${category.category_name}</td>
         <td>${category.product_name}</td>
         <td>${category.caracteristics}</td>
