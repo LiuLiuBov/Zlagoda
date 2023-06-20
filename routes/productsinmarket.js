@@ -5,7 +5,6 @@ const connection = require('../utils/database')
 var notifier = require('node-notifier')
 const path = require('path');
 const checkcashier = require('../middleware/iscashier')
-const checkmanager = require('../middleware/ismanager')
 
 router.get('/productsinmarket', auth, checkcashier, (req, res) => {
     const sortCriteria = req.query.sortCriteria || 'product_name';
@@ -48,7 +47,7 @@ router.get('/productsinmarket', auth, checkcashier, (req, res) => {
     });
 });
 
-router.post('/productsinmarket', auth, checkmanager, (req, res) => {
+router.post('/productsinmarket', auth, checkcashier, (req, res) => {
   const { searchupc} = req.body;
   console.log(searchupc);
 
@@ -68,13 +67,14 @@ router.post('/productsinmarket', auth, checkmanager, (req, res) => {
 });
 
 
-  router.get('/productsinmarket/add', auth, (req, res,) => {
+  router.get('/productsinmarket/add', auth, checkcashier,  (req, res,) => {
     const getAllProducts = "SELECT * FROM product";
 
     connection.query(getAllProducts, (err, products) => {
         if (err) throw err;
         console.log(products);
-        res.render('create-productinmarket', { 'products': products });
+        res.render('create-productinmarket', { 'products': products,  'iscashier': res.locals.iscashier,
+        'ismanager': res.locals.ismanager });
 
     });
 })
