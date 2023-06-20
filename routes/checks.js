@@ -3,9 +3,10 @@ const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 var notifier = require('node-notifier')
-const path = require('path');
+const path = require('path')
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/checks', auth, (req, res) => {
+router.get('/checks', auth, checkcashier, (req, res) => {
     const deleteZeroTotalChecks = "DELETE FROM `check` WHERE sum_total = 0";
     const getAllChecks = "SELECT ch.*, e.empl_surname FROM `check` AS ch INNER JOIN employee AS e ON ch.id_employee = e.id_employee";
     const user_empl_id = res.locals.user_empl_id;

@@ -4,8 +4,9 @@ const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 var notifier = require('node-notifier')
 const path = require('path');
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/productsinmarket', auth, (req, res) => {
+router.get('/productsinmarket', auth, checkcashier, (req, res) => {
   const sortCriteria = req.query.sortCriteria || 'product_name'; 
 
   const getAllProducts = `

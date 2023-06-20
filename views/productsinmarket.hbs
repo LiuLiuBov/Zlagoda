@@ -50,9 +50,7 @@
                     <th>Кількість</th>
                     <th>Характеристика</th>
                     <th>Акційний товар</th>
-                    {{#if ismanager}}
                     <th></th>
-                    {{/if}}
                 </tr>
             </thead>
             <tbody id="productsinmarket-table">
@@ -70,14 +68,15 @@
                         {{else}}
                         ні
                         {{/if}}</td>
-                        {{#if ismanager}}
-                    <td>
+                        
+                    <td>{{#if ../ismanager}}
                         <a href="productsinmarket/edit/{{this.UPC}}" class="btn btn-success btn-sm"><i
                                 class="fas fa-pencil-alt"></i></a>
                         <a href="productsinmarket/delete/{{this.UPC}}" class="btn btn-danger btn-sm"><i
                                 class="fa fa-times"></i></a>
-                    </td>
-                    {{/if}}
+                                {{else}}
+                    {{/if}}</td>
+                    
                 </tr>
                 {{/each}}
             </tbody>

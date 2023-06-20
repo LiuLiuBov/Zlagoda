@@ -31,15 +31,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/checks">Чеки</a>
                     </li>
+                    {{#if ismanager}}
                     <li class="nav-item">
                         <a class="nav-link" href="/employees">Працівники</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/customers">Клієнти</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/categories">Категорії товарів</a>
                     </li>
+                    {{else}}
+                    {{/if}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">Клієнти</a>
+                    </li>
+                
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">Мій профіль</a>
                     </li>
@@ -51,8 +55,8 @@
         </nav>
     </header>
 
-    {{{ body }}}
+    
 
 </body>
-
+{{{ body }}}
 </html>

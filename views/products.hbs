@@ -2,11 +2,13 @@
     <link rel="stylesheet" href="/employees.css">
 </head>
 
+<body>
 <div>
     <h1 class="my-5">Товари</h1>
     <div class="container"></div>
     {{#if ismanager}}
     <a href="/products/add" class="btn btn-primary">Додати товар</a>
+    {{else}}
     {{/if}}
 </div>
 <div class="table-responsive">
@@ -17,9 +19,8 @@
                 <th>Назва категорії</th>
                 <th>Назва товару</th>
                 <th>Характеристики</th>
-                {{#if ismanager}}
                 <th></th>
-                {{/if}}
+
             </tr>
         </thead>
         <tbody id="categories-table">
@@ -29,15 +30,18 @@
                 <td>{{this.category_name}}</td>
                 <td>{{this.product_name}}</td>
                 <td>{{this.caracteristics}}</td>
-                {{#if ismanager}}
+                
                 <td>
+                    {{#if ../ismanager}}
                     <a href="products/edit/{{this.id_product}}" class="btn btn-success btn-sm"><i
                             class="fas fa-pencil-alt"></i></a>
                     <a href="products/delete/{{this.id_product}}" class="btn btn-danger btn-sm"><i
                             class="fa fa-times"></i></a>
 
-                </td>
+                {{else}}
                 {{/if}}
+                </td>
+                
             </tr>
             {{/each}}
         </tbody>
