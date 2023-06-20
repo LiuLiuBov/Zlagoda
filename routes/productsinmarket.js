@@ -35,8 +35,7 @@ router.get('/productsinmarket', auth, checkcashier, (req, res) => {
     });
 });
 
-
-router.get('/productsinmarket/add', auth, (req, res,) => {
+  router.get('/productsinmarket/add', auth, (req, res,) => {
     const getAllProducts = "SELECT * FROM product";
 
     connection.query(getAllProducts, (err, products) => {

@@ -12,6 +12,13 @@
             <option value="products_number" {{#if (eq sortCriteria "products_number" )}}selected{{/if}}>Кількістю
                 товарів</option>
         </select>
+        <select name="sortsale" id="sortsale">
+            <option value="onsale">Акційний</option>
+            <option value="notonsale">Не акційний</option>
+        </select>
+        <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
     </form>
 
 
@@ -109,6 +116,7 @@
             </tbody>
         </table>
     </div>
+
 
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
