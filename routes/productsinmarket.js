@@ -14,7 +14,7 @@ router.get('/productsinmarket', auth, checkcashier, (req, res) => {
   FROM (store_product AS sp
   INNER JOIN product AS p ON sp.id_product = p.id_product)
   INNER JOIN category AS c ON p.category_number = c.category_number
- 
+  ORDER BY products_number ASC
   `;
 //   ORDER BY ${sortCriteria}
   connection.query(getAllProducts, (err, result) => {
