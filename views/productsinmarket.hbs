@@ -11,11 +11,8 @@
                 <div class="input-group">
                     <div class="container">
                         <input type="text" id="searchupc" name="searchupc" class="form-control"
-                            placeholder="Введіть UPC товару">
+                            placeholder="Введіть UPC товару...">
                         <span id="search_result"></span>
-                        <button class="btn btn-outline-secondary" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
                     </div>
                 </div>
             </form>
@@ -75,6 +72,54 @@
                 document.getElementById('sortForm').submit();
             });
         </script>
+
+        <script>
+            function load_data(query = '') {
+                fetch('/productsinmarket/get_data?search_query=' + query + '').then(function (res) {
+                    return res.json();
+                }).then(function (responseData) {
+                    var html = '<ul class="list-group">';
+
+                    if (responseData.length > 0) {
+                        for (var count = 0; count < responseData.length; count++) {
+                            var regular_expression = new RegExp('(' + query + ')', 'gi');
+                            html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].UPC.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
+                        }
+                    } else {
+                        html += '<a href="#" class="list-group-item list-group-item-action disabled">Товарів не знайдено</a>';
+                    }
+
+                    html += '</ul>';
+
+                    document.getElementById('search_result').innerHTML = html;
+                    if (query === '') {
+                        document.getElementById('search_result').style.display = 'none';
+                    } else {
+                        document.getElementById('search_result').style.display = 'block';
+                    }
+                });
+            }
+
+            var search_element = document.getElementById("searchupc");
+
+            search_element.onkeyup = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            search_element.onfocus = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            function get_text(event) {
+                var product_name = event.textContent;
+                document.getElementById('searchupc').value = product_name;
+                document.getElementById('search_result').innerHTML = '';
+                document.getElementById('search_result').style.display = 'none';
+            }
+        </script>
+
 
         <script>
             function updateFiltCriteria() {

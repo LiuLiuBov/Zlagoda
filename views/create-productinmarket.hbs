@@ -10,11 +10,21 @@
             <label for="addUPC">UPC:</label>
             <input type="text" id="addUPC" name="addUPC" class="form-control" required>
         </div>
+          <!-- <div class="form-group" >
+            <label for="addUPCPROM">UPC prom:</label>
+            <select  id="addUPCPROM" name="addUPCPROM" class="form-control" required>
+                <option value="none"></option>
+                {{#each productsinstore}}
+                <option value="{{this.UPC}}"> {{this.product_name}}</option>
+                {{/each}}
+            </select>
+        </div>-->
         <div class="form-group">
             <label for="addproduct">Назва продукту:</label>
             <select id="addproduct" name="addproduct" class="form-control" required>
-                {{#each products}}
-                <option value="{{this.id_product}}"> {{this.product_name}}</option>
+                <option value="none"></option>
+               {{#each products}}
+                <option value="{{this.id_product}}" data-addUPCPROM ="{{this.UPC}}"> {{this.product_name}}</option>
                 {{/each}}
             </select>
         </div>
@@ -30,8 +40,26 @@
             <label for="addpromotional">Акційний товар:</label>
             <input type="checkbox" id="addpromotional" name="addpromotional" value="1" class="form-control">
         </div>
+        <input type="hidden" name="hiddenaddUPCPROM" id = "hiddenaddUPCPROM">
+        <input type="hidden" name="addUPCPROM" id = "addUPCPROM">
         <button type="submit" class="btn btn-primary">Додати</button>
     </form>
+    <script type="text/javascript">
+       $(document).ready(function() {
+    $('#addproduct').change(function() {
+        var selectedOption = $(this).find('option:selected');
+        var productName = selectedOption.data('productname');
+        var upc = selectedOption.data('addUPCPROM');
+        $('#hiddenaddUPCPROM').val(upc);
+    });
+
+    $('#addpromotional').change(function() 
+        if ($(this).is(':checked')) {
+            $('input[name="addUPCPROM"]').val($('#hiddenaddUPCPROM').val());
+    });
+});
+
+        </script>
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
