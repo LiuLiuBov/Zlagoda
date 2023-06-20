@@ -2,6 +2,7 @@
     <link rel="stylesheet" href="/profile.css">
 </head>
 
+
 <body>
     <h1 class="my-5">Профіль працівника</h1>
     <div class="container">
@@ -26,11 +27,18 @@
                     </div>
                     <div class="record">
                         <span class="label">Дата народження:</span>
-                        <span class="value">{{profile.date_of_birth}}</span>
+                        <script>
+                            var dateOfBirth = new Date('{{profile.date_of_birth}}');
+                            var formattedDate = ('0' + dateOfBirth.getDate()).slice(-2) + '.' +
+                                ('0' + (dateOfBirth.getMonth() + 1)).slice(-2) + '.' +
+                                dateOfBirth.getFullYear();
+                            document.write('<span class="value">' + formattedDate + '</span>');
+                        </script>
                     </div>
+
                     <div class="record">
                         <span class="label">Посада:</span>
-                        <span class="value">{{profile.empl_role}}</span>
+                        <span class="value ">{{profile.empl_role}}</span>
                     </div>
                     <div class="record">
                         <span class="label">Зарплатня:</span>
@@ -38,7 +46,13 @@
                     </div>
                     <div class="record">
                         <span class="label">Початок роботи в магазині:</span>
-                        <span class="value">{{profile.date_of_start}}</span>
+                        <script>
+                            var dateOfBirth = new Date('{{profile.date_of_start}}');
+                            var formattedDate = ('0' + dateOfBirth.getDate()).slice(-2) + '.' +
+                                ('0' + (dateOfBirth.getMonth() + 1)).slice(-2) + '.' +
+                                dateOfBirth.getFullYear();
+                            document.write('<span class="value">' + formattedDate + '</span>');
+                        </script>
                     </div>
                     <div class="record">
                         <span class="label">Тел:</span>

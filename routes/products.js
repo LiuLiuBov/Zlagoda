@@ -5,7 +5,8 @@ const auth = require('../middleware/auth')
 var notifier = require('node-notifier')
 const path = require('path');
 const checkcashier = require('../middleware/iscashier')
-
+const fs = require('fs');
+const pdf = require('html-pdf');
 router.get('/products', auth, checkcashier, (req, res,) => {
     const getAllCategories = "SELECT * FROM category ORDER BY category_name";
     const getAllProducts = "SELECT p.id_product, p.category_number, c.category_name, p.product_name, p.caracteristics FROM product p JOIN category c ON p.category_number = c.category_number ORDER BY p.product_name";
@@ -22,16 +23,22 @@ router.get('/products', auth, checkcashier, (req, res,) => {
     })
 })
 
+
+
 router.post('/products', auth, checkcashier,  (req, res) => {
 
+    
     const getAllCategories = "SELECT * FROM category ORDER BY category_name";
-    const { searchbycategory } = req.body;
-    console.log(searchbycategory);
+    const {searchproduct, searchbycategory } = req.body;
 
-    let getProducts = "SELECT * FROM product WHERE 1=1 ";
+    let getProducts = "SELECT * FROM product as p INNER JOIN category c ON p.category_number = c.category_number WHERE 1=1 ";
 
-    if (searchbycategory) {
-        getProducts += ` AND category_number = '${searchbycategory}'`;
+    if (searchproduct) {
+        getProducts += ` AND p.product_name = '${searchproduct}'`;
+    }
+
+    if (searchbycategory && searchbycategory !== "none") {
+        getProducts += ` AND p.category_number = '${searchbycategory}'`;
     }
 
     connection.query(getAllCategories, (err, categories) => {
@@ -41,6 +48,53 @@ router.post('/products', auth, checkcashier,  (req, res) => {
         res.render('products', { 'products': result, 'categories': categories });
     })
 })
+});
+
+router.get('/get_data', auth, function(req, res, next){
+
+    var search_query = req.query.search_query;
+    var query = `
+    SELECT product_name FROM product
+    WHERE product_name LIKE '%${search_query}%' 
+    LIMIT 10
+    `;
+
+    connection.query(query, function(error, data){
+        res.json(data);
+
+    });
+
+});
+
+router.post('/suggestions', auth, checkcashier, (req, res) => {
+    const input = req.body.input;
+    const query = `SELECT * FROM product WHERE product_name LIKE '${input}%'`;
+
+    connection.query(query, (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            res.json(result);
+        }
+    });
+});
+router.get('/get_data', function(request, response, next){
+
+    var search_query = request.query.search_query;
+
+    var query = `
+    SELECT product_name FROM product
+    WHERE product_name '%${search_query}%' 
+    LIMIT 10
+    `;
+
+    database.query(query, function(error, data){
+
+        response.json(data);
+
+    });
+
 });
 
 router.get('/products/add', auth, (req, res,) => {
@@ -152,4 +206,157 @@ function errorNotification(str) {
     })
   }
 
+  router.get('/products/report', auth, (req, res) => {
+    const getAllCategories = "SELECT * FROM category ORDER BY category_name";
+    const getAllProducts = "SELECT p.id_product, p.category_number, c.category_name, p.product_name, p.caracteristics FROM product p JOIN category c ON p.category_number = c.category_number ORDER BY p.product_name";
+    connection.query(getAllCategories, (err, reult) => {
+        connection.query(getAllProducts, (err, result) => {
+            if (err) throw err;
+            const products = result;
+            const reportHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                body {
+                  font-family: Times New Roman, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                }
+                h1 {
+                  text-align: center;
+              }
+              
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+                
+                th, td {
+                  border: 1px solid black;
+                  padding: 8px;
+                  text-align: left;
+                }
+                
+                .header-row {
+                  font-weight: bold;
+                }
+                
+                .page-break {
+                  page-break-after: always;
+                  text-align: center;
+                  padding-top: 50px;
+      
+                }
+                
+                </style>
+            </head>
+            <body>
+                <header>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+                
+                    <h1>Звіт "Товари"</h1>
+                </header>
+                ${generateTable(products)}
+                
+            </body>
+            </html>
+          `;
+          const options = { format: 'Letter' }; 
+          const tempHTMLPath = path.join(__dirname, 'temp-report.html');
+          fs.writeFileSync(tempHTMLPath, reportHTML, 'utf-8');
+      
+          pdf.create(fs.readFileSync(tempHTMLPath, 'utf-8'), options).toBuffer((err, buffer) => {
+            if (err) throw err;
+      
+            fs.unlinkSync(tempHTMLPath);
+      
+            res.set({
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': 'inline; filename=report.pdf'
+            });
+            res.send(buffer);
+          });
+        })
+        })
+    })
+  
+  
+  function generateTable(products) {
+    let pageNumber = 1;
+    let tableHTML = '';
+    let currentPageHeight = 1050; 
+  
+    for (let i = 0; i < products.length; i++) {
+      const category = products[i];
+      const categoryRow = `
+      <tr>
+        <td style="width: min-content;">${category.id_product}</td>
+        <td>${category.category_name}</td>
+        <td>${category.product_name}</td>
+        <td>${category.caracteristics}</td>
+      </tr>
+      `;
+  
+      if (currentPageHeight <= 200) { 
+        tableHTML += `
+          </tbody></table><div class="page-break">
+          <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 15px;">${pageNumber}</p>
+          </div><table>
+          <tbody>   
+        `;
+        tableHTML += `
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+          <p style="margin-top: 90px; margin-bottom: 30px;"></p>
+          <tr class="header-row">
+            <th>Номер товару</th>
+            <th>Назва категорії</th>
+            <th>Назва товару</th>
+            <th>Характеристики</th>
+          </tr>
+        `;
+        currentPageHeight = 1050; 
+        pageNumber++; 
+      }
+  
+      currentPageHeight -= 40;
+      tableHTML += categoryRow;
+      if (i === products.length - 1 ) { 
+        
+        let lastPageNumber = pageNumber;
+        tableHTML += `
+          </tbody></table><div class="page-break">
+          
+        `;
+  
+        while (currentPageHeight > 199) {
+          tableHTML += '<p style= "color: #fff;">a</p>';
+          currentPageHeight -= 41;
+        }
+        tableHTML += `
+        <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 5px;">${lastPageNumber}</p>
+        </div>
+      `;
+      }
+    }
+  
+    return `
+      <table>
+        <thead>
+          <tr>
+          <th>Номер товару</th>
+          <th>Назва категорії</th>
+          <th>Назва товару</th>
+          <th>Характеристики</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableHTML}
+        </tbody>
+      </table>
+    `;
+  }
+  
 module.exports = router

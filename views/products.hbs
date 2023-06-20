@@ -1,24 +1,89 @@
 <head>
-    <link rel="stylesheet" href="/employees.css">
+    <link rel="stylesheet" href="/products.css">
 </head>
 
 <body>
 <div>
     <h1 class="my-5">Товари</h1>
+<form action="/products" method="POST">
+{{#if ismanager}}
+        <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
+         
+        {{else}}
+        {{/if}}
 
-    <form action="/products" method="POST">
-        <div class="form-group">
-            <label for="searchbycategory">Пошук за категорією:</label>
-            <select id="searchbycategory" name="searchbycategory" class="form-control" required>
-                {{#each categories}}
-                <option value="{{this.category_number}}">{{this.category_number}} {{this.category_name}}</option>
-                {{/each}}
-            </select>
-            <button class="btn btn-outline-secondary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
+    <div class="input-group">
+
+        {{#if iscashier}}
+        <div class="container">
+            <input type="text" id="searchproduct" name="searchproduct" class="form-control" placeholder="Введіть назву товару..." />
+            <span id="search_result"></span>
         </div>
-        </form>
+        
+        {{else}}
+        {{/if}}
+    </div>
+    <div class="form-group">
+        <label for="searchbycategory">Пошук за категорією:</label>
+        <select id="searchbycategory" name="searchbycategory" class="form-control" required>
+            <option value="none"></option>
+            {{#each categories}}
+            <option value="{{this.category_number}}"> {{this.category_name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <button class="btn btn-outline-secondary" type="submit">
+        <i class="fas fa-search"></i>
+    </button>
+</form>
+<script>
+    function load_data(query = '') {
+        fetch('/get_data?search_query=' + query + '').then(function(res) {
+            return res.json();
+        }).then(function(responseData) {
+            var html = '<ul class="list-group">';
+
+            if (responseData.length > 0) {
+                for (var count = 0; count < responseData.length; count++) {
+                    var regular_expression = new RegExp('(' + query + ')', 'gi');
+                    html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].product_name.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
+                }
+            } else {
+                html += '<a href="#" class="list-group-item list-group-item-action disabled">Товарів не знайдено</a>';
+            }
+
+            html += '</ul>';
+
+            document.getElementById('search_result').innerHTML = html;
+            if (query === '') {
+                document.getElementById('search_result').style.display = 'none';
+            } else {
+                document.getElementById('search_result').style.display = 'block';
+            }
+        });
+    }
+
+    var search_element = document.getElementById("searchproduct");
+
+    search_element.onkeyup = function() {
+        var query = search_element.value;
+        load_data(query);
+    };
+
+    search_element.onfocus = function() {
+        var query = search_element.value;
+        load_data(query);
+    };
+
+    function get_text(event) {
+        var product_name = event.textContent;
+        console.log(product_name);
+        document.getElementById('searchproduct').value = product_name;
+        document.getElementById('search_result').innerHTML = '';
+        document.getElementById('search_result').style.display = 'none';
+    }
+</script>
+
 
     <div class="container"></div>
     {{#if ismanager}}
@@ -63,6 +128,13 @@
     </table>
 </div>
 </div>
+<script>
+  $(document).ready(function() {
+    $('#reportBtn').on('click', function() {
+      window.open('/products/report', '_blank');
+    });
+  });
+</script>
 <!-- Підключаємо jQuery та Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

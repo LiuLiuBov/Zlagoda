@@ -1,64 +1,66 @@
 <head>
-    <link rel="stylesheet" href="/categories.css">
-    <link rel="stylesheet" href="popupS.css">
+  <link rel="stylesheet" href="/categories.css">
+  <link rel="stylesheet" href="popupS.css">
 </head>
 
 <body>
-    <h1 class="my-5">Категорії</h1>
-    <!--<h1 class="my-5">{{isManager}}</h1>
+  <h1 class="my-5">Категорії</h1>
+  <!--<h1 class="my-5">{{isManager}}</h1>
     <h1 class="my-5">{{isCashier}}</h1>-->
-{{#if isManager}}    
-<button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
+  {{#if isManager}}
+  <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
 
-    <form action="categories/add" method="POST">
-        <label for="catname">Назва категорії:</label>
-        <input type="text" id="catname" name="catname" required>
-        <button type="submit">Додати категорію</button>
-    </form>
-    {{/if}}
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Номер категорії</th>
-                    <th>Назва категорії</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="categories-table">
+  <form action="categories/add" method="POST">
+    <label for="catname">Назва категорії:</label>
+    <input type="text" id="catname" name="catname" required>
+    <button type="submit">Додати категорію</button>
+  </form>
+  {{/if}}
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Номер категорії</th>
+          <th>Назва категорії</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="categories-table">
 
-{{#each categories}}
-  <tr>
-    <td>{{this.category_number}}</td>
-    <td>{{this.category_name}}</td>
-    <td>
-      {{#if ../isManager}}
-        <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i class="fas fa-pencil-alt"></i></a>
-        <a href="categories/delete/{{this.category_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
-      {{else}}
-        <!-- Колонка остается пустой -->
-      {{/if}}
-    </td>
-  </tr>
-{{/each}}
+        {{#each categories}}
+        <tr>
+          <td>{{this.category_number}}</td>
+          <td>{{this.category_name}}</td>
+          <td>
+            {{#if ../isManager}}
+            <a href="categories/edit/{{this.category_number}}" class="btn btn-success btn-sm"><i
+                class="fas fa-pencil-alt"></i></a>
+            <a href="categories/delete/{{this.category_number}}" class="btn btn-danger btn-sm"><i
+                class="fa fa-times"></i></a>
+            {{else}}
+
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
 
 
-            </tbody>
-        </table>
-    </div>
+      </tbody>
+    </table>
+  </div>
 
-<script>
-  $(document).ready(function() {
-    $('#reportBtn').on('click', function() {
-      window.open('/categories/report', '_blank');
+  <script>
+    $(document).ready(function () {
+      $('#reportBtn').on('click', function () {
+        window.open('/categories/report', '_blank');
+      });
     });
-  });
-</script>
+  </script>
 
-    <!-- Підключаємо jQuery та Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Підключаємо jQuery та Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </body>

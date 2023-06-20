@@ -10,7 +10,6 @@ const connection = require('../utils/database');
 function isAuthenticated(req, res, next) {
   if (req.session.isAuthenticated) {
     const user_id = req.session.user_id;
-    console.log(user_id);
 
     const query = `
     SELECT empl_name, empl_surname, id_employee FROM employee WHERE login = '${user_id}'
@@ -24,7 +23,6 @@ function isAuthenticated(req, res, next) {
         res.locals.user_id = user_id;
         res.locals.user_empl_id = `${id_employee}`;
         res.locals.user_name = `${empl_name} ${empl_surname}`;
-        console.log( res.locals.user_name);
       }
       next();
     });

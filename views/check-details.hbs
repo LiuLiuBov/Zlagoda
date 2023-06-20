@@ -10,33 +10,36 @@
             <div class="col-md-6">
                 <div class="check">
                     <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>UPC</th>
-                    <th>Назва товару</th>
-                    <th>Кількість</th>
-                    <th>Ціна</th>
-                    <th>Вартість</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="categories-table">
-                {{#each products}}
-                <tr>
-                    <td>{{store_product.UPC}}</td>
-                    <td>{{product.product_name}}</td>
-                    <td>{{sale.product_number}}</td>
-                    <td>{{sale.seling_price}}</td>
-                    <td>{{sale.seling_price}}</td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-        </div>
-    </div>
+                        <thead>
+                            <tr>
+                                <th>UPC</th>
+                                <th>Назва товару</th>
+                                <th>Кількість</th>
+                                <th>Ціна</th>
+                                <th>Вартість</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table">
+                        <tbody id="categories-table">
+                            {{#each sale}}
+                           <tr>
+ <td>{{UPC}}</td>
+    <td>{{product_name}}</td>
+    <td>{{product_number}}</td>
+    <td>{{seling_price}}</td>
+    <td>{{total_cost}}</td>
+  </tr>
+                            {{/each}}
+                        </tbody>
 
-    <!-- Підключаємо jQuery та Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Підключаємо jQuery та Bootstrap JS -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
