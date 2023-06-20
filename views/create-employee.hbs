@@ -1,5 +1,5 @@
 <head>
-<link rel="stylesheet" href="/create.css">
+    <link rel="stylesheet" href="/create.css">
 </head>
 
 <body>
@@ -59,11 +59,22 @@
         </div>
         <div class="form-group">
             <label for="addemplpassword">Пароль для входу в систему:</label>
-            <input type="text" id="addemplpassword" name="addemplpassword" class="form-control" required pattern=".{8,}">
+            <input type="text" id="addemplpassword" name="addemplpassword" class="form-control" required
+                pattern=".{8,}">
         </div>
-         
+
         <button type="submit" class="btn btn-primary">Додати</button>
     </form>
+    <script>
+        var today = new Date();
+        var minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+        var dateOfBirthInput = document.getElementById("addempldateofbirth");
+        dateOfBirthInput.max = minDate.toISOString().split('T')[0];
+        var dateOfStart = document.getElementById("addempldateofstart");
+        dateOfStart.max = today.toISOString().split('T')[0];
+    </script>
+
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -71,5 +82,5 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Підключаємо власний JavaScript -->
     <script src="customers.js"></script>
-    
-    </body>
+
+</body>

@@ -1,5 +1,8 @@
 <head>
     <link rel="stylesheet" href="/employees.css">
+     <script>
+        var today = new Date().toISOString().split('T')[0];
+    </script>
 </head>
 
 <body>
@@ -39,7 +42,7 @@
 
 <script>
             function load_data(query = '') {
-                fetch('/get_data?search_query=' + query + '').then(function (res) {
+                fetch('/employees/get_data?search_query=' + query + '').then(function (res) {
                     return res.json();
                 }).then(function (responseData) {
                     var html = '<ul class="list-group">';
