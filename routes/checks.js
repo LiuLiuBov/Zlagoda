@@ -21,14 +21,15 @@ router.get('/checks', auth, checkcashier, (req, res) => {
       if (err) throw err;
 
       console.log(result);
-      res.render('checks', { 'checks': result });
+      res.render('checks', { 'checks': result, 'iscashier': res.locals.iscashier,
+      'ismanager': res.locals.ismanager });
     });
   });
 });
 
 
 
-router.get('/checks/add', auth, (req, res) => {
+router.get('/checks/add', auth, checkcashier, (req, res) => {
   const user_name = res.locals.user_name;
   const user_id = res.locals.user_id;
   const user_empl_id = res.locals.user_empl_id;
@@ -43,7 +44,8 @@ router.get('/checks/add', auth, (req, res) => {
       connection.query(getAllProducts, (err, products) => {
         if (err) throw err;
 
-        res.render('create-check', { user_name, user_id, user_empl_id, checkNumber, products });
+        res.render('create-check', { user_name, user_id, user_empl_id, checkNumber, products,         'iscashier': res.locals.iscashier,
+        'ismanager': res.locals.ismanager  });
       });
     });
   });
