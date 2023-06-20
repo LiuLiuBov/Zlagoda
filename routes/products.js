@@ -275,7 +275,7 @@ function errorNotification(str) {
       const category = products[i];
       const categoryRow = `
       <tr>
-        <td style="width: min-content;">${category.product}</td>
+        <td style="width: min-content;">${category.id_product}</td>
         <td>${category.category_name}</td>
         <td>${category.product_name}</td>
         <td>${category.caracteristics}</td>
