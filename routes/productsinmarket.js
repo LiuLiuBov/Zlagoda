@@ -23,9 +23,40 @@ router.get('/productsinmarket', auth, checkcashier, (req, res) => {
     res.render('productsinmarket', { 'productsinmarket': result,
     "iscashier": res.locals.iscashier,
     "ismanager": res.locals.ismanager 
- });
+    });
   });
 });
+
+router.post('/productsinmarket', auth, checkcashier, (req, res) => {
+    const sortCriteria = req.body.sortCriteria || 'product_name'; 
+    const sortSale = req.body.sortsale || ''; 
+  
+    let orderByClause = '';
+  
+    if (sortCriteria === 'product_name') {
+      orderByClause = `ORDER BY p.product_name`;
+    } else if (sortCriteria === 'products_number') {
+      orderByClause = `ORDER BY sp.products_number`;
+    }
+  
+    const getAllProducts = `
+      SELECT sp.*, p.product_name, p.caracteristics, c.category_name
+      FROM store_product AS sp
+      INNER JOIN product AS p ON sp.id_product = p.id_product
+      INNER JOIN category AS c ON p.category_number = c.category_number
+      ${orderByClause}
+    `;
+  
+    connection.query(getAllProducts, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.render('productsinmarket', {
+        "productsinmarket": result,
+        "iscashier": res.locals.iscashier,
+        "ismanager": res.locals.ismanager
+      });
+    });
+  });
 
   router.get('/productsinmarket/add', auth, (req, res,) => {
     const getAllProducts = "SELECT * FROM product";
