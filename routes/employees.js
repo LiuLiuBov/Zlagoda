@@ -5,14 +5,15 @@ const connection = require('../utils/database')
 const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid')
 const checkmanager = require('../middleware/ismanager')
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/employees', auth, checkmanager, (req, res,) => {
+router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
     const getAllEmployees = "SELECT * FROM employee ORDER BY empl_surname";
     connection.query(getAllEmployees, (err, result) => {
         if(err) throw err;
         //res.send(result)
         console.log(result);
-        res.render('employees', { 'employees': result });
+        res.render('employees', { 'employees': result, "ismanager": res.locals.ismanager });
     })
 })
 

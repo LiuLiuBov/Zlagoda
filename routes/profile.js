@@ -4,8 +4,9 @@ const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid');
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/profile', auth, (req, res,) => {
+router.get('/profile', auth, checkcashier, (req, res,) => {
     const user_id = res.locals.user_id;
     const getAllEmployees = `
     SELECT * FROM employee WHERE login = '${user_id}' 
