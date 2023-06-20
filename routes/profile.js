@@ -57,6 +57,7 @@ router.get('/profile/change-password', auth, checkcashier, (req, res) => {
             });
                 } else {
                     errorNotification('Неправильний пароль!');
+                    
                 }
               });              
         } 
