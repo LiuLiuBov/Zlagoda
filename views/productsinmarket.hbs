@@ -10,14 +10,17 @@
             <option value="product_name">Назвою товарів</option>
             <option value="products_number">Кількістю товарів</option>
         </select>
+        <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
     </form>
 
-    <div class="checkbox-container">
+    <!--<div class="checkbox-container">
         <label for="sort-name">за зростанням</label>
         <input type="checkbox" id="sort-name" name="sort-name">
         <label for="sort-quantity">за спаданням</label>
         <input type="checkbox" id="sort-quantity" name="sort-quantity">
-    </div>
+    </div>-->
     {{#if ismanager}}
     <a href="/productsinmarket/add" class="btn btn-primary">Додати товар</a>
     {{/if}}
