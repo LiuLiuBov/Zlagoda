@@ -4,16 +4,17 @@ const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 var notifier = require('node-notifier')
 const path = require('path');
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/products', auth, (req, res,) => {
+router.get('/products', auth, checkcashier, (req, res,) => {
     const getAllProducts = "SELECT p.id_product, p.category_number, c.category_name, p.product_name, p.caracteristics FROM product p JOIN category c ON p.category_number = c.category_number ORDER BY p.product_name";
     connection.query(getAllProducts, (err, result) => {
         if (err) throw err;
-        //res.send(result)
-        console.log(result);
+ 
         res.render('products', { 'products': result, 
-        "iscashier": res.locals.iscashier,
-        "ismanager": res.locals.ismanager  });
+        'iscashier': res.locals.iscashier,
+        'ismanager': res.locals.ismanager
+      });
     })
 
 })

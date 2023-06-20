@@ -4,8 +4,9 @@ const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const { v4: uuidv4 } = require('uuid');
 const checkmanager = require('../middleware/ismanager')
+const checkcashier = require('../middleware/iscashier')
 
-router.get('/customers', auth, (req, res,) => {
+router.get('/customers', auth, checkcashier, (req, res,) => {
   const getAllCustomers = "SELECT * FROM customer_card ORDER BY cust_surname";
     connection.query(getAllCustomers, (err, result) => {
         if(err) throw err;
