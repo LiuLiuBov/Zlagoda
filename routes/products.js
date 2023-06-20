@@ -19,6 +19,31 @@ router.get('/products', auth, checkcashier, (req, res,) => {
 
 })
 
+router.post('/products', auth, checkcashier, (req, res) => {
+    const { searchproduct, category } = req.body;
+
+    let getEmployees = "SELECT * FROM product as p INNER JOIN category c ON p.category_number = c.category_number WHERE 1=1 ";
+    const categoriesQuery = "SELECT * FROM category";
+    
+    connection.query(categoriesQuery, (err, categories) => {
+        if (err) throw err;
+        
+        if (searchproduct) {
+            getEmployees += ` AND product_name = '${searchproduct}'`;
+        }
+        if (category && category !== "none") {
+            getEmployees += ` AND category_number = '${category}'`;
+        }
+
+        connection.query(getEmployees, (err, result) => {
+            if (err) throw err;
+            console.log(result);
+            res.render('products', { 'products': result, 'categories': categories });
+        });
+    });
+});
+
+
 router.get('/products/add', auth, (req, res,) => {
     const getAllCategories = "SELECT * FROM category";
 
