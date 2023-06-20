@@ -4,11 +4,15 @@
 
 <body>
     <h1 class="my-5">Продукти в магазині</h1>
-    <form action="/productsinmarket" method="get">
+    <form action="/productsinmarket" method="post">
         <label for="sortCriteria">Сортувати за:</label>
         <select name="sortCriteria" id="sortCriteria">
             <option value="product_name">Назвою товарів</option>
             <option value="products_number">Кількістю товарів</option>
+        </select>
+        <select name="sortsale" id="sortsale">
+            <option value="onsale">Акційний</option>
+            <option value="notonsale">Не акційний</option>
         </select>
         <button class="btn btn-outline-secondary" type="submit">
                     <i class="fas fa-search"></i>
