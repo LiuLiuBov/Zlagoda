@@ -5,48 +5,26 @@
 <body>
 <div>
     <h1 class="my-5">Товари</h1>
-    
+
+    <form action="/products" method="POST">
+        <div class="form-group">
+            <label for="searchbycategory">Пошук за категорією:</label>
+            <select id="searchbycategory" name="searchbycategory" class="form-control" required>
+                {{#each categories}}
+                <option value="{{this.category_number}}">{{this.category_number}} {{this.category_name}}</option>
+                {{/each}}
+            </select>
+            <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+        </div>
+        </form>
 
     <div class="container"></div>
     {{#if ismanager}}
     <a href="/products/add" class="btn btn-primary">Додати товар</a>
     {{else}}
     {{/if}}
-    <div class="col-md-4">
-        <div class="input-group">
-          {{#if iscashier}}
-                <form action="/products" method="POST">
-                    <input type="text" id="searchproduct" name="searchproduct" class="form-control"
-                        placeholder="Пошук за назвою товару">  
-                    <button class="btn btn-outline-secondary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-                {{else}}
-                 {{/if}}
-                  </div>
-            </div>
-<div id="select-category">
-    <form action="/products" method="POST">
-        <label for="category">Пошук за категорією:</label>
-        <select id="category" name="category">
-            <option value="none"></option>
-            {{#each categories}}
-            <option value="{{categories.category_number}}">{{categories.category_name}}</option>
-            {{/each}}
-        </select>
-    </form>
-</div>
-
-
-                <button class="btn btn-outline-secondary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </div>
-            </div>
-    
-    
 </div>
 <div class="table-responsive">
     <table class="table table-striped">
