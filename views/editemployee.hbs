@@ -34,10 +34,11 @@
                 class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editempldateofbirth">Дата народження:</label>
-            <input type="date" id="editempldateofbirth" name="editempldateofbirth"
-                value="{{defaultDate employee.date_of_birth 'YYYY-MM-DD'}}" class="form-control" required>
-        </div>
+    <label for="editempldateofbirth">Дата народження:</label>
+    <input type="date" id="editempldateofbirth" name="editempldateofbirth"
+        value="{{ formatDate employee.date_of_birth }}" class="form-control" required>
+</div>
+
         <div class="form-group">
             <label for="editempldateofstart">Дата початку роботи:</label>
             <input type="date" id="editempldateofstart" name="editempldateofstart"
