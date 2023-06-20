@@ -5,7 +5,20 @@
 <body>
 <div>
     <h1 class="my-5">Товари</h1>
-    
+
+    <form action="/products" method="POST">
+        <div class="form-group">
+            <label for="searchbycategory">Пошук за категорією:</label>
+            <select id="searchbycategory" name="searchbycategory" class="form-control" required>
+                {{#each categories}}
+                <option value="{{this.category_number}}">{{this.category_number}} {{this.category_name}}</option>
+                {{/each}}
+            </select>
+            <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+        </div>
+        </form>
 
     <div class="container"></div>
     {{#if ismanager}}
