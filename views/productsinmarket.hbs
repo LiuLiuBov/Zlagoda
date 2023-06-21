@@ -4,7 +4,11 @@
 
 <body>
     <h1 class="my-5">Продукти в магазині </h1>
+            {{#if ismanager}}
+            <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
 
+            {{else}}
+            {{/if}}
     <div class="col-md-4">
         <div class="input-group">
             <form action="/productsinmarket" method="POST">
@@ -151,7 +155,6 @@
                 <thead>
                     <tr>
                         <th>UPC</th>
-                        <th>UPC_prom</th>
                         <th>Категорія</th>
                         <th>Товар</th>
                         <th>Вартість</th>
@@ -165,7 +168,6 @@
                     {{#each productsinmarket}}
                     <tr>
                         <td>{{this.UPC}}</td>
-                        <td>{{this.UPC_prom}}</td>
                         <td>{{this.category_name}}</td>
                         <td>{{this.product_name}}</td>
                         <td>{{this.selling_price}}</td>
@@ -199,6 +201,14 @@
         <a href="/productsinmarket/summary" class="btn btn-primary">Знайти кількість товару в кожній категорії</a>
         {{/if}}
 
+
+    <script>
+        $(document).ready(function () {
+            $('#reportBtn').on('click', function () {
+                window.open('/productsinmarket/report', '_blank');
+            });
+        });
+    </script>
 
         <!-- Підключаємо jQuery та Bootstrap JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
