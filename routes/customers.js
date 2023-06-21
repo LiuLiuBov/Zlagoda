@@ -40,15 +40,20 @@ router.post('/customers', auth, checkcashier, (req, res) => {
         WHERE pr1.category_number IN (
           SELECT category_number
           FROM category
-          WHERE category_name = '${searchbycategorybought}'
+          WHERE category_number = '${searchbycategorybought}'
         )
         AND pr1.id_product NOT IN (
           SELECT id_product
           FROM \`check\`
           INNER JOIN sale ON \`check\`.check_number = sale.check_number
           INNER JOIN store_product ON store_product.UPC = sale.UPC
-          WHERE customer_card.card_number = \`check\`.card_number
-            AND pr1.id_product = store_product.id_product
+          WHERE card_number = Customer_Card.card_number AND pr1.id_product IN (SELECT pr2.id_product 
+          FROM Product pr2 
+          WHERE pr2.category_number IN (
+          SELECT category_number  
+          FROM Category
+          WHERE category_number = '${searchbycategorybought}') )
+ 
         )
       )`;
     }

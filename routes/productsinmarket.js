@@ -311,4 +311,28 @@ function errorNotification(str) {
     })
 }
 
+router.get('/productsinmarket/summary', auth, checkcashier, function (req, res, next) {
+
+
+    const getInfo = `
+    SELECT c.category_number, SUM(sp.products_number) AS total_products
+    FROM (store_product AS sp
+    INNER JOIN product AS p ON sp.id_product = p.id_product)
+    INNER JOIN category AS c ON p.category_number = c.category_number
+    GROUP BY c.category_number
+    `;
+
+    connection.query(getInfo, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.render('summary', {
+            'info': result,
+            'iscashier': res.locals.iscashier,
+            'ismanager': res.locals.ismanager
+        });
+    });
+
+
+});
+
 module.exports = router
