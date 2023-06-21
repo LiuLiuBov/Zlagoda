@@ -66,11 +66,32 @@ router.get('/productsinmarket/get_data', auth, checkcashier, function (req, res,
     });
 
 });
+router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
+    const { searchsurname, occupation } = req.body;
+    console.log(searchsurname);
+    console.log(occupation);
+  
+    let getEmployees = "SELECT * FROM employee WHERE 1=1 ";
+  
+    if (searchsurname) {
+      getEmployees += ` AND empl_surname = '${searchsurname}'`;
+    }
+  
+    if (occupation && occupation !== "none") {
+      getEmployees += ` AND empl_role = '${occupation}'`;
+    }
+  
+    connection.query(getEmployees, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
+      'ismanager': res.locals.ismanager });
+    });
+  });
 
-
-router.post('/productsinmarket', auth, checkmanager, (req, res) => {
-    const { searchupc } = req.body;
-    console.log(searchupc);
+router.post('/productsinmarket', auth, checkmanager, checkcashier, (req, res) => {
+    const { searchupc, sortsale, sortCriteria} = req.body;
+    console.log(sortsale);
 
     let getProducts = `
   SELECT sp.*, p.product_name, p.caracteristics, c.category_name
@@ -84,6 +105,16 @@ router.post('/productsinmarket', auth, checkmanager, (req, res) => {
         getProducts += ` AND sp.UPC = '${searchupc}'`;
     }
 
+    if (sortsale && sortsale !== "none") {
+        getProducts += ` AND sp.promotional_product = '${sortsale}'`;
+      }
+      if (sortCriteria && sortCriteria !== "none") {
+        if(sortCriteria == "products_number"){
+            getProducts += ` ORDER BY sp.${sortCriteria} DESC`;
+        } else {
+        getProducts += ` ORDER BY p.${sortCriteria} `;
+        }
+      }
     connection.query(getProducts, (err, result) => {
         if (err) throw err;
         console.log(result);
@@ -96,7 +127,7 @@ router.post('/productsinmarket', auth, checkmanager, (req, res) => {
 });
 
 
-router.get('/productsinmarket/add', auth, checkcashier,  (req, res,) => {
+router.get('/productsinmarket/add', auth, checkmanager, checkcashier,  (req, res,) => {
     const getAllProducts = "SELECT p.* FROM product AS p";
     const getAllProductsInStore = "SELECT * FROM store_product AS st INNER JOIN product AS p ON st.id_product = p.id_product ";
 
@@ -129,12 +160,13 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
     let queryInsert ;
     let a ;
     let addUPCPRO;
+    let price;
     let shouldNotAddProduct = false;
 
 
     if (promotionalProduct === 1) {
         if (addproduct) {
-            const querySelectUPC = `SELECT UPC FROM store_product WHERE id_product ='${addproduct}'`;
+            const querySelectUPC = `SELECT UPC, selling_price FROM store_product WHERE id_product ='${addproduct}'`;
             connection.query(querySelectUPC, [addproduct], (error, results) => {
                 if (results.length < 1) {
                     errorNotification('Не можна визначити акційний товар!');
@@ -142,12 +174,15 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
                     return;
                 }
                 const selectedUPC = results[0].UPC;
+                const selectedPRICE = results[0].selling_price * 0.8;
                 addUPCPRO = selectedUPC;
+                price = selectedPRICE;
                 console.log(addUPCPRO);
     
                 queryInsert = "INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, products_number, promotional_product) VALUES (?, ?, ?, ?, ?, ?)";
-                const values = [addUPC, addUPCPRO, addproduct, addproductinmarketsellingprice, addproductinmarketnumber, promotionalProduct];
+                const values = [addUPC, addUPCPRO, addproduct, price, addproductinmarketnumber, promotionalProduct];
                 connection.query(queryInsert, values, (error, results) => {
+                    errorNotification('Акційну ціну було вирахувано за формулою!');
                     res.redirect('/productsinmarket');
                 });
             });

@@ -3,6 +3,11 @@
 </head>
 
   <h1 class="my-5">Клієнти</h1>
+              {{#if ismanager}}
+            <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
+
+            {{else}}
+            {{/if}}
   <div class="row">
 
     <a href="/customers/add" class="btn btn-primary">Додати нового клієнта</a>
@@ -65,6 +70,14 @@
       </tbody>
     </table>
   </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#reportBtn').on('click', function () {
+                window.open('/customers/report', '_blank');
+            });
+        });
+    </script>
 
   <form action="/customers" method="POST">
   <div class="form-group">

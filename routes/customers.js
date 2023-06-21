@@ -5,6 +5,9 @@ const connection = require('../utils/database')
 const { v4: uuidv4 } = require('uuid');
 const checkmanager = require('../middleware/ismanager')
 const checkcashier = require('../middleware/iscashier')
+const path = require('path');
+const pdf = require('html-pdf');
+const fs = require('fs');
 
 router.get('/customers', auth, checkcashier, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
@@ -195,4 +198,173 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
     });
   });
 
+  router.get('/customers/report', auth, (req, res) => {
+    const getAllCategories = "SELECT * FROM customer_card ORDER BY cust_name";
+    connection.query(getAllCategories, (err, result) => {
+      if (err) throw err;
+  
+      const categories = result;
+      const templatePath = path.join(__dirname, 'report-template.html');
+      const template = fs.readFileSync(templatePath, 'utf-8');
+  
+      const reportHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <style>
+          body {
+            font-family: Times New Roman, sans-serif;
+            margin: 0;
+            padding: 0;
+          }
+          h1 {
+            text-align: center;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; 
+          }
+          
+          th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            word-wrap: break-word;
+            width: min-content; 
+            font-size: 12px;
+          }
+          
+          .header-row {
+            font-weight: bold;
+          }
+          
+          .page-break {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 50px;
+          }
+          
+          </style>
+      </head>
+      <body>
+          <header>
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+            <h1>Звіт "Клієнти"</h1>
+          </header>
+          ${generateTable(categories)}
+      </body>
+      </html>
+    `;
+    
+      const options = { format: 'Letter' };
+      const tempHTMLPath = path.join(__dirname, 'temp-report.html');
+      fs.writeFileSync(tempHTMLPath, reportHTML, 'utf-8');
+  
+      pdf.create(fs.readFileSync(tempHTMLPath, 'utf-8'), options).toBuffer((err, buffer) => {
+        if (err) throw err;
+  
+        fs.unlinkSync(tempHTMLPath);
+  
+        res.set({
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': 'inline; filename=report.pdf'
+        });
+        res.send(buffer);
+      });
+  
+    });
+  });
+  
+  function generateTable(categories) {
+    let pageNumber = 1;
+    let tableHTML = '';
+    let currentPageHeight = 1050;
+  
+    for (let i = 0; i < categories.length; i++) {
+      const category = categories[i];
+      const categoryRow = `
+        <tr>
+          <td>${category.cust_name}</td>
+          <td>${category.cust_surname}</td>
+          <td>${category.cust_patronymic}</td>
+          <td>${category.phone_number}</td>
+          <td>${category.city}</td>
+          <td>${category.street}</td>
+          <td>${category.zip_code}</td>
+          <td>${category.percent}%</td>
+        </tr>
+        `;
+  
+      if (currentPageHeight <= 200) {
+        tableHTML += `
+            </tbody></table><div class="page-break">
+            <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 15px;">${pageNumber}</p>
+            </div><table>
+            <tbody>   
+          `;
+        tableHTML += `
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+            <p style="margin-top: 90px; margin-bottom: 30px;"></p>
+            <tr class="header-row">
+              <th>Ім'я</th>
+              <th>Прізвище</th>
+              <th>По батькові</th>
+              <th>Тел</th>
+              <th>Місто</th>
+              <th>Вулиця</th>
+              <th>Індекс</th>
+              <th>Відсоток знижки</th>
+            </tr>
+          `;
+        currentPageHeight = 1050;
+        pageNumber++;
+      }
+  
+      currentPageHeight -= 40;
+      tableHTML += categoryRow;
+      if (i === categories.length - 1) {
+  
+        let lastPageNumber = pageNumber;
+        tableHTML += `
+            </tbody></table><div class="page-break">
+            
+          `;
+  
+        while (currentPageHeight > 199) {
+          tableHTML += '<p style= "color: #fff;">a</p>';
+          currentPageHeight -= 41;
+        }
+        tableHTML += `
+          <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 5px;">${lastPageNumber}</p>
+          </div>
+        `;
+      }
+    }
+  
+    return `
+        <table>
+          <thead>
+            <tr class="header-row">
+             <th>Ім'я</th>
+              <th>Прізвище</th>
+              <th>По батькові</th>
+              <th>Тел</th>
+              <th>Місто</th>
+              <th>Вулиця</th>
+              <th>Індекс</th>
+              <th>Відсоток знижки</th>
+          </tr>
+          </thead>
+          <tbody>
+            ${tableHTML}
+          </tbody>
+        </table>
+      `;
+  }
+  
+  
 module.exports = router
