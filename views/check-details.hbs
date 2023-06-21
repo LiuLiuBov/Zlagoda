@@ -4,6 +4,9 @@
 
 <body>
     <h1 class="my-5">Магазин "ZLAGODA"</h1>
+        {{#if ismanager}}
+  <button id="reportBtn" class="btn btn-primary btn-sm">Роздрукувати</button>
+  {{/if}}
     <h2>№{{checknumber}}</h2>
     <div class="container">
         <div class="row">
@@ -38,6 +41,15 @@
                 </div>
             </div>
 
+        <script>
+$(document).ready(function () {
+  $('#reportBtn').on('click', function () {
+    var categoryNumber = {{checknumber}}; 
+    window.open("/check/report/" + categoryNumber, '_blank');
+  });
+});
+
+  </script>
             <!-- Підключаємо jQuery та Bootstrap JS -->
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

@@ -66,7 +66,7 @@ router.get('/productsinmarket/get_data', auth, checkcashier, function (req, res,
     });
 
 });
-router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
+/*router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
     const { searchsurname, occupation } = req.body;
     console.log(searchsurname);
     console.log(occupation);
@@ -87,7 +87,7 @@ router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
       res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
       'ismanager': res.locals.ismanager });
     });
-  });
+  });*/
 
 router.post('/productsinmarket', auth, checkmanager, checkcashier, (req, res) => {
     const { searchupc, sortsale, sortCriteria} = req.body;

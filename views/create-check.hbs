@@ -41,6 +41,15 @@
         <input type="hidden" name="user_empl_id" value="{{user_empl_id}}">
         <input type="hidden" name="totalCost" id="total_cost_input">
         <input type="hidden" name="vat" id="vat_input">
+        <div class="form-group">
+            <label for="addcard">Картка клієнта:</label>
+           <select id="addcard" name="addcard" class="form-control" required>
+            <option value="null"></option>
+                {{#each cards}}
+                <option value="{{this.card_number}}">{{this.cust_surname}}</option>
+                {{/each}}
+            </select>
+        </div>
         <form id="submitForm">
             <button type="submit" class="btn btn-primary" id="submitButton">Зберегти чек</button>
         </form>
