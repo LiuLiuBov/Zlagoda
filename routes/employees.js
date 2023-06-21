@@ -12,6 +12,7 @@ const fs = require('fs');
 
 router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
   const getAllEmployees = "SELECT * FROM employee ORDER BY empl_surname";
+  
   connection.query(getAllEmployees, (err, result) => {
     if (err) throw err;
     //res.send(result)
@@ -20,7 +21,7 @@ router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
   })
 })
 
-router.get('/employees/get_data', auth, function(req, res, next){
+router.get('/employees/get_data', auth, function (req, res, next) {
 
   var search_query = req.query.search_query;
   var query = `
@@ -29,14 +30,14 @@ router.get('/employees/get_data', auth, function(req, res, next){
   LIMIT 10
   `;
 
-  connection.query(query, function(error, data){
-      res.json(data);
+  connection.query(query, function (error, data) {
+    res.json(data);
 
   });
 
 });
 router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
-  const { searchsurname, occupation } = req.body;
+  const { searchsurname, occupation, startDate, endDate } = req.body;
   console.log(searchsurname);
   console.log(occupation);
 
@@ -50,17 +51,37 @@ router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
     getEmployees += ` AND empl_role = '${occupation}'`;
   }
 
-  connection.query(getEmployees, (err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
-    'ismanager': res.locals.ismanager });
+  let getTop = `SELECT Employee.*, COUNT(Employee.id_employee) AS nmb
+  FROM Employee
+  INNER JOIN \`Check\` ON Employee.id_employee = \`Check\`.id_employee
+  WHERE 1=1`;
+
+if (startDate && startDate !== "none") {
+  getTop += ` AND \`Check\`.print_date BETWEEN '${startDate}' AND '${endDate}' `;
+}
+
+getTop += `
+  GROUP BY Employee.id_employee, Employee.empl_surname, Employee.empl_name
+  ORDER BY COUNT(Employee.id_employee) DESC
+  LIMIT 1`;
+
+  connection.query(getEmployees , (err, empl) => {
+connection.query(getTop, (err, Results) => {
+  if (err) throw err;
+  res.render('employees', {
+    'employees': empl, 'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager
   });
+});
+});
+
 });
 
 router.get('/employees/add', auth, checkmanager, checkcashier, (req, res,) => {
-  res.render('create-employee', {         'iscashier': res.locals.iscashier,
-  'ismanager': res.locals.ismanager,})
+  res.render('create-employee', {
+    'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager,
+  })
 })
 
 router.post('/employees/adding', auth, checkmanager, async (req, res) => {
@@ -271,7 +292,7 @@ router.get('/employees/report', auth, (req, res) => {
     </body>
     </html>
   `;
-  
+
     const options = { format: 'Letter' };
     const tempHTMLPath = path.join(__dirname, 'temp-report.html');
     fs.writeFileSync(tempHTMLPath, reportHTML, 'utf-8');

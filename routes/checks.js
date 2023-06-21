@@ -448,4 +448,5 @@ function generateTable(categories) {
   `;
 }
 
+
 module.exports = router

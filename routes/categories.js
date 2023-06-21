@@ -32,6 +32,37 @@ router.get('/categories', auth, checkcashier, (req, res,) => {
 
 })
 
+router.post('/categories', auth, checkmanager, checkcashier, (req, res) => {
+  const { occupation} = req.body;
+
+  let getCategories = `
+  SELECT Category.category_number, Category.category_name
+FROM  Category
+WHERE NOT EXISTS (SELECT Product.id_product
+                                         FROM Product
+                                         WHERE Product.category_number = Category.category_number  AND 
+                                                          NOT EXISTS  (SELECT Store_Product.id_product
+                                                                                    FROM Store_Product
+                                                                                    WHERE Product.id_product= Store_Product.id_product AND   
+                                                                                                    Store_Product.promotional_product = 1 
+                                                                                     )
+                                           )
+
+  
+`;
+
+
+  connection.query(getCategories, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.render('categories', {
+          'categories': result,
+          'iscashier': res.locals.iscashier,
+          'ismanager': res.locals.ismanager
+      });
+  });
+});
+
 router.post('/categories/add', auth, checkmanager, async (req, res) => {
   const { catname } = req.body;
 
@@ -70,6 +101,8 @@ router.get('/categories/delete/:category_number', auth, checkmanager, (req, res)
     }
   });
 });
+
+
 
 router.get('/categories/edit/:category_number', auth, checkmanager, (req, res) => {
   const categoryNumber = req.params.category_number;
