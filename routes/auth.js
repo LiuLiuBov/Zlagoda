@@ -2,6 +2,8 @@ const { Router } = require('express');
 const router = Router();
 const connection = require('../utils/database');
 const bcrypt = require('bcryptjs')
+var notifier = require('node-notifier')
+const path = require('path');
 
 router.get('/login', (req, res) => {
   res.render('auth/login', { layout: 'noLayout'/*, session: req.session*/ });
@@ -29,7 +31,7 @@ router.post('/login', (req, res) => {
             req.session.isAuthenticated = true;
             return res.redirect('/');
           } else {
-            res.send('Incorrect password');
+            errorNotification('Неправильний пароль');
           }
         });
       }
@@ -69,5 +71,17 @@ router.get('/logout', (req, res) => {
     next();
   }
 });*/
+
+function errorNotification(str) {
+
+  notifier.notify({
+    title: 'Помилка!',
+    message: str,
+    icon: path.join('./routes/images/error.png'),
+    wait: true,
+    sound: true,
+    appID : 'ZLAGODA'
+  })
+}
 
 module.exports = router;
