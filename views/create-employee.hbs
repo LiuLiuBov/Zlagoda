@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             <label for="addemplsalary">Заробітня плата:</label>
-            <input type="number" id="addemplsalary" min="0" name="addemplsalary" class="form-control" required>
+            <input type="number" id="addemplsalary" min="0" name="addemplsalary" class="form-control" pattern="[0-9]+"  required >
         </div>
         <div class="form-group">
             <label for="addempldateofbirth">Дата народження:</label>
@@ -40,7 +40,7 @@
         </div>
         <div class="form-group">
             <label for="addemplphone">Номер телефону:</label>
-            <input type="text" id="addemplphone" name="addemplphone" class="form-control" required>
+            <input type="text" id="addemplphone" name="addemplphone" class="form-control" maxlength="13" required >
         </div>
         <div class="form-group">
             <label for="addemplcity">Місто:</label>

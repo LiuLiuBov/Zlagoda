@@ -4,9 +4,12 @@ const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 var notifier = require('node-notifier')
 const path = require('path')
+const pdf = require('html-pdf');
+const fs = require('fs');
 const checkcashier = require('../middleware/iscashier')
 
 router.get('/checks', auth, checkcashier, (req, res) => {
+  const getAllEmpl = "SELECT * FROM employee ORDER BY empl_surname";
   const deleteZeroTotalChecks = "DELETE FROM `check` WHERE sum_total = 0";
   const getAllChecks = "SELECT ch.*, e.empl_surname FROM `check` AS ch INNER JOIN employee AS e ON ch.id_employee = e.id_employee";
   const user_empl_id = res.locals.user_empl_id;
@@ -14,6 +17,7 @@ router.get('/checks', auth, checkcashier, (req, res) => {
   const user_id = res.locals.user_id;
   console.log(user_id);
 
+  connection.query(getAllEmpl, (err, employees) => {
   connection.query(deleteZeroTotalChecks, (err) => {
     if (err) throw err;
 
@@ -22,31 +26,56 @@ router.get('/checks', auth, checkcashier, (req, res) => {
 
       console.log(result);
       res.render('checks', { 'checks': result, 'iscashier': res.locals.iscashier,
+      'employees':employees,
       'ismanager': res.locals.ismanager });
     });
-  });
-});
+  })
+})
+})
+
 
 router.post('/checks', auth, checkcashier, (req, res) => {
-  const { searchnumber} = req.body;
-  console.log(searchnumber);
-
-  let getChecks = "SELECT * FROM `check` WHERE 1=1 ";
-
+  const getAllEmpl = "SELECT * FROM employee ORDER BY empl_surname";
+  const { searchnumber, searchbycategory, startDate, endDate, today} = req.body;
+  let getChecks ="SELECT ch.*, e.empl_surname FROM `check` AS ch INNER JOIN employee AS e ON ch.id_employee = e.id_employee WHERE 1=1";
   if (searchnumber) {
-    getChecks += ` AND check_number = '${searchnumber}'`;
+    getChecks += ` AND ch.check_number = '${searchnumber}'`;
+  }
+  if (searchbycategory && searchbycategory !== "none") {
+    getChecks += ` AND e.id_employee = '${ searchbycategory}'`;
   }
 
+  if (startDate && startDate !== "none") {
+    getChecks += ` AND ch.print_date BETWEEN '${ startDate}' AND' ${ endDate}'`;
+  }
+  var current_datetime = new Date();
+  if (today) {
+    getChecks += ` AND ch.print_date = '${current_datetime}`;
+  }
+
+  connection.query(getAllEmpl, (err, employees) => {
   connection.query(getChecks, (err, result) => {
     if (err) throw err;
     console.log(result);
     res.render('checks', { 'checks': result,
+    'employees': employees,
     'iscashier': res.locals.iscashier,
     'ismanager': res.locals.ismanager });
   });
 });
+});
 
+router.get('/checks/get_data', auth, function(req, res, next){
+  var search_query = req.query.search_query;
+  var query = `SELECT check_number FROM \`check\` WHERE check_number LIKE '%${search_query}%'  LIMIT 10`;
+  
 
+  connection.query(query, function(error, data){
+      res.json(data);
+
+  });
+
+});
 
 router.get('/checks/add', auth, checkcashier, (req, res) => {
   const user_name = res.locals.user_name;

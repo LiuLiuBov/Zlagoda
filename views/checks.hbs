@@ -3,46 +3,92 @@
 </head>
 
 <body>
+      </div>
     <h1 class="my-5">Чеки</h1>
-    <div class="container">
+    <form action="/checks" method="POST">
         {{#if iscashier}}
         <a href="/checks/add" class="btn btn-primary">Додати новий чек</a>
         {{/if}}
-    <div class="col-md-4">
         <div class="input-group">
-            <form action="/checks" method="POST">
-                <div class="input-group">
-                    <div class="container">
+                <div class="container">
                         <input type="text" id="searchnumber" name="searchnumber" class="form-control"
-                            placeholder="Введіть номер чеку">
+                            placeholder="Введіть номер чеку...">
                         <span id="search_result"></span>
                         <button class="btn btn-outline-secondary" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
+{{#if ismanager}}
         <div id="select-position">
-            <form action="/checks" method="POST">
-                <label for="occupation">Пошук за прізвищем:</label>
-                <select id="occupation" name="occupation">
+               <div class="form-group">
+                <label for="searchbycategory">Пошук за прізвищем касира:</label>
+                <select id="searchbycategory" name="searchbycategory" class="form-control" required>
                     <option value="none"></option>
-                    <option value="manager">Менеджер</option>
-                    <option value="cashier">Касир</option>
+                    {{#each employees}}
+                    <option value="{{this.id_employee}}"> {{this.empl_surname}}</option>
+                    {{/each}}
                 </select>
+            </div>
+            {{/if}}
                 <label for="startDate">За період:</label>
                 <input type="date" id="startDate" name="startDate">
                 <input type="date" id="endDate" name="endDate">
+                 {{#if iscashier}}
+                  <button id="today" class="btn btn-primary btn-sm">Продажі за сьогодні</button>
+                  {{/if}}
                 <button class="btn btn-outline-secondary" type="submit">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-        </div>
-    </div>
 
+  <script>
+            function load_data(query = '') {
+                fetch('/checks/get_data?search_query=' + query + '').then(function (res) {
+                    return res.json();
+                }).then(function (responseData) {
+                    var html = '<ul class="list-group">';
+
+                    if (responseData.length > 0) {
+                        for (var count = 0; count < responseData.length; count++) {
+                            var regular_expression = new RegExp('(' + query + ')', 'gi');
+                            html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].check_number.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
+                        }
+                    } else {
+                        html += '<a href="#" class="list-group-item list-group-item-action disabled">Чеків не знайдено</a>';
+                    }
+
+                    html += '</ul>';
+
+                    document.getElementById('search_result').innerHTML = html;
+                    if (query === '') {
+                        document.getElementById('search_result').style.display = 'none';
+                    } else {
+                        document.getElementById('search_result').style.display = 'block';
+                    }
+                });
+            }
+
+            var search_element = document.getElementById("searchnumber");
+
+            search_element.onkeyup = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            search_element.onfocus = function () {
+                var query = search_element.value;
+                load_data(query);
+            };
+
+            function get_text(event) {
+                var check_number = event.textContent;
+                console.log(product_name);
+                document.getElementById('searchnumber').value = check_number;
+                document.getElementById('search_result').innerHTML = '';
+                document.getElementById('search_result').style.display = 'none';
+            }
+        </script>
+  </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -71,7 +117,33 @@
         </table>
     </div>
 
-    <p class="mt-3">Всього: {{totalAmount}}</p>
+    <p class="mt-3">Всього: <span id="totalAmount"></span></p>
+
+<script>
+    function calculateTotalAmount() {
+    var sum = 0;
+    var amountElements = document.querySelectorAll("#checks-table td:nth-child(4)");
+
+    amountElements.forEach(function (element) {
+        var amount = parseFloat(element.textContent);
+        if (!isNaN(amount)) {
+            sum += amount;
+        }
+    });
+
+    document.getElementById("totalAmount").textContent = sum.toFixed(2);
+}
+document.addEventListener("DOMContentLoaded", function () {
+    calculateTotalAmount();
+});
+
+// Оновлюємо суму при кожній зміні таблиці
+var checksTable = document.getElementById("checks-table");
+checksTable.addEventListener("DOMSubtreeModified", function () {
+    calculateTotalAmount();
+});
+
+</script>
 
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

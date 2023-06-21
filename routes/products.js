@@ -25,9 +25,6 @@ router.get('/products', auth, checkcashier, (req, res,) => {
 })
 
 router.post('/products', auth, checkcashier,  (req, res) => {
-
-  
-    
     const getAllCategories = "SELECT * FROM category ORDER BY category_name";
     const {searchproduct, searchbycategory } = req.body;
 
