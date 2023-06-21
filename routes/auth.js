@@ -21,16 +21,22 @@ router.post('/login', (req, res) => {
       if (err) throw err;
 
       for (let i = 0; i < data.length; i++) {
-        if (bcrypt.compare(data[i].password, user_password)) {
-          req.session.user_id = data[i].login;
-          req.session.isAuthenticated = true;
-          return res.redirect('/');
-        }
+        bcrypt.compare(user_password, data[i].password, (err, result) => {
+          if (err) throw err;
+
+          if (result) {
+            req.session.user_id = data[i].login;
+            req.session.isAuthenticated = true;
+            return res.redirect('/');
+          } else {
+            res.send('Incorrect password');
+          }
+        });
       }
-      res.send('Incorrect password');
     });
   }
 });
+
 
 function isAuthenticated(req, res, next) {
   if (req.session.isAuthenticated) {
