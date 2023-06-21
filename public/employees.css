@@ -27,7 +27,12 @@
         border-radius: 5px;
         font-size: 16px;
         cursor: pointer;
-        margin-left: 10px;
+        margin-left: -75px;
+        margin-top: 15px;
+    }
+
+    #reportBtn{
+        margin-left: 20px;
     }
 
     table {
@@ -78,4 +83,12 @@
         align-items: center;
         justify-content: flex-end;
         width: max-content;
+    }
+    #searchsurname{
+        margin-top: 15px;
+        margin-left: -105px;
+    }
+
+    #select-position{
+        margin-left: -70px;
     }

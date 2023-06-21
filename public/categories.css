@@ -93,3 +93,7 @@ form button {
     font-size: 16px;
     cursor: pointer;
 }
+
+#reportBtn{
+    margin-left: 20px;
+}
