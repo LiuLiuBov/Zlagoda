@@ -298,6 +298,172 @@ router.post('/productsinmarket/edit/:upc/editing', auth, (req, res) => {
     }
 });
 
+router.get('/productsinmarket/report', auth, (req, res) => {
+    const getAllCategories = ` 
+    SELECT sp.*, p.product_name, p.caracteristics, c.category_name
+    FROM (store_product AS sp
+    INNER JOIN product AS p ON sp.id_product = p.id_product)
+    INNER JOIN category AS c ON p.category_number = c.category_number;
+   
+    `
+    connection.query(getAllCategories, (err, result) => {
+            if (err) throw err;
+            const products = result;
+            const reportHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                body {
+                  font-family: Times New Roman, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                }
+                h1 {
+                  text-align: center;
+              }
+              
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+                
+                th, td {
+                  border: 1px solid black;
+                  padding: 8px;
+                  text-align: left;
+                }
+                
+                .header-row {
+                  font-weight: bold;
+                }
+                
+                .page-break {
+                  page-break-after: always;
+                  text-align: center;
+                  padding-top: 50px;
+      
+                }
+                
+                </style>
+            </head>
+            <body>
+                <header>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+                
+                    <h1>Звіт "Товари в магазині"</h1>
+                </header>
+                ${generateTable(products)}
+                
+            </body>
+            </html>
+          `;
+          const options = { format: 'Letter' }; 
+          const tempHTMLPath = path.join(__dirname, 'temp-report.html');
+          fs.writeFileSync(tempHTMLPath, reportHTML, 'utf-8');
+      
+          pdf.create(fs.readFileSync(tempHTMLPath, 'utf-8'), options).toBuffer((err, buffer) => {
+            if (err) throw err;
+      
+            fs.unlinkSync(tempHTMLPath);
+      
+            res.set({
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': 'inline; filename=report.pdf'
+            });
+            res.send(buffer);
+          });
+        })
+        })
+  
+  
+  function generateTable(products) {
+    let pageNumber = 1;
+    let tableHTML = '';
+    let currentPageHeight = 1050; 
+  
+    for (let i = 0; i < products.length; i++) {
+      const category = products[i];
+      const promotionalProductText = category.promotional_product ? 'так' : 'ні';
+      const categoryRow = `
+      <tr>
+        <td style="width: min-content;">${category.UPC}</td>
+        <td>${category.category_name}</td>
+        <td>${category.product_name}</td>
+        <td>${category.selling_price}</td>
+        <td>${category.products_number}</td>
+        <td>${category.caracteristics}</td>
+        <td>${promotionalProductText}</td>
+      </tr>
+      `;
+  
+      if (currentPageHeight <= 200) { 
+        tableHTML += `
+          </tbody></table><div class="page-break">
+          <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 15px;">${pageNumber}</p>
+          </div><table>
+          <tbody>   
+        `;
+        tableHTML += `
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+          <p style="margin-top: 90px; margin-bottom: 30px;"></p>
+          <tr class="header-row">
+          <th>UPC</th>
+          <th>Назва категорії</th>
+          <th>Назва товару</th>
+          <th>Вартість</th>
+          <th>Кількість</th>
+          <th>Характеристики</th>
+          <th>Акційний товар</th>
+          </tr>
+        `;
+        currentPageHeight = 1050; 
+        pageNumber++; 
+      }
+  
+      currentPageHeight -= 40;
+      tableHTML += categoryRow;
+      if (i === products.length - 1 ) { 
+        
+        let lastPageNumber = pageNumber;
+        tableHTML += `
+          </tbody></table><div class="page-break">
+          
+        `;
+  
+        while (currentPageHeight > 199) {
+          tableHTML += '<p style= "color: #fff;">a</p>';
+          currentPageHeight -= 41;
+        }
+        tableHTML += `
+        <p style="font-size: 12px; margin: 0; text-align: center; margin-bottom: 5px;">${lastPageNumber}</p>
+        </div>
+      `;
+      }
+    }
+  
+    return `
+      <table>
+        <thead>
+          <tr>
+          <th>UPC</th>
+          <th>Назва категорії</th>
+          <th>Назва товару</th>
+          <th>Вартість</th>
+          <th>Кількість</th>
+          <th>Характеристики</th>
+          <th>Акційний товар</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableHTML}
+        </tbody>
+      </table>
+    `;
+  }
+  
 
 function errorNotification(str) {
 
