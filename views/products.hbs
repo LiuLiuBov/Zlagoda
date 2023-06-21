@@ -36,7 +36,13 @@
             <button class="btn btn-outline-secondary" type="submit">
                 <i class="fas fa-search"></i>
             </button>
-        </form>
+        </form>        
+        
+        {{#if ismanager}}
+        <a href="/products/add" class="btn btn-primary">Додати товар</a>
+        {{else}}
+        {{/if}}
+        
         <script>
             function load_data(query = '') {
                 fetch('/get_data?search_query=' + query + '').then(function (res) {
@@ -86,11 +92,8 @@
         </script>
 
 
-        <div class="container"></div>
-        {{#if ismanager}}
-        <a href="/products/add" class="btn btn-primary">Додати товар</a>
-        {{else}}
-        {{/if}}
+
+
     </div>
     <div class="table-responsive">
         <table class="table table-striped">
