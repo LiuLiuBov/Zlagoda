@@ -233,11 +233,16 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
 router.get('/productsinmarket/delete/:UPC', auth, (req, res) => {
     const upc = req.params.UPC;
     const checkSales = `SELECT * FROM sale WHERE UPC = ${upc}`;
+    const checkUPC = `SELECT * FROM store_product WHERE UPC_prom = ${upc}`;
 
+    connection.query(checkUPC, (err, res) => {
     connection.query(checkSales, (err, result) => {
         if (err) throw err;
+        if (res.lenght > 0){
+            errorNotification('Не можна видалити товар. Спочатку видаліть акційні товари');
+        }
         if (result.length > 0) {
-            errorNotification('Не можна видалити товар, оскільки ынформацыя про нього мыститься у продажах');
+            errorNotification('Не можна видалити товар, оскільки інформацыя про нього міститься у продажах');
         } else {
             const sql = `DELETE FROM store_product WHERE UPC = ${upc}`;
             connection.query(sql, (err) => {
@@ -246,6 +251,7 @@ router.get('/productsinmarket/delete/:UPC', auth, (req, res) => {
                 res.redirect('/productsinmarket');
             });
         }
+    });
     });
 });
 

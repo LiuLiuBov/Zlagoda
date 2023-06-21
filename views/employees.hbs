@@ -32,6 +32,14 @@
                     <option value="manager">Менеджер</option>
                     <option value="cashier">Касир</option>
                 </select>
+                
+    {{#if ismanager}}
+    <label for="op">Знайти працівника з найбільшою кількістю клієнтів за заданий період</a>
+    {{/if}}
+    <label for="prodid">:</label>
+                <input type="date" id="startDate" name="startDate">
+                <input type="date" id="endDate" name="endDate">
+
                 <button class="btn btn-outline-secondary" type="submit">
                     <i class="fas fa-search"></i>
                 </button>

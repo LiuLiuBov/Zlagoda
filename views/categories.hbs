@@ -15,7 +15,15 @@
     <input type="text" id="catname" name="catname" required>
     <button type="submit">Додати категорію</button>
   </form>
+  <form action="/categories" method="POST">
+            <div class="form-group">
+           <label for="query">Показати категорії, які мають тільки акційні товари:</label>
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
   {{/if}}
+  
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
