@@ -69,7 +69,7 @@ getTop += `
 connection.query(getTop, (err, Results) => {
   if (err) throw err;
   res.render('employees', {
-    'employees': empl, 'iscashier': res.locals.iscashier,
+    'employees': Results, 'iscashier': res.locals.iscashier,
     'ismanager': res.locals.ismanager
   });
 });
