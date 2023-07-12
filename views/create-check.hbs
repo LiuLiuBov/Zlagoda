@@ -32,8 +32,8 @@
     </script>
 
     <div id="output"></div>
-    <p>Касир: {{user_name}}</p>
-    <p>Чек: {{checkNumber}}</p>
+    <p>Cashier: {{user_name}}</p>
+    <p>Check: {{checkNumber}}</p>
 
 
     <form action="/checks/adding" method="POST">
@@ -42,7 +42,7 @@
         <input type="hidden" name="totalCost" id="total_cost_input">
         <input type="hidden" name="vat" id="vat_input">
         <div class="form-group">
-            <label for="addcard">Картка клієнта:</label>
+            <label for="addcard">Customer card:</label>
            <select id="addcard" name="addcard" class="form-control" required>
             <option value="null"></option>
                 {{#each cards}}
@@ -51,17 +51,17 @@
             </select>
         </div>
         <form id="submitForm">
-            <button type="submit" class="btn btn-primary" id="submitButton">Зберегти чек</button>
+            <button type="submit" class="btn btn-primary" id="submitButton">Save check</button>
         </form>
     </form>
 
     <form id="deleteForm" action="/checks/delete/{{checkNumber}}" method="POST">
-        <button type="button" class="btn btn-secondary" id="cancelButton">Скасувати</button>
+        <button type="button" class="btn btn-secondary" id="cancelButton">Discard</button>
     </form>
 
     <script>
         document.getElementById('cancelButton').addEventListener('click', function () {
-            var confirmation = confirm("Ви дійсно бажаєте скасувати цей чек?");
+            var confirmation = confirm("Are you sure to discard this check?");
             if (confirmation) {
                 document.getElementById('deleteForm').submit();
             }
@@ -70,7 +70,7 @@
         document.getElementById('submitButton').addEventListener('click', function () {
             if (totalCost === 0) {
                 event.preventDefault();
-                var confirmation = confirm("Будь ласка, додайте товар до чеку");
+                var confirmation = confirm("Please, add some products to this check");
                 if (confirmation) {
                     document.getElementById('formElement').reset();
                 }
@@ -101,11 +101,11 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="nmb">Кількість:</label>
+            <label for="nmb">Quantity:</label>
             <input type="number" class="form-control" id="nmb" name="nmb" class="nmb" pattern="[0-9]+" required>
         </div>
         <div class="form-group">
-            <label for="sell">Ціна:</label>
+            <label for="sell">Price:</label>
             <input type="number" class="form-control" id="sell" name="sell" class="sell" readonly>
         </div>
         <input type="hidden" name="upc" id="hidden_upc">
@@ -115,7 +115,7 @@
 
         <input type="hidden" name="check_number" value="{{checkNumber}}">
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Додати товар</button>
+            <button type="submit" class="btn btn-primary">Add product</button>
         </div>
         <script>
             function submitForm(event) {
@@ -128,7 +128,7 @@
                 var prodsNumber = parseInt(document.getElementById('hidden_prods_number').value);
 
                 if (quantity > prodsNumber) {
-                    alert('Кількість перевищує наявну кількість товару.');
+                    alert('Number of product is more than available in the store.');
                     return;
                 }
 
@@ -150,7 +150,7 @@
 
 
                 if (totalCost === 0) {
-                    var confirmation = confirm("Будь ласка, додайте товар до чеку");
+                    var confirmation = confirm("Please, add some products to this check");
                     if (confirmation) {
                         document.getElementById('productForm').reset();
                     }
@@ -207,10 +207,10 @@
         <thead>
             <tr>
                 <th>UPC</th>
-                <th>Назва товару</th>
-                <th>Кількість</th>
-                <th>Ціна</th>
-                <th>Вартість</th>
+                <th>Product name</th>
+                <th>Quantity</th>
+                <th>Price per one</th>
+                <th>Price per all</th>
             </tr>
         </thead>
         <tbody id="table_body">
@@ -218,8 +218,8 @@
         </tbody>
     </table>
 
-    <p>Всього: <span id="total_cost">0</span></p>
-    <p>ПДВ: <span id="vat">0</span></p>
+    <p>Total sum: <span id="total_cost">0</span></p>
+    <p>VAT: <span id="vat">0</span></p>
 
 
     <!-- Підключаємо jQuery та Bootstrap JS -->

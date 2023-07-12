@@ -2,7 +2,7 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql');
 
-var session_connection = mysql.createConnection({
+let session_connection = mysql.createConnection({
   host: "127.0.0.1",
   user: "liubov",
   password: "12345678",

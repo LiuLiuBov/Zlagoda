@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const connection = require('../utils/database');
 const bcrypt = require('bcryptjs')
-var notifier = require('node-notifier')
+const notifier = require('node-notifier')
 const path = require('path');
 
 router.get('/login', (req, res) => {
@@ -22,22 +22,29 @@ router.post('/login', (req, res) => {
     connection.query(query, (err, data) => {
       if (err) throw err;
 
-      for (let i = 0; i < data.length; i++) {
-        bcrypt.compare(user_password, data[i].password, (err, result) => {
+      if (data.length === 0) {
+        errorNotification('Wrong login');
+        return res.redirect('/login');
+      }
+
+      for (const element of data) {
+        bcrypt.compare(user_password, element.password, (err, result) => {
           if (err) throw err;
 
           if (result) {
-            req.session.user_id = data[i].login;
+            req.session.user_id = element.login;
             req.session.isAuthenticated = true;
             return res.redirect('/');
           } else {
-            errorNotification('Неправильний пароль');
+            errorNotification('Wrong password');
+            return res.redirect('/login');
           }
         });
       }
     });
   }
 });
+
 
 
 function isAuthenticated(req, res, next) {
@@ -63,21 +70,13 @@ router.get('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// Apply the isAuthenticated middleware to all routes except for '/login' and '/logout'
-/*router.use((req, res, next) => {
-  if (req.path !== '/login' && req.path !== '/logout') {
-    isAuthenticated(req, res, next);
-  } else {
-    next();
-  }
-});*/
 
 function errorNotification(str) {
 
   notifier.notify({
-    title: 'Помилка!',
+    title: 'Error!',
     message: str,
-    icon: path.join('./routes/images/error.png'),
+    icon: path.join('./images/error.png'),
     wait: true,
     sound: true,
     appID : 'ZLAGODA'

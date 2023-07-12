@@ -3,41 +3,41 @@
 </head>
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Редагувати клієнта {{cardnumber}}</h2>
+    <h2 class="mt-5">Edit customer {{cardnumber}}</h2>
     <form action="/customers/edit/{{cardnumber}}/editing" method="POST">
         <div class="form-group">
-            <label for="editclientfirstname">Ім'я:</label>
-            <input type="text" id="editclientfirstname" name="editclientfirstname" value="{{custname}}" class="form-control" required>
+            <label for="editclientfirstname">Name:</label>
+            <input type="text" id="editclientfirstname" name="editclientfirstname" value="{{custname}}" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="editclientlastname">Прізвище:</label>
-            <input type="text" id="editclientlastname" name="editclientlastname"value="{{custsurname}}"  class="form-control" required>
+            <label for="editclientlastname">Surname:</label>
+            <input type="text" id="editclientlastname" name="editclientlastname"value="{{custsurname}}"  class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="editclientpatronymic">По-батькові:</label>
-            <input type="text" id="editclientpatronymic" name="editclientpatronymic" value="{{custpatronymic}}" class="form-control">
+            <label for="editclientpatronymic">Patronymic:</label>
+            <input type="text" id="editclientpatronymic" name="editclientpatronymic" value="{{custpatronymic}}" class="form-control" pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="editclientphone">Номер телефону:</label>
-            <input type="tel" id="editclientphone" name="editclientphone" value="{{phonenumber}}" class="form-control" maxlength="13" required>
+            <label for="editclientphone">Phone number:</label>
+            <input type="text" id="editclientphone" name="editclientphone" value="{{phonenumber}}" class="form-control" maxlength="13" pattern="^\+380\d{9}$" required>
         </div>
         <div class="form-group">
-            <label for="editclientcity">Місто:</label>
-            <input type="text" id="editclientcity" name="editclientcity" value="{{city}}" class="form-control" required>
+            <label for="editclientcity">City:</label>
+            <input type="text" id="editclientcity" name="editclientcity" value="{{city}}" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="editclientstreet">Вулиця:</label>
-            <input type="text" id="editclientstreet" name="editclientstreet" value="{{street}}" class="form-control" required>
+            <label for="editclientstreet">Street:</label>
+            <input type="text" id="editclientstreet" name="editclientstreet" value="{{street}}" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="editclientzipcode">Зіп-код:</label>
+            <label for="editclientzipcode">Zip-code:</label>
             <input type="text" id="editclientzipcode" name="editclientzipcode" value="{{zipcode}}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editclientdiscount">Відсоток знижки:</label>
+            <label for="editclientdiscount">Percent:</label>
             <input type="number" id="editclientdiscount" name="editclientdiscount" value="{{percent}}" class="form-control" min="0" max="100" required>
         </div>
-        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->

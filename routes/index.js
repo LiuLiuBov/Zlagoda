@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 const auth = require('../middleware/auth')
-const checkcashier = require('../middleware/iscashier')
+const checkcashier = require('../middleware/check-role')
 const connection = require('../utils/database')
 
 

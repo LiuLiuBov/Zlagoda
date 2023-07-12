@@ -3,8 +3,7 @@
 </head>
 
 <body>
-    <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Редагувати товар {{idproduct}}</h2>
+    <h2 class="mt-5">Edit product {{idproduct}}</h2>
     <form action="/products/edit/{{idproduct}}/editing" method="POST">
         <div class="form-group">
             <select id="editcategory" name="editcategory" class="form-control" required>
@@ -14,17 +13,16 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="editproductname">Назва продукту:</label>
+            <label for="editproductname">Product name:</label>
             <input type="text" id="editproductname" name="editproductname" value="{{product.product_name}}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editproductcharacteristics">Характеристики:</label>
-            <input type="text" id="editproductcharacteristics" name="editproductcharacteristics" value="{{product.caracteristics}}" class="form-control">
+            <label for="editproductcharacteristics">Characteristics:</label>
+            <input type="text" id="editproductcharacteristics" name="editproductcharacteristics" value="{{product.caracteristics}}" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
     </div>
-    <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

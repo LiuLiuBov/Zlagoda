@@ -21,11 +21,10 @@ const flash = require('connect-flash');
 const hbs = exphbs.create({
     defaultLayout: 'main',
     extname: 'hbs',
-    noLayout: 'noLayout', // Layout to be used for pages without layout
+    noLayout: 'noLayout',
     helpers: {
-        // Custom helper to format dates without time
         formatDate: function(date) {
-          const options = { year: 'numeric', month: 'long', day: 'numeric' };
+          const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
           return date.toLocaleDateString(undefined, options);
         },
         defaultDate: function (value, defaultValue) {
@@ -57,13 +56,10 @@ app.use(indexRoutes)
 app.use(employeesRoutes)
 app.use(authRoutes)
 app.use(productsRoutes)
-//--------------------------------------------------------
+
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')//реєструємо двіжок хендлбарс
 app.set('views', 'views')
-//app.set('view engine', 'ejs');
-
-//--------------------------------------------------------
 
 const PORT = process.env.PORT || 8000
 

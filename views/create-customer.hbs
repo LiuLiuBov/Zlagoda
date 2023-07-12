@@ -1,43 +1,51 @@
 <head>
-<link rel="stylesheet" href="/create.css">
+    <link rel="stylesheet" href="/create.css">
 </head>
+
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Додати нового клієнта</h2>
+    <h2 class="mt-5">Add customer</h2>
     <form action="/customers/adding" method="POST">
         <div class="form-group">
-            <label for="addclientfirstname">Ім'я:</label>
-            <input type="text" id="addclientfirstname" name="addclientfirstname" class="form-control" required>
+            <label for="addclientfirstname">Name:</label>
+            <input type="text" id="addclientfirstname" name="addclientfirstname" class="form-control" required
+                pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addclientlastname">Прізвище:</label>
-            <input type="text" id="addclientlastname" name="addclientlastname" class="form-control" required>
+            <label for="addclientlastname">Surname:</label>
+            <input type="text" id="addclientlastname" name="addclientlastname" class="form-control" required
+                pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addclientpatronymic">По-батькові:</label>
-            <input type="text" id="addclientpatronymic" name="addclientpatronymic" class="form-control">
+            <label for="addclientpatronymic">Patronymic:</label>
+            <input type="text" id="addclientpatronymic" name="addclientpatronymic" class="form-control"
+                pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addclientphone">Номер телефону:</label>
-            <input type="tel" id="addclientphone" name="addclientphone" class="form-control" maxlength="13" required>
+            <label for="addclientphone">Phone number:</label>
+            <input type="tel" id="addclientphone" name="addclientphone" class="form-control" maxlength="13" required
+                pattern="^\+380\d{9}$" value="+380">
         </div>
         <div class="form-group">
-            <label for="addclientcity">Місто:</label>
-            <input type="text" id="addclientcity" name="addclientcity" class="form-control" required>
+            <label for="addclientcity">City:</label>
+            <input type="text" id="addclientcity" name="addclientcity" class="form-control" required
+                pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addclientstreet">Вулиця:</label>
-            <input type="text" id="addclientstreet" name="addclientstreet" class="form-control" required>
+            <label for="addclientstreet">Street:</label>
+            <input type="text" id="addclientstreet" name="addclientstreet" class="form-control" required
+                pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addclientzipcode">Зіп-код:</label>
+            <label for="addclientzipcode">Zip-code:</label>
             <input type="text" id="addclientzipcode" name="addclientzipcode" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="add-client-discount">Відсоток знижки:</label>
-            <input type="number" id="addclientdiscount" name="addclientdiscount" class="form-control" min="0" max="100" required>
+            <label for="add-client-discount">Percent:</label>
+            <input type="number" id="addclientdiscount" name="addclientdiscount" class="form-control" min="0" max="100"
+                required>
         </div>
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->

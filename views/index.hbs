@@ -5,14 +5,14 @@
 <body>
     <main class="container-fluid">
         <section id="products">
-            <h2 class="mt-5">Товари</h2>
+            <h2 class="mt-5">Products</h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID товару</th>
-                        <th>Назва категорії</th>
-                        <th>Назва товару</th>
-                        <th>Характеристики</th>
+                        <th>Product ID</th>
+                        <th>Category name</th>
+                        <th>Product name</th>
+                        <th>Characteristics</th>
                     </tr>
                 </thead>
                 <tbody id="categories-table">
@@ -26,17 +26,17 @@
                 {{/each}}
             </tbody>
             </table>
-            <a id="morecustomers" style="color: blue;" href="/products"> Більше товарів </a>
+            <a id="morecustomers" href="/products"> More products </a>
         </section>
         <section id="sales">
-            <h2 class="mt-5">Чеки</h2>
+            <h2 class="mt-5">Checks</h2>
             <table class="table">
                 <thead>
                     <tr>
-                    <th>Номер чеку</th>
-                    <th>Прізвище працівника</th>
-                    <th>Дата створення</th>
-                    <th>Сума покупки</th>
+                    <th>Check number</th>
+                    <th>Cashier surname</th>
+                    <th>Date</th>
+                    <th>Total sum</th>
                     </tr>
                 </thead>
  <tbody id="checks-table">
@@ -50,17 +50,17 @@
                 {{/each}}
             </tbody>
             </table>
-            <a id="morecustomers" style="color: blue;" href="/checks"> Більше чеків</a>
+            <a id="morecustomers" href="/checks"> More checks</a>
         </section>
         <section id="customers">
-            <h2 class="mt-5">Клієнти</h2>
+            <h2 class="mt-5">Customers</h2>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Номер карти</th>
-                        <th>Прізвище</th>
-                        <th>Ім'я</th>
-                        <th>Відсоток</th>
+                        <th>Customer card number</th>
+                        <th>Surname</th>
+                        <th>Name</th>
+                        <th>Percent</th>
                     </tr>
                 <tbody>
                     {{#each customers}}
@@ -74,7 +74,7 @@
                     {{/each}}
                 </tbody>
             </table>
-            <a id="morecustomers" style="color: blue;" href="/customers"> Більше клієнтів</a>
+            <a id="morecustomers" href="/customers"> More customers</a>
         </section>
     </main>
 

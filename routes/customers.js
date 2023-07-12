@@ -4,19 +4,18 @@ const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const { v4: uuidv4 } = require('uuid');
 const checkmanager = require('../middleware/ismanager')
-const checkcashier = require('../middleware/iscashier')
+const checkrole = require('../middleware/check-role')
+const notifier = require('node-notifier')
 const path = require('path');
 const pdf = require('html-pdf');
 const fs = require('fs');
 
-router.get('/customers', auth, checkcashier, (req, res,) => {
+router.get('/customers', auth, checkrole, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   const getAllCustomers = "SELECT * FROM customer_card ORDER BY cust_surname";
   connection.query(getAllCategories, (err, categories) => {
     connection.query(getAllCustomers, (err, result) => {
         if(err) throw err;
-        //res.send(result)
-        //console.log(result);
         res.render('customers', { 'customers': result, 
         "iscashier": res.locals.iscashier,
         "ismanager": res.locals.ismanager,
@@ -26,7 +25,7 @@ router.get('/customers', auth, checkcashier, (req, res,) => {
   })
 })
 
-router.post('/customers', auth, checkcashier, (req, res) => {
+router.post('/customers', auth, checkrole, (req, res) => {
     const { searchpercent, searchbycategorybought } = req.body;
     console.log(searchbycategorybought);
 
@@ -35,48 +34,17 @@ router.post('/customers', auth, checkcashier, (req, res) => {
     if (searchpercent) {
       getCustomers += ` AND percent = '${searchpercent}'`;
     }
-  
-    if (searchbycategorybought && searchbycategorybought !== "none") {
-      getCustomers += ` AND NOT EXISTS (
-        SELECT *
-        FROM product pr1
-        WHERE pr1.category_number IN (
-          SELECT category_number
-          FROM category
-          WHERE category_number = '${searchbycategorybought}'
-        )
-        AND pr1.id_product NOT IN (
-          SELECT id_product
-          FROM \`check\`
-          INNER JOIN sale ON \`check\`.check_number = sale.check_number
-          INNER JOIN store_product ON store_product.UPC = sale.UPC
-          WHERE card_number = Customer_Card.card_number AND pr1.id_product IN (SELECT pr2.id_product 
-          FROM Product pr2 
-          WHERE pr2.category_number IN (
-          SELECT category_number  
-          FROM Category
-          WHERE category_number = '${searchbycategorybought}') )
- 
-        )
-      )`;
-    }
 
-    const getAllCategories = "SELECT * FROM category ORDER BY category_name";
-    //let getCustomers = `SELECT * FROM customer_card WHERE percent = '${searchpercent}'`;
-
-    connection.query(getAllCategories, (err, categories) => {
     connection.query(getCustomers, (err, result) => {
         if (err) throw err;
         console.log(result);
         res.render('customers', { 'customers': result, 'iscashier': res.locals.iscashier,
-        'ismanager': res.locals.ismanager, 
-        'categories': categories
+        'ismanager': res.locals.ismanager
       });
-    })
   })
 });
 
-router.get('/customers/add', auth, checkcashier, (req, res,) => {
+router.get('/customers/add', auth, checkrole, (req, res,) => {
     res.render('create-customer', {         
     'iscashier': res.locals.iscashier,
     'ismanager': res.locals.ismanager})
@@ -119,15 +87,28 @@ router.post('/customers/adding', auth, async (req, res) => {
 router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
     const cardNumber = req.params.card_number;
     console.log(cardNumber);
-    const sql = `DELETE FROM customer_card WHERE card_number = '${cardNumber}'`;
-    connection.query(sql, [cardNumber], (err) => {
+
+    const checkChecks = `SELECT * FROM \`check\` WHERE card_number = '${cardNumber}'`;
+    connection.query(checkChecks, (err, result) => {
       if (err) throw err;
-      console.log("1 record deleted");
-      res.redirect('/customers');
+
+      if (result.length > 0) {
+        // If there are associated checks, show error
+        errorNotification('Can not delete customers with existing checks. Firstly delete the checks!');
+        res.redirect('/customers');
+      } else {
+        // If no associated checks, proceed with deletion
+        const sql = `DELETE FROM customer_card WHERE card_number = '${cardNumber}'`;
+        connection.query(sql, [cardNumber], (err) => {
+          if (err) throw err;
+          console.log("1 record deleted");
+          res.redirect('/customers');
+        });
+      }
     });
   });
   
-  router.get('/customers/edit/:card_number', auth, (req, res) => {
+  router.get('/customers/edit/:card_number',  auth, checkrole,  (req, res) => {
     const cardNumber = req.params.card_number;
     const getCustomer = `SELECT * FROM customer_card WHERE card_number = '${cardNumber}'`;
     connection.query(getCustomer,  [cardNumber], (err, result) => {
@@ -151,7 +132,9 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
       "city": city,
       "street": street,
       "zipcode": zipcode,
-      "percent": percent
+      "percent": percent,
+      "iscashier": res.locals.iscashier,
+        "ismanager": res.locals.ismanager,
     });
     })
   });
@@ -198,7 +181,7 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
     });
   });
 
-  router.get('/customers/report', auth, (req, res) => {
+  router.get('/customers/report', auth, checkmanager, (req, res) => {
     const getAllCategories = "SELECT * FROM customer_card ORDER BY cust_name";
     connection.query(getAllCategories, (err, result) => {
       if (err) throw err;
@@ -251,8 +234,8 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
       <body>
           <header>
             <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
-            <h1>Звіт "Клієнти"</h1>
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
+            <h1>Customers report</h1>
           </header>
           ${generateTable(categories)}
       </body>
@@ -307,17 +290,17 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
           `;
         tableHTML += `
             <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+            <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
             <p style="margin-top: 90px; margin-bottom: 30px;"></p>
             <tr class="header-row">
-              <th>Ім'я</th>
-              <th>Прізвище</th>
-              <th>По батькові</th>
-              <th>Тел</th>
-              <th>Місто</th>
-              <th>Вулиця</th>
-              <th>Індекс</th>
-              <th>Відсоток знижки</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Patronymic</th>
+              <th>Phone number</th>
+              <th>City</th>
+              <th>Street</th>
+              <th>Index</th>
+              <th>Percent</th>
             </tr>
           `;
         currentPageHeight = 1050;
@@ -349,14 +332,14 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
         <table>
           <thead>
             <tr class="header-row">
-             <th>Ім'я</th>
-              <th>Прізвище</th>
-              <th>По батькові</th>
-              <th>Тел</th>
-              <th>Місто</th>
-              <th>Вулиця</th>
-              <th>Індекс</th>
-              <th>Відсоток знижки</th>
+             <th>Name</th>
+              <th>Surname</th>
+              <th>Patronymic</th>
+              <th>Phone number</th>
+              <th>City</th>
+              <th>Street</th>
+              <th>Index</th>
+              <th>Percent</th>
           </tr>
           </thead>
           <tbody>
@@ -366,5 +349,16 @@ router.get('/customers/delete/:card_number', auth, checkmanager, (req, res) => {
       `;
   }
   
+  function errorNotification(str) {
+
+    notifier.notify({
+      title: 'Error!',
+      message: str,
+      icon: path.join('./images/error.png'),
+      wait: true,
+      sound: true,
+      appID : 'ZLAGODA'
+    })
+  }
   
 module.exports = router

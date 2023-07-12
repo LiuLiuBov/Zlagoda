@@ -1,6 +1,6 @@
 const connection = require('../utils/database');
 
-function checkCashierAccess(req, res, next) {
+function checkRole(req, res, next) {
 
     const user_id = res.locals.user_id;
     const getEmployees = `
@@ -21,4 +21,4 @@ function checkCashierAccess(req, res, next) {
 };
 
   
-module.exports = checkCashierAccess;
+module.exports = checkRole;

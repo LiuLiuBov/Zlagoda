@@ -3,30 +3,27 @@ const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
 const bcrypt = require('bcryptjs')
-const { v4: uuidv4 } = require('uuid');
-const checkcashier = require('../middleware/iscashier')
-var notifier = require('node-notifier')
+const checkrole = require('../middleware/check-role')
+const notifier = require('node-notifier')
 const path = require('path');
 
-router.get('/profile', auth, checkcashier, (req, res,) => {
+router.get('/profile', auth, checkrole, (req, res,) => {
     const user_id = res.locals.user_id;
     const getAllEmployees = `
     SELECT * FROM employee WHERE login = '${user_id}' 
     `;
     connection.query(getAllEmployees, (err, result) => {
         if(err) throw err;
-        //res.send(result)
         console.log(result);
         res.render('profile', { 'profile': result[0] });
     })
 })
 
-router.get('/profile/change-password', auth, checkcashier, (req, res) => {
-    const user_id = res.locals.user_id;
+router.get('/profile/change-password', auth, checkrole, (req, res) => {
     res.render('change-password');
   });
   
-  router.post('/profile/change-password', auth, checkcashier, async (req, res) => {
+  router.post('/profile/change-password', auth, async (req, res) => {
     const user_id = res.locals.user_id;
     const currentPassword = req.body.currentPassword;
     const newPassword = req.body.newPassword;
@@ -70,7 +67,7 @@ router.get('/profile/change-password', auth, checkcashier, (req, res) => {
     notifier.notify({
       title: 'Помилка!',
       message: str,
-      icon: path.join('./routes/images/error.png'),
+      icon: path.join('./images/error.png'),
       wait: true,
       sound: true,
       appID : 'ZLAGODA'

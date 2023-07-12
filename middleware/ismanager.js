@@ -1,5 +1,5 @@
 const connection = require('../utils/database');
-var notifier = require('node-notifier')
+const notifier = require('node-notifier')
 const path = require('path');
 
 function checkManagerAccess(req, res, next) {
@@ -13,7 +13,7 @@ function checkManagerAccess(req, res, next) {
         if (result[0].empl_role == "manager"){
            next(); 
         } else {
-        errorNotification('Ви ніхто');
+        errorNotification('You do not have the rights to access this page');
     }
     })
 };
@@ -21,7 +21,7 @@ function checkManagerAccess(req, res, next) {
 function errorNotification(str) {
 
     notifier.notify({
-      title: 'Помилка!',
+      title: 'Error!',
       message: str,
       icon: path.join('./routes/images/error.png'),
       wait: true,

@@ -3,85 +3,80 @@
 </head>
 
 <body>
-    <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Редагувати працівника ID = {{idemployee}}</h2>
+    <h2 class="mt-5">Edit employee {{idemployee}}</h2>
     <form action="/employees/edit/{{idemployee}}/editing" method="POST">
         <div class="form-group">
-            <label for="editemplfirstname">Ім'я:</label>
-            <input type="text" id="editemplfirstname" name="editemplfirstname" value="{{employee.empl_name}}"
+            <label for="editemplfirstname">Name:</label>
+            <input type="text" id="editemplfirstname" name="editemplfirstname" value="{{employee.empl_name}}" pattern="^[^0-9]+$"
                 class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editempllastname">Прізвище:</label>
-            <input type="text" id="editempllastname" name="editempllastname" value="{{employee.empl_surname}}"
+            <label for="editempllastname">Surname:</label>
+            <input type="text" id="editempllastname" name="editempllastname" value="{{employee.empl_surname}}" pattern="^[^0-9]+$"
                 class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editemplpatronymic">По-батькові:</label>
-            <input type="text" id="editemplpatronymic" name="editemplpatronymic" value="{{employee.empl_patronymic}}"
+            <label for="editemplpatronymic">Patronymic:</label>
+            <input type="text" id="editemplpatronymic" name="editemplpatronymic" value="{{employee.empl_patronymic}}" pattern="^[^0-9]+$"
                 class="form-control">
         </div>
         <div class="form-group">
-            <label for="editemplposition">Посада:</label>
+            <label for="editemplposition">Role:</label>
             <select id="editemplposition" name="editemplposition" class="form-control" required>
-                <option value="manager" {{selectedOption 'manager' employee.empl_role}}>менеджер</option>
-                <option value="cashier" {{selectedOption 'cashier' employee.empl_role}}>касир</option>
+                <option value="manager" {{selectedOption 'manager' employee.empl_role}}>Manager</option>
+                <option value="cashier" {{selectedOption 'cashier' employee.empl_role}}>Cashier</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="editemplsalary">Заробітня плата:</label>
+            <label for="editemplsalary">Salary:</label>
             <input type="number" id="editemplsalary" min="0" name="editemplsalary" value="{{employee.salary}}"
                 class="form-control" required>
         </div>
         <div class="form-group">
-    <label for="editempldateofbirth">Дата народження:</label>
-    <input type="date" id="editempldateofbirth" name="editempldateofbirth"
-        value="{{ formatDate employee.date_of_birth }}" class="form-control" required>
+    <label for="editempldateofbirth">Date of birth:</label>
+    <input type="date" id="editempldateofbirth" name="editempldateofbirth" class="form-control" required>
 </div>
 
         <div class="form-group">
-            <label for="editempldateofstart">Дата початку роботи:</label>
-            <input type="date" id="editempldateofstart" name="editempldateofstart"
-                value="{{defaultDate employee.date_of_start 'YYYY-MM-DD'}}" class="form-control" required>
+            <label for="editempldateofstart">Date of start:</label>
+            <input type="date" id="editempldateofstart" name="editempldateofstart" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editemplphone">Номер телефону:</label>
+            <label for="editemplphone">Phone number:</label>
             <input type="text" id="editemplphone" name="editemplphone" value="{{employee.phone_number}}"
                 class="form-control" maxlength="13" required >
         </div>
         <div class="form-group">
-            <label for="editemplcity">Місто:</label>
-            <input type="text" id="editemplcity" name="editemplcity" value="{{employee.city}}" class="form-control"
+            <label for="editemplcity">City:</label>
+            <input type="text" id="editemplcity" name="editemplcity" value="{{employee.city}}" class="form-control" pattern="^[^0-9]+$"
                 required>
         </div>
         <div class="form-group">
-            <label for="editemplstreet">Вулиця:</label>
-            <input type="text" id="editemplstreet" name="editemplstreet" value="{{employee.street}}" class="form-control"
+            <label for="editemplstreet">Street:</label>
+            <input type="text" id="editemplstreet" name="editemplstreet" value="{{employee.street}}" class="form-control" pattern="^[^0-9]+$"
                 required>
         </div>
         <div class="form-group">
-            <label for="editemplzipcode">Зіп-код:</label>
+            <label for="editemplzipcode">Zip-code:</label>
             <input type="text" id="editemplzipcode" name="editemplzipcode" pattern="[0-9]+" value="{{employee.zip_code}}"
                 class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
      <script>
         var today = new Date();
         var minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
 
-        var dateOfBirthInput = document.getElementById("addempldateofbirth");
+        var dateOfBirthInput = document.getElementById("editempldateofbirth");
         dateOfBirthInput.max = minDate.toISOString().split('T')[0];
-        var dateOfStart = document.getElementById("addempldateofstart");
+        var dateOfStart = document.getElementById("editempldateofstart");
         dateOfStart.max = today.toISOString().split('T')[0];
     </script>
     </div>
     
-    <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Підключаємо власний JavaScript -->
     <script src="customers.js"></script>
 
 </body>

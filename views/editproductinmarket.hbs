@@ -4,10 +4,10 @@
 
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Редагувати товар в магазині. UPC: {{upc}}</h2>
+    <h2 class="mt-5">Edit store product {{store_product.UPC}}</h2>
     <form action="/productsinmarket/edit/{{upc}}/editing" method="POST">
         <div class="form-group">
-            <label for="editUPC">UPC товару:</label>
+            <label for="editUPC">UPC:</label>
             <input type="text" id="editUPC" name="editUPC" value="{{store_product.UPC}}" class="form-control" required>
         </div>
         <div class="form-group">
@@ -18,17 +18,17 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="editproductinmarketsellingprice">Ціна продукту:</label>
-            <input type="text" id="editproductinmarketsellingprice" name="editproductinmarketsellingprice"
+            <label for="editproductinmarketsellingprice">Price:</label>
+            <input type="number" id="editproductinmarketsellingprice" name="editproductinmarketsellingprice"
                 value="{{store_product.selling_price}}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editproductinmarketnumber">Кількість:</label>
-            <input type="text" id="editproductinmarketnumber" name="editproductinmarketnumber"
-                value="{{store_product.products_number}}" class="form-control">
+            <label for="editproductinmarketnumber">Quantity:</label>
+            <input type="number" id="editproductinmarketnumber" name="editproductinmarketnumber"
+                value="{{store_product.products_number}}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="editpromotional">Акційний товар:</label>
+            <label for="editpromotional">Promotional:</label>
             <input type="checkbox" id="editpromotional" name="editpromotional" class="form-control">
             {{#if store_product.promotional_product}}
             <script>
@@ -36,7 +36,7 @@
             </script>
             {{/if}}
         </div>
-        <button type="submit" class="btn btn-primary">Зберегти</button>
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->

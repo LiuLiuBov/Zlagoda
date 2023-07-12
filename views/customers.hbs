@@ -2,101 +2,106 @@
   <link rel="stylesheet" href="/customers.css">
 </head>
 
-  <h1 class="my-5">Клієнти</h1>
-              {{#if ismanager}}
-            <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
+<div class="container" id="more" onclick="myFunction(this)">
+  <div class="bar1"></div>
+  <div class="bar2"></div>
+  <div class="bar3"></div>
+</div>
 
-            {{else}}
-            {{/if}}
-  <div class="row">
+<div id="settings">
+{{#if ismanager}}
+<button id="reportBtn" class="btn btn-primary btn-sm">Customers report</button>
 
-    <a href="/customers/add" class="btn btn-primary">Додати нового клієнта</a>
+{{else}}
+{{/if}}
 
-    <div class="col-md-4">
-      <div class="input-group">
-        <form action="/customers" method="POST">
-          <input type="text" id="searchpercent" name="searchpercent" class="form-control"
-            placeholder="Пошук за відсотком знижки">
-          <button class="btn btn-outline-secondary" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
+<a href="/customers/add" class="btn btn-primary">Add new customer</a>
 
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Номер карти</th>
-          <th>Ім'я</th>
-          <th>Прізвище</th>
-          <th>По-батькові</th>
-          <th>Номер телефону</th>
-          <th>Місто</th>
-          <th>Вулиця</th>
-          <th>Зіп-код</th>
-          <th>Відсоток знижки</th>
-          <th></th>
 
-        </tr>
-      </thead>
-      <tbody id="customers-table">
-        {{#each customers}}
-        <tr>
-          <td>{{this.card_number}}</td>
-          <td>{{this.cust_name}}</td>
-          <td>{{this.cust_surname}}</td>
-          <td>{{this.cust_patronymic}}</td>
-          <td>{{this.phone_number}}</td>
-          <td>{{this.city}}</td>
-          <td>{{this.street}}</td>
-          <td>{{this.zip_code}}</td>
-          <td>{{this.percent}}</td>
-
-          <td>
-            <a href="customers/edit/{{this.card_number}}" class="btn btn-success btn-sm"><i
-                class="fas fa-pencil-alt"></i></a>
-            {{#if ../ismanager}}
-            <a href="customers/delete/{{this.card_number}}" class="btn btn-danger btn-sm"><i
-                class="fa fa-times"></i></a>
-            {{else}}
-            {{/if}}
-          </td>
-
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#reportBtn').on('click', function () {
-                window.open('/customers/report', '_blank');
-            });
-        });
-    </script>
-
-  <form action="/customers" method="POST">
-  <div class="form-group">
-    <label for="searchbycategorybought">Знайти клієнтів, що купили всі можливі товари з категорії...:</label>
-    <select id="searchbycategorybought" name="searchbycategorybought" class="form-control" required>
-      <option value="none"></option>
-      {{#each categories}}
-      <option value="{{this.category_number}}"> {{this.category_name}}</option>
-      {{/each}}
-    </select>
-  </div>
+<form action="/customers" method="POST">
+  <input type="text" id="searchpercent" name="searchpercent" class="form-control" placeholder="Search by percent">
   <button class="btn btn-outline-secondary" type="submit">
     <i class="fas fa-search"></i>
   </button>
-  </form>
-  </div>
-  <!-- Підключаємо jQuery та Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</form>
+</div>  
 
-  </body>
+
+
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Card number</th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Patronymic</th>
+        <th>Phone number</th>
+        <th>City</th>
+        <th>Street</th>
+        <th>Zip-code</th>
+        <th>Percent</th>
+        <th ></th>
+
+      </tr>
+    </thead>
+    <tbody id="customers-table">
+      {{#each customers}}
+      <tr>
+        <td>{{this.card_number}}</td>
+        <td>{{this.cust_name}}</td>
+        <td>{{this.cust_surname}}</td>
+        <td>{{this.cust_patronymic}}</td>
+        <td>{{this.phone_number}}</td>
+        <td>{{this.city}}</td>
+        <td>{{this.street}}</td>
+        <td>{{this.zip_code}}</td>
+        <td>{{this.percent}}</td>
+
+        <td>
+          <div class="btn-group" role="group">
+          <a href="customers/edit/{{this.card_number}}" class="btn btn-success btn-sm"><i
+              class="fas fa-pencil-alt"></i></a>
+          {{#if ../ismanager}}
+          <a href="customers/delete/{{this.card_number}}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+          {{else}}
+          {{/if}}</div>
+        </td>
+
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#reportBtn').on('click', function () {
+      window.open('/customers/report', '_blank');
+    });
+  });
+  
+  var settingsDiv = document.getElementById("settings");
+    settingsDiv.style.display = "none";
+
+  function myFunction(x) {
+    x.classList.toggle("change");
+    var settingsDiv = document.getElementById("settings");
+
+    // Toggle the visibility of the settings div
+    if (settingsDiv.style.display === "none") {
+      settingsDiv.style.display = "block";
+    } else {
+      settingsDiv.style.display = "none";
+    }
+  }
+</script>
+
+</div>
+<!-- Підключаємо jQuery та Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

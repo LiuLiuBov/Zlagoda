@@ -4,7 +4,7 @@
 
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Додати товар</h2>
+    <h2 class="mt-5">Add product</h2>
     <form action="/products/adding" method="POST">
         <div class="form-group">
             <select id="addcategory" name="addcategory" class="form-control" required>
@@ -14,14 +14,14 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="addproductname">Назва продукту:</label>
+            <label for="addproductname">Product name:</label>
             <input type="text" id="addproductname" name="addproductname" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="addproductcharacteristics">Характеристики:</label>
-            <input type="text" id="addproductcharacteristics" name="addproductcharacteristics" class="form-control">
+            <label for="addproductcharacteristics">Characteristics:</label>
+            <input type="text" id="addproductcharacteristics" name="addproductcharacteristics" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
     </div>
     <!-- Підключаємо jQuery та Bootstrap JS -->

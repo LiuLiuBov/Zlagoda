@@ -1,118 +1,131 @@
 <head>
     <link rel="stylesheet" href="/employees.css">
-     <script>
+    <script>
         var today = new Date().toISOString().split('T')[0];
     </script>
 </head>
 
 <body>
-    <h1 class="my-5">Працівники</h1>
-    <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
-    <div class="container">
-        <a href="/employees/add" class="btn btn-primary">Додати нового працівника</a>
-        <div class="col-md-4">
-            <div class="input-group">
-                <form action="/employees" method="POST">
-                <div class="input-group">
-                 <div class="container">
-                    <input type="text" id="searchsurname" name="searchsurname" class="form-control"
-                        placeholder="Введіть прізвище працівника...">
-                        <span id="search_result"></span>
-                        </div>
-                        </div>
-                </form>
-            </div>
-        </div>
 
-        <div id="select-position">
-            <form action="/employees" method="POST">
-                <label for="occupation">Пошук за посадою:</label>
-                <select id="occupation" name="occupation">
-                    <option value="none"></option>
-                    <option value="manager">Менеджер</option>
-                    <option value="cashier">Касир</option>
-                </select>
-                
-    {{#if ismanager}}
-    <label for="op">Знайти працівника з найбільшою кількістю клієнтів за заданий період</a>
-    {{/if}}
-    <label for="prodid">:</label>
-                <input type="date" id="startDate" name="startDate">
-                <input type="date" id="endDate" name="endDate">
+    <div class="container" id="more" onclick="myFunction(this)">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
 
-                <button class="btn btn-outline-secondary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </div>
+    <div id="settings">
+        <button id="reportBtn" class="btn btn-primary btn-sm">Employees report</button>
+        <a href="/employees/add" class="btn btn-primary">Add employee</a>
+
+
+        <form action="/employees" method="POST">
+            <input type="text" id="searchsurname" name="searchsurname" class="form-control"
+                placeholder="Enter employee surname...">
+            <span id="search_result"></span>
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+
+
+        <form action="/employees" method="POST">
+            <label for="occupation">Search by role:</label>
+            <select id="occupation" name="occupation">
+                <option value="none"></option>
+                <option value="manager">Manager</option>
+                <option value="cashier">Cashier</option>
+            </select>
+
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
     </div>
 
 
-<script>
-            function load_data(query = '') {
-                fetch('/employees/get_data?search_query=' + query + '').then(function (res) {
-                    return res.json();
-                }).then(function (responseData) {
-                    var html = '<ul class="list-group">';
 
-                    if (responseData.length > 0) {
-                        for (var count = 0; count < responseData.length; count++) {
-                            var regular_expression = new RegExp('(' + query + ')', 'gi');
-                            html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].empl_surname.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
-                        }
-                    } else {
-                        html += '<a href="#" class="list-group-item list-group-item-action disabled">Працівників не знайдено</a>';
+    <script>
+        function load_data(query = '') {
+            fetch('/employees/get_data?search_query=' + query + '').then(function (res) {
+                return res.json();
+            }).then(function (responseData) {
+                var html = '<ul class="list-group">';
+
+                if (responseData.length > 0) {
+                    for (var count = 0; count < responseData.length; count++) {
+                        var regular_expression = new RegExp('(' + query + ')', 'gi');
+                        html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].empl_surname.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
                     }
+                } else {
+                    html += '<a href="#" class="list-group-item list-group-item-action disabled">Працівників не знайдено</a>';
+                }
 
-                    html += '</ul>';
-                    document.getElementById('search_result').innerHTML = html;
-                    if (query === '') {
-                        document.getElementById('search_result').style.display = 'none';
-                    } else {
-                        document.getElementById('search_result').style.display = 'block';
-                    }
-                });
+                html += '</ul>';
+                document.getElementById('search_result').innerHTML = html;
+                if (query === '') {
+                    document.getElementById('search_result').style.display = 'none';
+                } else {
+                    document.getElementById('search_result').style.display = 'block';
+                }
+            });
+        }
+
+        var search_element = document.getElementById("searchsurname");
+
+        search_element.onkeyup = function () {
+            var query = search_element.value;
+            load_data(query);
+        };
+
+        search_element.onfocus = function () {
+            var query = search_element.value;
+            load_data(query);
+        };
+
+        function get_text(event) {
+            var product_name = event.textContent;
+            console.log(product_name);
+            document.getElementById('searchsurname').value = empl_surname;
+            document.getElementById('search_result').innerHTML = '';
+            document.getElementById('search_result').style.display = 'none';
+        }
+
+        var settingsDiv = document.getElementById("settings");
+        settingsDiv.style.display = "none";
+
+
+        function myFunction(x) {
+            x.classList.toggle("change");
+            var settingsDiv = document.getElementById("settings");
+
+            // Toggle the visibility of the settings div
+            if (settingsDiv.style.display === "none") {
+                settingsDiv.style.display = "block";
+            } else {
+                settingsDiv.style.display = "none";
             }
-
-            var search_element = document.getElementById("searchsurname");
-
-            search_element.onkeyup = function () {
-                var query = search_element.value;
-                load_data(query);
-            };
-
-            search_element.onfocus = function () {
-                var query = search_element.value;
-                load_data(query);
-            };
-
-            function get_text(event) {
-                var product_name = event.textContent;
-                console.log(product_name);
-                document.getElementById('searchsurname').value = empl_surname;
-                document.getElementById('search_result').innerHTML = '';
-                document.getElementById('search_result').style.display = 'none';
-            }
-        </script>
+        }
+    </script>
 
 
     <div class="table-responsive">
 
-        <table class="table table-striped">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>ID працівника</th>
-                    <th>Ім'я</th>
-                    <th>Прізвище</th>
-                    <th>По-батькові</th>
-                    <th>Посада</th>
-                    <th>Заробітня плата</th>
-                    <th>Дата народження</th>
-                    <th>Дата початку роботи</th>
-                    <th>Номер телефону</th>
-                    <th>Місто</th>
-                    <th>Вулиця</th>
-                    <th>Зіп-код</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Patronymic</th>
+                    <th>Role</th>
+                    <th>Salary</th>
+                    <th>Date of birth</th>
+                    <th>Date of start</th>
+                    <th>Phone number</th>
+                    <th>City</th>
+                    <th>Street</th>
+                    <th>Zip-code</th>
                     <th></th>
                 </tr>
             </thead>
@@ -132,17 +145,19 @@
                     <td>{{this.street}}</td>
                     <td>{{this.zip_code}}</td>
                     <td>
-                        <a href="employees/edit/{{this.id_employee}}" class="btn btn-success btn-sm"><i
-                                class="fas fa-pencil-alt"></i></a>
-                        <a href="employees/delete/{{this.id_employee}}" class="btn btn-danger btn-sm"><i
-                                class="fa fa-times"></i></a>
+                        <div class="btn-group" role="group">
+                            <a href="employees/edit/{{this.id_employee}}" class="btn btn-success btn-sm"><i
+                                    class="fas fa-pencil-alt"></i></a>
+                            <a href="employees/delete/{{this.id_employee}}" class="btn btn-danger btn-sm"><i
+                                    class="fa fa-times"></i></a>
+                        </div>
                     </td>
                 </tr>
                 {{/each}}
-                
+
             </tbody>
-            
-            
+
+
         </table>
 
     </div>
@@ -150,8 +165,25 @@
         $(document).ready(function () {
             $('#reportBtn').on('click', function () {
                 window.open('/employees/report', '_blank');
+                // Hide the settings div initially
+
             });
         });
+        var settingsDiv = document.getElementById("settings");
+        settingsDiv.style.display = "none";
+
+        function myFunction(x) {
+            x.classList.toggle("change");
+            var settingsDiv = document.getElementById("settings");
+
+            // Toggle the visibility of the settings div
+            if (settingsDiv.style.display === "none") {
+                settingsDiv.style.display = "block";
+            } else {
+                settingsDiv.style.display = "none";
+            }
+        }
+
     </script>
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

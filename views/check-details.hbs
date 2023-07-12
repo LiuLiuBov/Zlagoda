@@ -1,55 +1,49 @@
 <head>
-    <link rel="stylesheet" href="/categories.css">
+    <link rel="stylesheet" href="/checks.css">
 </head>
 
 <body>
-    <h1 class="my-5">Магазин "ZLAGODA"</h1>
-        {{#if ismanager}}
-  <button id="reportBtn" class="btn btn-primary btn-sm">Роздрукувати</button>
-  {{/if}}
+    {{#if ismanager}}
+    <button id="reportBtn" class="btn btn-primary btn-sm">Print</button>
+    {{/if}}
     <h2>№{{checknumber}}</h2>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
                 <div class="check">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>UPC</th>
-                                <th>Назва товару</th>
-                                <th>Кількість</th>
-                                <th>Ціна</th>
-                                <th>Вартість</th>
-                                <th></th>
+                                <th>Product name</th>
+                                <th>Quantity</th>
+                                <th>Price per one</th>
+                                <th>Price per all</th>
                             </tr>
                         </thead>
                         <tbody id="categories-table">
-                        <tbody id="categories-table">
                             {{#each sale}}
-                           <tr>
- <td>{{UPC}}</td>
-    <td>{{product_name}}</td>
-    <td>{{product_number}}</td>
-    <td>{{seling_price}}</td>
-    <td>{{total_cost}}</td>
-  </tr>
+                            <tr>
+                                <td>{{UPC}}</td>
+                                <td>{{product_name}}</td>
+                                <td>{{product_number}}</td>
+                                <td>{{seling_price}}</td>
+                                <td>{{total_cost}}</td>
+                            </tr>
                             {{/each}}
-                        </tbody>
 
                         </tbody>
                     </table>
                 </div>
             </div>
 
-        <script>
+            <script>
 $(document).ready(function () {
   $('#reportBtn').on('click', function () {
     var categoryNumber = {{checknumber}}; 
     window.open("/check/report/" + categoryNumber, '_blank');
   });
 });
+</script>
 
-  </script>
+
             <!-- Підключаємо jQuery та Bootstrap JS -->
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

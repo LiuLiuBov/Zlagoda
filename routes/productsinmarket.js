@@ -2,15 +2,14 @@ const { Router } = require('express')
 const router = Router()
 const auth = require('../middleware/auth')
 const connection = require('../utils/database')
-var notifier = require('node-notifier')
+const notifier = require('node-notifier');
 const path = require('path');
-const checkcashier = require('../middleware/iscashier')
+const checkrole = require('../middleware/check-role')
 const checkmanager = require('../middleware/ismanager')
-var notifier = require('node-notifier')
 const pdf = require('html-pdf');
 const fs = require('fs');
 
-router.get('/productsinmarket', auth, checkcashier, (req, res) => {
+router.get('/productsinmarket', auth, checkrole, (req, res) => {
     const sortCriteria = req.query.sortCriteria || 'product_name';
     const categoryNumber = req.query.categoryNumber || null;
     const priceRange = req.query.priceRange || null;
@@ -51,7 +50,7 @@ router.get('/productsinmarket', auth, checkcashier, (req, res) => {
     });
 });
 
-router.get('/productsinmarket/get_data', auth, checkcashier, function (req, res, next) {
+router.get('/productsinmarket/get_data', auth, checkrole, function (req, res, next) {
 
     var search_query = req.query.search_query;
     var query = `
@@ -66,30 +65,8 @@ router.get('/productsinmarket/get_data', auth, checkcashier, function (req, res,
     });
 
 });
-/*router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
-    const { searchsurname, occupation } = req.body;
-    console.log(searchsurname);
-    console.log(occupation);
-  
-    let getEmployees = "SELECT * FROM employee WHERE 1=1 ";
-  
-    if (searchsurname) {
-      getEmployees += ` AND empl_surname = '${searchsurname}'`;
-    }
-  
-    if (occupation && occupation !== "none") {
-      getEmployees += ` AND empl_role = '${occupation}'`;
-    }
-  
-    connection.query(getEmployees, (err, result) => {
-      if (err) throw err;
-      console.log(result);
-      res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
-      'ismanager': res.locals.ismanager });
-    });
-  });*/
 
-router.post('/productsinmarket', auth, checkmanager, checkcashier, (req, res) => {
+router.post('/productsinmarket', auth, checkrole, (req, res) => {
     const { searchupc, sortsale, sortCriteria} = req.body;
     console.log(sortsale);
 
@@ -127,7 +104,7 @@ router.post('/productsinmarket', auth, checkmanager, checkcashier, (req, res) =>
 });
 
 
-router.get('/productsinmarket/add', auth, checkmanager, checkcashier,  (req, res,) => {
+router.get('/productsinmarket/add', auth, checkmanager, checkrole,  (req, res,) => {
     const getAllProducts = "SELECT p.* FROM product AS p";
     const getAllProductsInStore = "SELECT * FROM store_product AS st INNER JOIN product AS p ON st.id_product = p.id_product ";
 
@@ -169,7 +146,7 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
             const querySelectUPC = `SELECT UPC, selling_price FROM store_product WHERE id_product ='${addproduct}'`;
             connection.query(querySelectUPC, [addproduct], (error, results) => {
                 if (results.length < 1) {
-                    errorNotification('Не можна визначити акційний товар!');
+                    errorNotification('The promotional item cannot be determined!');
                     shouldNotAddProduct = true;
                     return;
                 }
@@ -182,7 +159,7 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
                 queryInsert = "INSERT INTO store_product (UPC, UPC_prom, id_product, selling_price, products_number, promotional_product) VALUES (?, ?, ?, ?, ?, ?)";
                 const values = [addUPC, addUPCPRO, addproduct, price, addproductinmarketnumber, promotionalProduct];
                 connection.query(queryInsert, values, (error, results) => {
-                    errorNotification('Акційну ціну було вирахувано за формулою!');
+                    errorNotification('The promotional price was calculated using the formula!');
                     res.redirect('/productsinmarket');
                 });
             });
@@ -207,7 +184,7 @@ router.post('/productsinmarket/adding', auth, async (req, res) => {
                             if (err) throw err;
     
                             if (idProductResults.length > 0) {
-                                errorNotification('Інформація про даний товар вже існує в базі!');
+                                errorNotification('The information about this product is already stored in the database!');
                             } else {
                                 connection.query(
                                     queryInsert,
@@ -239,10 +216,12 @@ router.get('/productsinmarket/delete/:UPC', auth, (req, res) => {
     connection.query(checkSales, (err, result) => {
         if (err) throw err;
         if (res.lenght > 0){
-            errorNotification('Не можна видалити товар. Спочатку видаліть акційні товари');
+            errorNotification('You cannot delete the product. First, remove the promotional items');
+            return res.redirect('/productsinmarket');
         }
         if (result.length > 0) {
-            errorNotification('Не можна видалити товар, оскільки інформацыя про нього міститься у продажах');
+            errorNotification('You cannot delete the product because information about it is included in sales');
+            return res.redirect('/productsinmarket');
         } else {
             const sql = `DELETE FROM store_product WHERE UPC = ${upc}`;
             connection.query(sql, (err) => {
@@ -255,7 +234,7 @@ router.get('/productsinmarket/delete/:UPC', auth, (req, res) => {
     });
 });
 
-router.get('/productsinmarket/edit/:UPC', auth, (req, res) => {
+router.get('/productsinmarket/edit/:UPC', auth, checkrole, (req, res) => {
     const upc_red = req.params.UPC;
     const getAllProducts = "SELECT * FROM product";
     const getProductInStore = `SELECT * FROM store_product WHERE UPC = '${upc_red}'`;
@@ -310,7 +289,7 @@ router.post('/productsinmarket/edit/:upc/editing', auth, (req, res) => {
                 if (err) throw err;
 
                 if (upcResults.length > 0 && upcResults[0].UPC !== upc_red) {
-                    errorNotification("Товар з таким UPC вже існує!");
+                    errorNotification("The item with this UPC already exists!");
                 } else {
                     connection.query(
                         queryCheckIdProduct,
@@ -319,7 +298,7 @@ router.post('/productsinmarket/edit/:upc/editing', auth, (req, res) => {
                             if (err) throw err;
 
                             if (idProductResults.length > 0) {
-                                errorNotification('Інформація про даний товар вже міститься в базі!');
+                                errorNotification('The information about this product is already stored in the database!');
                             } else {
                                 connection.query(
                                     queryUpdate,
@@ -391,9 +370,9 @@ router.get('/productsinmarket/report', auth, (req, res) => {
             <body>
                 <header>
                 <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
                 
-                    <h1>Звіт "Товари в магазині"</h1>
+                    <h1>Store product report</h1>
                 </header>
                 ${generateTable(products)}
                 
@@ -448,16 +427,16 @@ router.get('/productsinmarket/report', auth, (req, res) => {
         `;
         tableHTML += `
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
           <p style="margin-top: 90px; margin-bottom: 30px;"></p>
           <tr class="header-row">
           <th>UPC</th>
-          <th>Назва категорії</th>
-          <th>Назва товару</th>
-          <th>Вартість</th>
-          <th>Кількість</th>
-          <th>Характеристики</th>
-          <th>Акційний товар</th>
+          <th>Category number</th>
+          <th>Product name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Characteristics</th>
+          <th>Promotional</th>
           </tr>
         `;
         currentPageHeight = 1050; 
@@ -490,12 +469,12 @@ router.get('/productsinmarket/report', auth, (req, res) => {
         <thead>
           <tr>
           <th>UPC</th>
-          <th>Назва категорії</th>
-          <th>Назва товару</th>
-          <th>Вартість</th>
-          <th>Кількість</th>
-          <th>Характеристики</th>
-          <th>Акційний товар</th>
+          <th>Category number</th>
+          <th>Product name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Characteristics</th>
+          <th>Promotional</th>
           </tr>
         </thead>
         <tbody>
@@ -509,37 +488,13 @@ router.get('/productsinmarket/report', auth, (req, res) => {
 function errorNotification(str) {
 
     notifier.notify({
-        title: 'Помилка!',
+        title: 'Error!',
         message: str,
-        icon: path.join('./routes/images/error.png'),
+        icon: path.join('./images/error.png'),
         wait: true,
         sound: true,
         appID: 'ZLAGODA'
     })
 }
-
-router.get('/productsinmarket/summary', auth, checkcashier, function (req, res, next) {
-
-
-    const getInfo = `
-    SELECT c.category_number, SUM(sp.products_number) AS total_products
-    FROM (store_product AS sp
-    INNER JOIN product AS p ON sp.id_product = p.id_product)
-    INNER JOIN category AS c ON p.category_number = c.category_number
-    GROUP BY c.category_number
-    `;
-
-    connection.query(getInfo, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.render('summary', {
-            'info': result,
-            'iscashier': res.locals.iscashier,
-            'ismanager': res.locals.ismanager
-        });
-    });
-
-
-});
 
 module.exports = router

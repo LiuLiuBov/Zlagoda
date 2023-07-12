@@ -4,67 +4,67 @@
 
 <body>
     <!-- Форма для додавання нового клієнта -->
-    <h2 class="mt-5">Додати нового працівника</h2>
+    <h2 class="mt-5">Add employee</h2>
     <form action="/employees/adding" method="POST">
         <div class="form-group">
-            <label for="addemplfirstname">Ім'я:</label>
-            <input type="text" id="addemplfirstname" name="addemplfirstname" class="form-control" required>
+            <label for="addemplfirstname">Name:</label>
+            <input type="text" id="addemplfirstname" name="addemplfirstname" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addempllastname">Прізвище:</label>
-            <input type="text" id="addempllastname" name="addempllastname" class="form-control" required>
+            <label for="addempllastname">Surname:</label>
+            <input type="text" id="addempllastname" name="addempllastname" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addemplpatronymic">По-батькові:</label>
-            <input type="text" id="addemplpatronymic" name="addemplpatronymic" class="form-control">
+            <label for="addemplpatronymic">Patronymic:</label>
+            <input type="text" id="addemplpatronymic" name="addemplpatronymic" class="form-control" pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addemplposition">Посада:</label>
+            <label for="addemplposition">Role:</label>
             <select id="addemplposition" name="addemplposition" class="form-control" required>
                 <option value="none"></option>
-                <option value="manager">менеджер</option>
-                <option value="cashier">касир</option>
+                <option value="manager">Manager</option>
+                <option value="cashier">Cashier</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="addemplsalary">Заробітня плата:</label>
-            <input type="number" id="addemplsalary" min="0" name="addemplsalary" class="form-control" pattern="[0-9]+"  required >
+            <label for="addemplsalary">Salary:</label>
+            <input type="number" id="addemplsalary" min="0" name="addemplsalary" class="form-control"  required >
         </div>
         <div class="form-group">
-            <label for="addempldateofbirth">Дата народження:</label>
+            <label for="addempldateofbirth">Date of birth:</label>
             <input type="date" id="addempldateofbirth" name="addempldateofbirth" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="addempldateofstart">Дата початку роботи:</label>
+            <label for="addempldateofstart">Date of start:</label>
             <input type="date" id="addempldateofstart" name="addempldateofstart" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="addemplphone">Номер телефону:</label>
-            <input type="text" id="addemplphone" name="addemplphone" class="form-control" maxlength="13" required >
+            <label for="addemplphone">Phone number:</label>
+            <input type="text" id="addemplphone" name="addemplphone" class="form-control" maxlength="13" required pattern="^\+380\d{9}$" value="+380">
         </div>
         <div class="form-group">
-            <label for="addemplcity">Місто:</label>
-            <input type="text" id="addemplcity" name="addemplcity" class="form-control" required>
+            <label for="addemplcity">City:</label>
+            <input type="text" id="addemplcity" name="addemplcity" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addemplstreet">Вулиця:</label>
-            <input type="text" id="addemplstreet" name="addemplstreet" class="form-control" required>
+            <label for="addemplstreet">Street:</label>
+            <input type="text" id="addemplstreet" name="addemplstreet" class="form-control" required pattern="^[^0-9]+$">
         </div>
         <div class="form-group">
-            <label for="addemplzipcode">Зіп-код:</label>
-            <input type="text" id="addemplzipcode" name="addemplzipcode" class="form-control" pattern="[0-9]+" required>
+            <label for="addemplzipcode">Zip-code:</label>
+            <input type="text" id="addemplzipcode" name="addemplzipcode" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="addempllogin">Логін для входу в систему:</label>
+            <label for="addempllogin">Login:</label>
             <input type="text" id="addempllogin" name="addempllogin" class="form-control" required pattern=".{4,}">
         </div>
         <div class="form-group">
-            <label for="addemplpassword">Пароль для входу в систему:</label>
+            <label for="addemplpassword">Password:</label>
             <input type="text" id="addemplpassword" name="addemplpassword" class="form-control" required
                 pattern=".{8,}">
         </div>
 
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <script>
         var today = new Date();
@@ -77,11 +77,9 @@
     </script>
 
     </div>
-    <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Підключаємо власний JavaScript -->
     <script src="customers.js"></script>
 
 </body>

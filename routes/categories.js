@@ -3,25 +3,23 @@ const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
 const checkmanager = require('../middleware/ismanager')
-var notifier = require('node-notifier')
+let notifier = require('node-notifier')
 const path = require('path');
 const pdf = require('html-pdf');
 const fs = require('fs');
-const checkcashier = require('../middleware/iscashier')
-var Handlebars = require('handlebars');
-var helpers = require('handlebars-helpers')();
+const checkrole = require('../middleware/check-role')
+let Handlebars = require('handlebars');
+let helpers = require('handlebars-helpers')();
 
 Handlebars.registerHelper('eq', helpers.eq);
 
 
 
-router.get('/categories', auth, checkcashier, (req, res,) => {
+router.get('/categories', auth, checkrole, checkmanager, (req, res,) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   connection.query(getAllCategories, (err, result) => {
     if (err) throw err;
-    //res.send(result)
-    //console.log(result);
-    var isCashier = res.locals.iscashier
+    let isCashier = res.locals.iscashier
     let isManager = res.locals.ismanager
 
     console.log(isManager);
@@ -32,38 +30,7 @@ router.get('/categories', auth, checkcashier, (req, res,) => {
 
 })
 
-router.post('/categories', auth, checkmanager, checkcashier, (req, res) => {
-  const { occupation} = req.body;
-
-  let getCategories = `
-  SELECT Category.category_number, Category.category_name
-FROM  Category
-WHERE NOT EXISTS (SELECT Product.id_product
-                                         FROM Product
-                                         WHERE Product.category_number = Category.category_number  AND 
-                                                          NOT EXISTS  (SELECT Store_Product.id_product
-                                                                                    FROM Store_Product
-                                                                                    WHERE Product.id_product= Store_Product.id_product AND   
-                                                                                                    Store_Product.promotional_product = 1 
-                                                                                     )
-                                           )
-
-  
-`;
-
-
-  connection.query(getCategories, (err, result) => {
-      if (err) throw err;
-      console.log(result);
-      res.render('categories', {
-          'categories': result,
-          'iscashier': res.locals.iscashier,
-          'ismanager': res.locals.ismanager
-      });
-  });
-});
-
-router.post('/categories/add', auth, checkmanager, async (req, res) => {
+router.post('/categories/add', auth, checkmanager, checkrole, async (req, res) => {
   const { catname } = req.body;
 
   const sql = "INSERT INTO category (category_name) VALUES (?)";
@@ -75,7 +42,7 @@ router.post('/categories/add', auth, checkmanager, async (req, res) => {
 });
 
 router.get('/categories/error', auth, checkmanager, (req, res) => {
-  const errorMessage = 'Помилка. Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!';
+  const errorMessage = 'Error. Can not delete category with existing products. Firstly delete the products!';
   res.render('error', { errorMessage });
 });
 
@@ -89,8 +56,9 @@ router.get('/categories/delete/:category_number', auth, checkmanager, (req, res)
     if (result.length > 0) {
     // якщо є зв'язані товари, то вивести помилку
     //  res.redirect('/categories/error');
-   errorNotification('Не можна видалити категорію, оскільки до неї належать товари. Спочатку видаліть товари!');
-    } else {
+   errorNotification('Error. Can not delete category with existing products. Firstly delete the products!');
+   return res.redirect('/categories');
+  } else {
       // якщо немає зв'язаних товарів, то видалити категорію
       const deleteCategory = `DELETE FROM category WHERE category_number = ${categoryNumber}`;
       connection.query(deleteCategory, (err) => {
@@ -104,7 +72,7 @@ router.get('/categories/delete/:category_number', auth, checkmanager, (req, res)
 
 
 
-router.get('/categories/edit/:category_number', auth, checkmanager, (req, res) => {
+router.get('/categories/edit/:category_number', auth, checkrole, checkmanager, (req, res) => {
   const categoryNumber = req.params.category_number;
   const getCategory = `SELECT * FROM category WHERE category_number = ${categoryNumber}`;
   connection.query(getCategory,  [categoryNumber], (err, result) => {
@@ -132,15 +100,15 @@ router.post('/categories/edit/:categoryNumber/editing', auth, checkmanager, (req
 function errorNotification(str) {
 
   notifier.notify({
-    title: 'Помилка!',
+    title: 'Error!',
     message: str,
-    icon: path.join('./routes/images/error.png'),
+    icon: path.join('./images/error.png'),
     wait: true,
     sound: true,
     appID : 'ZLAGODA'
   })
 }
-router.get('/categories/report', auth, (req, res) => {
+router.get('/categories/report', auth, checkmanager, (req, res) => {
   const getAllCategories = "SELECT * FROM category ORDER BY category_name";
   connection.query(getAllCategories, (err, result) => {
     if (err) throw err;
@@ -190,9 +158,9 @@ router.get('/categories/report', auth, (req, res) => {
       <body>
           <header>
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
           
-              <h1>Звіт "Категорії"</h1>
+              <h1>Categories report</h1>
           </header>
           ${generateTable(categories)}
           
@@ -242,11 +210,11 @@ function generateTable(categories) {
       `;
       tableHTML += `
         <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-        <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+        <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
         <p style="margin-top: 90px; margin-bottom: 30px;"></p>
         <tr class="header-row">
-          <th>Номер категорії</th>
-          <th>Назва категорії</th>
+          <th>Category number</th>
+          <th>Category name</th>
         </tr>
       `;
       currentPageHeight = 1050; 
@@ -278,8 +246,8 @@ function generateTable(categories) {
     <table>
       <thead>
         <tr>
-          <th>Номер категорії</th>
-          <th>Назва категорії</th>
+          <th>Category number</th>
+          <th>Category name</th>
         </tr>
       </thead>
       <tbody>

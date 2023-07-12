@@ -2,13 +2,13 @@ const { Router } = require('express')
 const router = Router()
 const connection = require('../utils/database')
 const auth = require('../middleware/auth')
-var notifier = require('node-notifier')
+const notifier = require('node-notifier')
 const path = require('path');
-const checkcashier = require('../middleware/iscashier')
+const checkrole = require('../middleware/check-role')
 const fs = require('fs');
 const pdf = require('html-pdf');
 
-router.get('/products', auth, checkcashier, (req, res,) => {
+router.get('/products', auth, checkrole, (req, res,) => {
     const getAllCategories = "SELECT * FROM category ORDER BY category_name";
     const getAllProducts = "SELECT p.id_product, p.category_number, c.category_name, p.product_name, p.caracteristics FROM product p JOIN category c ON p.category_number = c.category_number ORDER BY p.product_name";
     connection.query(getAllCategories, (err, categories) => {
@@ -24,7 +24,7 @@ router.get('/products', auth, checkcashier, (req, res,) => {
     })
 })
 
-router.post('/products', auth, checkcashier,  (req, res) => {
+router.post('/products', auth, checkrole,  (req, res) => {
     const getAllCategories = "SELECT * FROM category ORDER BY category_name";
     const {searchproduct, searchbycategory } = req.body;
 
@@ -64,7 +64,7 @@ router.get('/get_data', auth, function(req, res, next){
 
 });
 
-router.post('/suggestions', auth, checkcashier, (req, res) => {
+router.post('/suggestions', auth, checkrole, (req, res) => {
     const input = req.body.input;
     const query = `SELECT * FROM product WHERE product_name LIKE '${input}%'`;
 
@@ -78,7 +78,7 @@ router.post('/suggestions', auth, checkcashier, (req, res) => {
     });
 });
 
-router.get('/products/add', auth, checkcashier, (req, res,) => {
+router.get('/products/add', auth, checkrole, (req, res,) => {
     const getAllCategories = "SELECT * FROM category";
 
     connection.query(getAllCategories, (err, categories) => {
@@ -122,8 +122,9 @@ router.get('/products/delete/:id_product', auth, (req, res) => {
         if (result.length > 0) {
             console.log("hello");
         // якщо є зв'язані товари в магазині, то вивести помилку
-       errorNotification('Перед тим як видалити товар, необхідно спочатку видалити відповідний товар у розділі "Товари в магазині".');
-        } else {
+       errorNotification('Before deleting the product, you need to first delete the corresponding item in the "Store Products".');
+       return res.redirect('/products');
+      } else {
           // якщо немає зв'язаних товарів в магазині, то видалити товар
           const deleteProduct = `DELETE FROM product WHERE id_product = ${idProduct}`;
           connection.query(deleteProduct, (err) => {
@@ -135,7 +136,7 @@ router.get('/products/delete/:id_product', auth, (req, res) => {
       });
 });
 
-router.get('/products/edit/:id_product', auth, (req, res) => {
+router.get('/products/edit/:id_product', checkrole, auth, (req, res) => {
     const idProduct = req.params.id_product;
     const getAllCategories = "SELECT * FROM category";
     const getProduct = `SELECT * FROM product WHERE id_product = '${idProduct}'`;
@@ -179,9 +180,9 @@ router.post('/products/edit/:idproduct/editing', auth,  (req, res) => {
 function errorNotification(str) {
 
     notifier.notify({
-      title: 'Помилка!',
+      title: 'Error!',
       message: str,
-      icon: path.join('./routes/images/error.png'),
+      icon: path.join('./images/error.png'),
       wait: true,
       sound: true,
       appID : 'ZLAGODA'
@@ -236,9 +237,9 @@ function errorNotification(str) {
             <body>
                 <header>
                 <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
+                <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
                 
-                    <h1>Звіт "Товари"</h1>
+                    <h1>Products report</h1>
                 </header>
                 ${generateTable(products)}
                 
@@ -293,10 +294,10 @@ function errorNotification(str) {
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
           <p style="margin-top: 90px; margin-bottom: 30px;"></p>
           <tr class="header-row">
-            <th>Номер товару</th>
-            <th>Назва категорії</th>
-            <th>Назва товару</th>
-            <th>Характеристики</th>
+            <th>Product number</th>
+            <th>Ctegory name</th>
+            <th>Product name</th>
+            <th>Characteristics</th>
           </tr>
         `;
         currentPageHeight = 1050; 
@@ -328,10 +329,10 @@ function errorNotification(str) {
       <table>
         <thead>
           <tr>
-          <th>Номер товару</th>
-          <th>Назва категорії</th>
-          <th>Назва товару</th>
-          <th>Характеристики</th>
+          <th>Product number</th>
+            <th>Ctegory name</th>
+            <th>Product name</th>
+            <th>Characteristics</th>
           </tr>
         </thead>
         <tbody>

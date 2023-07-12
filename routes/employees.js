@@ -5,12 +5,13 @@ const connection = require('../utils/database')
 const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid')
 const checkmanager = require('../middleware/ismanager')
-const checkcashier = require('../middleware/iscashier')
+const checkrole = require('../middleware/check-role')
+const notifier = require('node-notifier')
 const path = require('path');
 const pdf = require('html-pdf');
 const fs = require('fs');
 
-router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
+router.get('/employees', auth, checkmanager, checkrole, (req, res,) => {
   const getAllEmployees = "SELECT * FROM employee ORDER BY empl_surname";
   
   connection.query(getAllEmployees, (err, result) => {
@@ -21,23 +22,20 @@ router.get('/employees', auth, checkmanager, checkcashier, (req, res,) => {
   })
 })
 
-router.get('/employees/get_data', auth, function (req, res, next) {
+function errorNotification(str) {
 
-  var search_query = req.query.search_query;
-  var query = `
-  SELECT empl_surname FROM employee
-  WHERE empl_surname LIKE '%${search_query}%' 
-  LIMIT 10
-  `;
+  notifier.notify({
+    title: 'Error!',
+    message: str,
+    icon: path.join('./images/error.png'),
+    wait: true,
+    sound: true,
+    appID : 'ZLAGODA'
+  })
+}
 
-  connection.query(query, function (error, data) {
-    res.json(data);
-
-  });
-
-});
-router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
-  const { searchsurname, occupation, startDate, endDate } = req.body;
+router.post('/employees', auth, checkmanager, checkrole, (req, res) => {
+  const { searchsurname, occupation} = req.body;
   console.log(searchsurname);
   console.log(occupation);
 
@@ -51,33 +49,15 @@ router.post('/employees', auth, checkmanager, checkcashier, (req, res) => {
     getEmployees += ` AND empl_role = '${occupation}'`;
   }
 
-  let getTop = `SELECT Employee.*, COUNT(Employee.id_employee) AS nmb
-  FROM Employee
-  INNER JOIN \`Check\` ON Employee.id_employee = \`Check\`.id_employee
-  WHERE 1=1`;
-
-if (startDate && startDate !== "none") {
-  getTop += ` AND \`Check\`.print_date BETWEEN '${startDate}' AND '${endDate}' `;
-}
-
-getTop += `
-  GROUP BY Employee.id_employee, Employee.empl_surname, Employee.empl_name
-  ORDER BY COUNT(Employee.id_employee) DESC
-  LIMIT 1`;
-
-  connection.query(getEmployees , (err, empl) => {
-connection.query(getTop, (err, Results) => {
-  if (err) throw err;
-  res.render('employees', {
-    'employees': Results, 'iscashier': res.locals.iscashier,
-    'ismanager': res.locals.ismanager
+  connection.query(getEmployees, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.render('employees', { 'employees': result, 'iscashier': res.locals.iscashier,
+    'ismanager': res.locals.ismanager });
   });
 });
-});
 
-});
-
-router.get('/employees/add', auth, checkmanager, checkcashier, (req, res,) => {
+router.get('/employees/add', auth, checkmanager, checkrole, (req, res,) => {
   res.render('create-employee', {
     'iscashier': res.locals.iscashier,
     'ismanager': res.locals.ismanager,
@@ -101,46 +81,89 @@ router.post('/employees/adding', auth, checkmanager, async (req, res) => {
     addemplpassword
   } = req.body;
 
-  const hashPassword = await bcrypt.hash(addemplpassword, 5)
+  const hashPassword = await bcrypt.hash(addemplpassword, 5);
   const addemplid = uuidv4().slice(0, 10);
 
-  const query = "INSERT INTO employee (id_employee, empl_name, empl_surname, empl_patronymic, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code, login, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  const checkQuery = "SELECT COUNT(*) AS count FROM employee WHERE login = ?";
 
-  connection.query(
-    query,
-    [addemplid,
-      addemplfirstname,
-      addempllastname,
-      addemplpatronymic,
-      addemplposition,
-      addemplsalary,
-      addempldateofbirth,
-      addempldateofstart,
-      addemplphone,
-      addemplcity,
-      addemplstreet,
-      addemplzipcode,
-      addempllogin,
-      hashPassword],
-    (err) => {
-      if (err) throw err;
-      console.log("1 record inserted");
-      res.redirect('/employees');
-    });
+  connection.query(checkQuery, [addempllogin], (err, results) => {
+    if (err) throw err;
+
+    if (results[0].count > 0) {
+      errorNotification('Login must be unique.');
+      res.redirect('/employees/add');
+    } else {
+      const insertQuery = "INSERT INTO employee (id_employee, empl_name, empl_surname, empl_patronymic, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code, login, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+      connection.query(
+        insertQuery,
+        [addemplid,
+          addemplfirstname,
+          addempllastname,
+          addemplpatronymic,
+          addemplposition,
+          addemplsalary,
+          addempldateofbirth,
+          addempldateofstart,
+          addemplphone,
+          addemplcity,
+          addemplstreet,
+          addemplzipcode,
+          addempllogin,
+          hashPassword],
+        (err) => {
+          if (err) throw err;
+          console.log("1 record inserted");
+          res.redirect('/employees');
+        });
+    }
+  });
 });
+
 
 router.get('/employees/delete/:id_employee', auth, checkmanager, (req, res) => {
   const idEmployee = req.params.id_employee;
   console.log(idEmployee);
-  const sql = `DELETE FROM employee WHERE id_employee = '${idEmployee}'`;
-  connection.query(sql, [idEmployee], (err) => {
+
+  const user_id = res.locals.user_id;
+  const getCurrentUser = `
+    SELECT * FROM employee WHERE login = '${user_id}' 
+  `;
+
+  connection.query(getCurrentUser, (err, userResult) => {
     if (err) throw err;
-    console.log("1 record deleted");
-    res.redirect('/employees');
+
+    if (userResult.length > 0 && userResult[0].id_employee === idEmployee) {
+      // User is trying to delete their own account
+      errorNotification('You can not delete yourself!');
+      res.redirect('/employees'); // Redirect back to employees list or error page
+    } else {
+      const checkChecks = `SELECT * FROM \`check\` WHERE id_employee = '${idEmployee}'`;
+      connection.query(checkChecks, (err, result) => {
+        if (err) throw err;
+
+        if (result.length > 0) {
+          // If there are associated checks, show error
+          errorNotification('Can not delete cashiers with existing checks. Firstly delete the checks!');
+          res.redirect('/employees');
+        } else {
+          // If no associated checks, proceed with deletion
+          const sql = `DELETE FROM employee WHERE id_employee = '${idEmployee}'`;
+          connection.query(sql, (err) => {
+            if (err) throw err;
+            console.log("1 record deleted");
+            res.redirect('/employees');
+          });
+        }
+      });
+    }
   });
 });
 
-router.get('/employees/edit/:id_employee', auth, checkmanager, (req, res) => {
+
+
+
+router.get('/employees/edit/:id_employee', auth, checkrole, checkmanager, (req, res) => {
   const idEmployee = req.params.id_employee;
   const getEmployee = `SELECT * FROM employee WHERE id_employee = '${idEmployee}'`;
   connection.query(getEmployee, [idEmployee], (err, result) => {
@@ -285,8 +308,8 @@ router.get('/employees/report', auth, (req, res) => {
     <body>
         <header>
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
-          <h1>Звіт "Працівники"</h1>
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
+          <h1>Employees report</h1>
         </header>
         ${generateTable(categories)}
     </body>
@@ -359,17 +382,17 @@ function generateTable(categories) {
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
           <p style="margin-top: 90px; margin-bottom: 30px;"></p>
           <tr class="header-row">
-            <th>Ім'я</th>
-            <th>Прізвище</th>
-            <th>По батькові</th>
-            <th>Посада</th>
-            <th>Зарплатня</th>
-            <th>Дата народження</th>
-            <th>Дата початку роботи</th>
-            <th>Тел</th>
-            <th>Місто</th>
-            <th>Вулиця</th>
-            <th>Індекс</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Patronymic</th>
+            <th>Role</th>
+            <th>Salary</th>
+            <th>Date of birth</th>
+            <th>Date of start</th>
+            <th>Phone number</th>
+            <th>City</th>
+            <th>Street</th>
+            <th>Index</th>
           </tr>
         `;
       currentPageHeight = 1050;
@@ -401,17 +424,17 @@ function generateTable(categories) {
       <table>
         <thead>
           <tr class="header-row">
-          <th>Ім'я</th>
-          <th>Прізвище</th>
-          <th>По батькові</th>
-          <th>Посада</th>
-          <th>Зарплатня</th>
-          <th>Дата народження</th>
-          <th>Дата початку роботи</th>
-          <th>Тел</th>
-          <th>Місто</th>
-          <th>Вулиця</th>
-          <th>Індекс</th>
+          <th>Name</th>
+            <th>Surname</th>
+            <th>Patronymic</th>
+            <th>Role</th>
+            <th>Salary</th>
+            <th>Date of birth</th>
+            <th>Date of start</th>
+            <th>Phone number</th>
+            <th>City</th>
+            <th>Street</th>
+            <th>Index</th>
         </tr>
         </thead>
         <tbody>

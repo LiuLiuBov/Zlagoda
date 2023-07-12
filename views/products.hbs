@@ -3,29 +3,33 @@
 </head>
 
 <body>
-    <div>
-        <h1 class="my-5">Товари</h1>
+    <div class="container" id="more" onclick="myFunction(this)">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+
+    <div id="settings">
+        {{#if ismanager}}
+        <button id="reportBtn" class="btn btn-primary btn-sm">Products report</button>
+
+        {{else}}
+        {{/if}}
+
+        {{#if ismanager}}
+        <a href="/products/add" class="btn btn-primary">Add product</a>
+        {{else}}
+        {{/if}}
         <form action="/products" method="POST">
-            {{#if ismanager}}
-            <button id="reportBtn" class="btn btn-primary btn-sm">Звіт</button>
 
-            {{else}}
-            {{/if}}
 
-            <div class="input-group">
+            <input type="text" id="searchproduct" name="searchproduct" class="form-control"
+                placeholder="Enter product name..." />
+            <span id="search_result"></span>
 
-                {{#if iscashier}}
-                <div class="container">
-                    <input type="text" id="searchproduct" name="searchproduct" class="form-control"
-                        placeholder="Введіть назву товару..." />
-                    <span id="search_result"></span>
-                </div>
 
-                {{else}}
-                {{/if}}
-            </div>
             <div class="form-group">
-                <label for="searchbycategory">Пошук за категорією:</label>
+                <label for="searchbycategory">Search by category:</label>
                 <select id="searchbycategory" name="searchbycategory" class="form-control" required>
                     <option value="none"></option>
                     {{#each categories}}
@@ -36,74 +40,19 @@
             <button class="btn btn-outline-secondary" type="submit">
                 <i class="fas fa-search"></i>
             </button>
-        </form>        
-        
-        {{#if ismanager}}
-        <a href="/products/add" class="btn btn-primary">Додати товар</a>
-        {{else}}
-        {{/if}}
-        
-        <script>
-            function load_data(query = '') {
-                fetch('/get_data?search_query=' + query + '').then(function (res) {
-                    return res.json();
-                }).then(function (responseData) {
-                    var html = '<ul class="list-group">';
-
-                    if (responseData.length > 0) {
-                        for (var count = 0; count < responseData.length; count++) {
-                            var regular_expression = new RegExp('(' + query + ')', 'gi');
-                            html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].product_name.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
-                        }
-                    } else {
-                        html += '<a href="#" class="list-group-item list-group-item-action disabled">Товарів не знайдено</a>';
-                    }
-
-                    html += '</ul>';
-
-                    document.getElementById('search_result').innerHTML = html;
-                    if (query === '') {
-                        document.getElementById('search_result').style.display = 'none';
-                    } else {
-                        document.getElementById('search_result').style.display = 'block';
-                    }
-                });
-            }
-
-            var search_element = document.getElementById("searchproduct");
-
-            search_element.onkeyup = function () {
-                var query = search_element.value;
-                load_data(query);
-            };
-
-            search_element.onfocus = function () {
-                var query = search_element.value;
-                load_data(query);
-            };
-
-            function get_text(event) {
-                var product_name = event.textContent;
-                console.log(product_name);
-                document.getElementById('searchproduct').value = product_name;
-                document.getElementById('search_result').innerHTML = '';
-                document.getElementById('search_result').style.display = 'none';
-            }
-        </script>
-
-
-
-
+        </form>
     </div>
+
+
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Номер товару</th>
-                    <th>Назва категорії</th>
-                    <th>Назва товару</th>
-                    <th>Характеристики</th>
-                    <th></th>
+                    <th>Product ID</th>
+                    <th>Category name</th>
+                    <th>Product name</th>
+                    <th>Characteristics</th>
+                    <th style="width: 15%;"></th>
 
                 </tr>
             </thead>
@@ -117,11 +66,12 @@
 
                     <td>
                         {{#if ../ismanager}}
-                        <a href="products/edit/{{this.id_product}}" class="btn btn-success btn-sm"><i
-                                class="fas fa-pencil-alt"></i></a>
-                        <a href="products/delete/{{this.id_product}}" class="btn btn-danger btn-sm"><i
-                                class="fa fa-times"></i></a>
-
+                        <div class="btn-group" role="group">
+                            <a href="products/edit/{{this.id_product}}" class="btn btn-success btn-sm"><i
+                                    class="fas fa-pencil-alt"></i></a>
+                            <a href="products/delete/{{this.id_product}}" class="btn btn-danger btn-sm"><i
+                                    class="fa fa-times"></i></a>
+                        </div>
                         {{else}}
                         {{/if}}
                     </td>
@@ -131,14 +81,79 @@
             </tbody>
         </table>
     </div>
-    </div>
+
     <script>
+        function load_data(query = '') {
+            fetch('/get_data?search_query=' + query + '').then(function (res) {
+                return res.json();
+            }).then(function (responseData) {
+                var html = '<ul class="list-group">';
+
+                if (responseData.length > 0) {
+                    for (var count = 0; count < responseData.length; count++) {
+                        var regular_expression = new RegExp('(' + query + ')', 'gi');
+                        html += '<a href="#" class="list-group-item list-group-item-action" onclick="get_text(this)">' + responseData[count].product_name.replace(regular_expression, '<span class="text-primary fw-bold">$1</span>') + '</a>';
+                    }
+                } else {
+                    html += '<a href="#" class="list-group-item list-group-item-action disabled">Товарів не знайдено</a>';
+                }
+
+                html += '</ul>';
+
+                document.getElementById('search_result').innerHTML = html;
+                if (query === '') {
+                    document.getElementById('search_result').style.display = 'none';
+                } else {
+                    document.getElementById('search_result').style.display = 'block';
+                }
+            });
+        }
+
+        var search_element = document.getElementById("searchproduct");
+
+        search_element.onkeyup = function () {
+            var query = search_element.value;
+            load_data(query);
+        };
+
+        search_element.onfocus = function () {
+            var query = search_element.value;
+            load_data(query);
+        };
+
+        function get_text(event) {
+            var product_name = event.textContent;
+            console.log(product_name);
+            document.getElementById('searchproduct').value = product_name;
+            document.getElementById('search_result').innerHTML = '';
+            document.getElementById('search_result').style.display = 'none';
+        }
+
         $(document).ready(function () {
             $('#reportBtn').on('click', function () {
                 window.open('/products/report', '_blank');
+                // Hide the settings div initially
+
             });
+
         });
+
+        var settingsDiv = document.getElementById("settings");
+            settingsDiv.style.display = "none";
+
+         function myFunction(x) {
+            x.classList.toggle("change");
+            var settingsDiv = document.getElementById("settings");
+
+            // Toggle the visibility of the settings div
+            if (settingsDiv.style.display === "none") {
+                settingsDiv.style.display = "block";
+            } else {
+                settingsDiv.style.display = "none";
+            }
+        }
     </script>
+
     <!-- Підключаємо jQuery та Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

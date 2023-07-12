@@ -2,14 +2,37 @@
 <html>
 
 <head>
-    <title>ZLAGODA - продуктовий міні-супермаркет</title>
+    <title>ZLAGODA</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        /* Custom Styles */
+        .navbar {
+            background-color: rgb(54, 83, 47) !important;
+            font-family: "Georgia", "Courier New", serif !important;
+            font-size: 17px !important;
+            font-weight: bold;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-family: "Georgia", "Courier New", serif !important;
+            font-size: 23px !important;
+            font-weight: bold;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -23,40 +46,36 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/products">Товари</a>
+                        <a class="nav-link" href="/products">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/productsinmarket">Товари в магазині</a>
+                        <a class="nav-link" href="/productsinmarket">Store Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/checks">Чеки</a>
+                        <a class="nav-link" href="/checks">Checks</a>
                     </li>
                     {{#if ismanager}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/employees">Працівники</a>
+                        <a class="nav-link" href="/employees">Employees</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/categories">Категорії товарів</a>
+                        <a class="nav-link" href="/categories">Categories</a>
                     </li>
-                    {{else}}
                     {{/if}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/customers">Клієнти</a>
-                    </li>
-                
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Мій профіль</a>
+                        <a class="nav-link" href="/customers">Customers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/logout">Вийти</a>
+                        <a class="nav-link" href="/profile">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Log out</a>
                     </li>
                 </ul>
             </div>
         </nav>
     </header>
-
-    
-
 </body>
-{{{ body }}}
+{{{body}}}
 </html>
+

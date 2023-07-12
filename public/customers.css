@@ -1,70 +1,184 @@
-.row{
+.container {
+    display: inline-block;
+    cursor: pointer;
+    margin: 5px;
+    margin-top: 10px;
+}
+
+.bar1,
+.bar2,
+.bar3 {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.change .bar1 {
+    transform: translate(0, 9px) rotate(-45deg);
+}
+
+.change .bar2 {
+    opacity: 0;
+}
+
+.change .bar3 {
+    transform: translate(0, -9px) rotate(45deg);
+}
+
+#settings {
+    display: none;
+    
+}
+
+.row {
     margin-top: 5px;
     margin-bottom: 15px;
     margin-left: 10px;
-  }
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+body {
+    font-family: "Georgia", "Courier New", serif;
+    font-size: 17px;
+    margin: 0px;
+    padding: 0;
+    background-color: #F2F2F2;
+}
+
+h1 {
+    background-color: #FF9900;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+
+.btn-primary {
+    margin-left: 20px;
+    background-color: rgb(54, 83, 47);
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #FF9900;
+}
+
+.btn-primary {
+    background-color: #df8600;
+}
+
+.btn-primary:hover {
+    background-color: #b16a00;
+}
+
+table {
+    width: 80%;
+    margin: 0px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+th {
+    background-color: rgb(54, 83, 47);
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Стилі для кнопок дій з категоріями */
+.action-buttons button {
+    background-color: rgb(54, 83, 47);
+    color: #fff;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.action-buttons button:hover {
+    background-color: #666;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input[type="text"] {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+form button {
+    background-color: rgb(54, 83, 47);
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#reportBtn {
+    margin-left: 20px;
+}
+
+.btn-danger{
+      text-align: center;
+      text-transform: uppercase;
+      transition: 0.5s;
+      color: white;
+      width: 75px;
+      border-radius: 10px;
+      display: block;
+      border: 0px;
+      font-weight: 700;
+      box-shadow: 0px 0px 14px -7px #f09819;
+      background-image: linear-gradient(45deg, #FF512F 0%, #F09819  51%, #FF512F  100%);
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
-    h1 {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
+    .btn-success{
         text-align: center;
-        margin-top: 5px;
-        margin-bottom: 15px;
-        margin-left: 10px;
-    }
-    .btn-primary {
-       background-color: #333;
-        color: #fff;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
+        text-transform: uppercase;
+        transition: 0.5s;
+        color: white;
+        border-radius: 10px;
+        display: block;
+        width: 75px;
+        border: 0px;
+        font-weight: 700;
+        box-shadow: 0px 0px 14px -7px #438e4d;
+        background-image: linear-gradient(45deg, rgb(54, 83, 47) 0%, #4c9339  51%, rgb(54, 83, 47)  100%);
         cursor: pointer;
-    }
-
-    table {
-        width: 80%;
-        margin: 20px;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ccc;
-    }
-
-    th {
-        background-color: #333;
-        color: #fff;
-    }
-
-    tr:hover {
-        background-color: #f5f5f5;
-    }
-
-    /* Стилі для кнопок дій з категоріями */
-    .action-buttons button {
-        background-color: #333;
-        color: #fff;
-        padding: 5px;
-        border: none;
-        border-radius: 5px;
-        font-size: 12px;
-        cursor: pointer;
-    }
-
-    .action-buttons button:hover {
-        background-color: #666;
-    }
-    #reportBtn{
-        margin-left: 10px;
-    }
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }

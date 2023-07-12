@@ -6,7 +6,7 @@ var notifier = require('node-notifier')
 const path = require('path')
 const pdf = require('html-pdf');
 const fs = require('fs');
-const checkcashier = require('../middleware/iscashier')
+const checkcashier = require('../middleware/check-role')
 
 router.get('/checks', auth, checkcashier, (req, res) => {
   const getAllEmpl = "SELECT * FROM employee ORDER BY empl_surname";
@@ -216,7 +216,7 @@ WHERE UPC = ?
 
           if (updatedQuantity < 0) {
             connection.rollback(() => {
-              const errorMessage = 'На складі міститься менше товарів!';
+              const errorMessage = 'There are less products in the store!';
               errorNotification(errorMessage);
             });
           } else {
@@ -239,9 +239,9 @@ WHERE UPC = ?
 function errorNotification(str) {
 
   notifier.notify({
-    title: 'Помилка!',
+    title: 'Error!',
     message: str,
-    icon: path.join('./routes/images/error.png'),
+    icon: path.join('./images/error.png'),
     wait: true,
     sound: true,
     appID: 'ZLAGODA'
@@ -365,12 +365,12 @@ WHERE c.check_number = '${checkNumber}'`;
     <body>
         <header>
           <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px;margin-left: 10px; margin-right: 595px;">${new Date().toLocaleString()}</span>
-          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Магазин "ZLAGODA"</span>
-          <h1>Чек</h1>
-          <p text-align: left; margin-right: 20px; > Номер чека : ${checkNumber}<p>
-          <p text-align: left; margin-right: 20px; > Працівник : ${categories[0].empl_surname} ${categories[0].empl_name}<p>
-          <p text-align: left; margin-right: 20px; > Картка клієнта : ${categories[0].cust_surname} ${categories[0].cust_name}<p>
-          <p text-align: left; margin-right: 20px; > Дата : 
+          <span style="font-size: 10px; margin: 0; text-align: right; margin-top: 10px; margin-right: 1px;">Supermarket "ZLAGODA"</span>
+          <h1>Check</h1>
+          <p text-align: left; margin-right: 20px; > Check number : ${checkNumber}<p>
+          <p text-align: left; margin-right: 20px; > Cashier : ${categories[0].empl_surname} ${categories[0].empl_name}<p>
+          <p text-align: left; margin-right: 20px; > Customer card : ${categories[0].cust_surname} ${categories[0].cust_name}<p>
+          <p text-align: left; margin-right: 20px; > Date : 
           <script>
         var dateOfBirth = new Date('${categories[0].print_date}');
         var formattedDate = ('0' + dateOfBirth.getDate()).slice(-2) + '.' +
@@ -378,8 +378,8 @@ WHERE c.check_number = '${checkNumber}'`;
             dateOfBirth.getFullYear();
         document.write('<span class="value">' + formattedDate + '</span>');
     </script><p>
-    <p text-align: left; margin-right: 20px; > Всього : ${categories[0].sum_total}<p>
-    <p text-align: left; margin-right: 20px; > ПДВ : ${categories[0].vat}<p>
+    <p text-align: left; margin-right: 20px; > In total : ${categories[0].sum_total}<p>
+    <p text-align: left; margin-right: 20px; > VAT : ${categories[0].vat}<p>
         </header>
         ${generateTable(categories)}
     </body>
@@ -415,10 +415,10 @@ function generateTable(categories) {
     const totalCost = category.product_number * category.seling_price;
     const categoryItem = `
       <li>
-        <p><strong>Товар:</strong> ${category.product_name}</p>
-        <p><strong>Кількість:</strong> ${category.product_number}</p>
-        <p><strong>Ціна:</strong> ${category.seling_price}</p>
-        <p><strong>Вартість:</strong> ${totalCost}</p>
+        <p><strong>Product:</strong> ${category.product_name}</p>
+        <p><strong>Quantity:</strong> ${category.product_number}</p>
+        <p><strong>Price per one:</strong> ${category.seling_price}</p>
+        <p><strong>Price per all:</strong> ${totalCost}</p>
 
       </li>
     `;
