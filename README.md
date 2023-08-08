@@ -1,3 +1,2 @@
 # Zlagoda
-Used Express framework
-Used handlebars
+Used Express framework, used handlebars
